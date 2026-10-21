@@ -17982,19 +17982,70 @@ img.cr-ficon {
 		}
 		return p;
 	};
+	let dbP = null;
+	const db = () => dbP || (dbP = new Promise((res, rej) => {
+		const r = indexedDB.open("cr-thumbs", 1);
+		r.onupgradeneeded = () => r.result.createObjectStore("t");
+		r.onsuccess = () => res(r.result);
+		r.onerror = () => rej(r.error);
+	}).catch((err) => {
+		console.warn("Recent files: thumbnail cache unavailable", err && err.message);
+		return null;
+	}));
+	const idb = (mode, fn) => db().then((d) => d && new Promise((res, rej) => {
+		const tx = d.transaction("t", mode);
+		const q = fn(tx.objectStore("t"));
+		tx.oncomplete = () => res(q && q.result);
+		tx.onerror = tx.onabort = () => rej(tx.error);
+	})).catch(() => undefined);
+	const blobs = new Map();
+	const kept = new Set();
+	const ckOf = (key, path) => key + "|" + norm(path);
+	const blobUrl = (ck, blob) => {
+		const old = blobs.get(ck);
+		blobs.set(ck, URL.createObjectURL(blob));
+		if (old) URL.revokeObjectURL(old);
+		return blobs.get(ck);
+	};
+	const stored = (ck) => blobs.has(ck) ? Promise.resolve(blobs.get(ck)) : idb("readonly", (s) => s.get(ck)).then((v) => v && v.blob instanceof Blob ? blobs.get(ck) || blobUrl(ck, v.blob) : "");
+	const unstore = (ck) => {
+		const u = blobs.get(ck);
+		if (u) URL.revokeObjectURL(u);
+		blobs.delete(ck);
+		kept.delete(ck);
+		return idb("readwrite", (s) => s.delete(ck));
+	};
+	const keep = (ck, url) => {
+		if (kept.has(ck)) return;
+		kept.add(ck);
+		fetch(url)
+			.then((r) => (r.ok ? r.blob() : null))
+			.then((b) => b && b.type.startsWith("image/") && idb("readwrite", (s) => s.put({ blob: b, at: Date.now() }, ck)).then(() => blobUrl(ck, b)))
+			.catch(() => kept.delete(ck));
+	};
+	const prune = (key, items) => {
+		const want = new Set(items.map((x) => ckOf(key, x.path)));
+		idb("readonly", (s) => s.getAllKeys()).then((ks) => (ks || []).forEach((k) => typeof k === "string" && k.startsWith(key + "|") && !want.has(k) && unstore(k)));
+	};
 	const owned = (img) => !!row && row.contains(img);
-	const thumb = (x, img, tries) => {
+	const thumb = (x, img, tries, fresh) => {
 		const n = tries || 0;
+		const ck = ckOf(img.crKey, x.path);
 		const retry = () => {
-			if (n < 5) setTimeout(() => owned(img) && !img.getAttribute("src") && thumb(x, img, n + 1), [1500, 5000, 15000, 45000, 120000][n]);
+			if (n < 5) setTimeout(() => owned(img) && !img.getAttribute("src") && thumb(x, img, n + 1, true), [1500, 5000, 15000, 45000, 120000][n]);
 		};
 		const show = (url) => {
 			if (!owned(img) || img.getAttribute("src")) return;
-			img.onload = () => img.classList.add("cr-on");
+			const cached = url.startsWith("blob:");
+			img.onload = () => {
+				img.classList.add("cr-on");
+				if (!cached) keep(ck, url);
+			};
 			img.onerror = () => {
 				img.onerror = null;
 				img.removeAttribute("src");
 				img.classList.remove("cr-on");
+				if (cached) return unstore(ck).then(() => thumb(x, img, n, true));
 				cacheThumb(x.path, { url: "", expires: new Date(0).toISOString() });
 				retry();
 			};
@@ -18002,10 +18053,12 @@ img.cr-ficon {
 		};
 		const url = known(x.path);
 		if (url) return show(url);
-		fetchThumb(x).then(show, (err) => {
+		const remote = () => fetchThumb(x).then(show, (err) => {
 			console.warn("Recent files: no thumbnail for", x.path, err.message);
 			retry();
 		});
+		if (fresh) return remote();
+		stored(ck).then((b) => (b ? show(b) : remote()));
 	};
 	const info = (path) => crApi("file/info", { uri: path })
 		.then((j) => (j && j.code === 0 && j.data && j.data.path ? j.data : j && j.code === 404 ? null : undefined))
@@ -18132,7 +18185,8 @@ img.cr-ficon {
 	let sig = "";
 	let iconsRef = null;
 	let iconsGen = 0;
-	const build = (items) => {
+	const build = (items, key) => {
+		prune(key, items);
 		const list = row.querySelector(".cr-recent-row");
 		list.textContent = "";
 		items.forEach((x) => {
@@ -18179,6 +18233,7 @@ img.cr-ficon {
 			});
 			list.appendChild(b);
 			img.crItem = x;
+			img.crKey = key;
 			thumb(x, img);
 		});
 		edges(list);
@@ -18359,7 +18414,7 @@ img.cr-ficon {
 		const s = key + "|" + iconsGen + "|" + items.map((x) => x.path).join("|");
 		if (s !== sig) {
 			sig = s;
-			build(items);
+			build(items, key);
 		}
 		const moved = row.parentElement !== host || row.nextElementSibling !== section;
 		if (moved) host.insertBefore(row, section);
