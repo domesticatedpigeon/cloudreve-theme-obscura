@@ -25,10 +25,10 @@ It is a single HTML that sits in the <strong>Custom footer HTML</strong> setting
 - Image viewer: Right-click menu on the photo.
 - Image viewer: Thumbnail strip on phones; on desktop, a peek of the previous or next image follows the cursor while it points that way.
 - Image viewer: Video viewer with a dark frame that keeps the video in place while it loads.
-- Phones: Bottom navigation (My Files / Shared with me) and a floating + button.
-- Phones: Pinned path bar, frosted sidebar.
-- Phones: Edge-to-edge viewer with native pinch zoom and double-tap zoom.
-- Phones: Tuned for iOS Safari, including Liquid Glass status and address bar tinting, and landscape safe areas.
+- Mobile: Bottom navigation (My Files / Shared with me) and a floating + button.
+- Mobile: Pinned path bar, frosted sidebar.
+- Mobile: Edge-to-edge viewer with native pinch zoom and double-tap zoom.
+- Mobile: Tuned for iOS Safari, including Liquid Glass status and address bar tinting, and landscape safe areas.
 - Smaller changes: Tree view > Auto expand is off by default (each user can turn it back on).
 - Smaller changes: The Finance settings tab is hidden.
 - Smaller changes: Recovers from failed lazy-loaded chunks instead of showing Cloudreve's error page.
