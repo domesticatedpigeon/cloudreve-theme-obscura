@@ -43,7 +43,7 @@ It is a single HTML that sits in the <strong>Custom footer HTML</strong> setting
 ```html
 <script>
 (() => {
-	const url = "https://raw.githubusercontent.com/domesticatedpigeon/cloudreve-theme-public/main/cloudreveCustomFooter.html";
+	const url = "https://raw.githubusercontent.com/domesticatedpigeon/cloudreve-theme-obscura/main/cloudreveCustomFooter.html";
 	fetch(url + (url.includes("?") ? "&" : "?") + "t=" + Date.now(), { cache: "no-store" })
 		.then((r) => r.text())
 		.then((html) => {
@@ -59,16 +59,6 @@ It is a single HTML that sits in the <strong>Custom footer HTML</strong> setting
 })();
 </script>
 ```
-
-The loader fetches the latest theme from this repository on every page load, so updates arrive automatically.
-
-### Pin a version or self-host
-- **Pin a version:** replace `main` in the URL with a commit hash or tag to stop automatic updates.
-- **Self-host:** download `cloudreveCustomFooter.html`, serve it from your own domain (the response must allow your Cloudreve origin via CORS, or come from the same origin), and point `url` at it.
-- **No loader:** paste the whole contents of `cloudreveCustomFooter.html` into Custom footer HTML. This works too, but you will have to paste it again for every update.
-
-### External requests
-The theme loads its fonts from Google Fonts and jsDelivr. If you configured iconify file icons in Cloudreve, the Recently viewed row loads them from the same Iconify API hosts Cloudreve uses.
 
 ## Development
 - `cloudreveCustomFooter.html` is the whole theme: a flat list of `<style>` and `<script>` blocks.
