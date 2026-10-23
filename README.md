@@ -1,18 +1,18 @@
-# Cloudreve Theme
+<h1 align="center">Obscura</h1>
 
-A full visual and interaction redesign for [Cloudreve](https://github.com/cloudreve/cloudreve) v4: frosted pills, a docked desktop layout, a phone-first mobile layout, a rebuilt image viewer and a "Recently viewed" row. It is a single HTML file that runs in Cloudreve's **Custom footer HTML** setting, so there is nothing to build and Cloudreve itself stays untouched.
+<p align="center">
+<strong>A visual redesign for <a href="https://github.com/cloudreve/cloudreve">Cloudreve</a> featuring a recent files list and an enhanced image viewer.</strong><br>
+It is a single HTML file that runs in Cloudreve's <strong>Custom footer HTML</strong> setting.<br>
+</p>
 
-## Screenshots
+<p align="center">
+<img src="screenshots/desktop-light.webp" height="400" alt="My Files in light mode">
+<img src="screenshots/mobile-light.webp" height="400" alt="Phone, light">
+</p>
+<p align="center">
+  <img src="screenshots/viewer.webp" width="720" alt="My Files in light mode">
+</p>
 
-| Dark | Light |
-| --- | --- |
-| ![My Files, dark](screenshots/desktop-dark.webp) | ![My Files, light](screenshots/desktop-light.webp) |
-
-![Image viewer](screenshots/viewer.webp)
-
-| Phone, dark | Phone, light |
-| --- | --- |
-| <img src="screenshots/mobile-dark.webp" alt="Phone, dark" width="320"> | <img src="screenshots/mobile-light.webp" alt="Phone, light" width="320"> |
 
 ## Features
 
