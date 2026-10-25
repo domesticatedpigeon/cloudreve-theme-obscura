@@ -22,6 +22,8 @@ Scripts that run the theme in a real Cloudreve v4 with headless Chromium, so a c
 ## Performance
 - `node tools/measure.mjs desktop|phone [--perf]`: scrolls Photos for 8 s, opens the viewer and pages through 12 images, scrolls Documents for 5 s. Prints frames drawn, frames over 50 ms, main-thread time blocked by long frames, and Chrome's style, script and layout time. `phone` emulates an iPhone 13 with the CPU slowed 4x. `--perf` turns on `cr-perf` and lists script time per src file.
 - `node tools/trace-selectors.mjs [n]`: per-selector match time during 12 wheel steps (Chrome SelectorStats), with the src file each selector comes from.
+- `node tools/profile-tagger.mjs [n]`: time of one full class tagger pass and of each row, in four states (desktop grid, viewer, settings; phone grid).
+- `node tools/verify-tagger.mjs`: walks desktop and phone through ~40 checkpoints (scrolling, menus, viewer, dialogs, settings) and recomputes every tagger row from scratch at each; fails if any cr-h class or body[data-cr-h] flag on the page is stale.
 - `node tools/trace-restyles.mjs`: how many elements each style recalc touched, which rules forced whole-subtree restyles, and which changes triggered them.
 - Compare against the same numbers with no theme (serve an empty file) to see how much of the cost is the theme's. Absolute numbers depend on the machine; compare runs on the same one.
 

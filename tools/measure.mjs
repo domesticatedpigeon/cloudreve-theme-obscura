@@ -10,7 +10,11 @@ if (form === "phone") await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4
 await cdp.send("Performance.enable");
 const metrics = async () => Object.fromEntries((await cdp.send("Performance.getMetrics")).metrics.map((m) => [m.name, m.value]));
 
-const begin = () => p.evaluate(() => {
+const begin = async () => {
+	mark = await metrics();
+	await start();
+};
+const start = () => p.evaluate(() => {
 	window.__frames = [];
 	let last = performance.now();
 	const tick = (t) => {
@@ -25,7 +29,14 @@ const begin = () => p.evaluate(() => {
 	} catch (e) {}
 	if (window.crPerf) window.crPerf(true);
 });
-const collect = () => p.evaluate(() => ({ frames: window.__frames.slice(1), loaf: window.__loaf, perf: window.crPerf ? window.crPerf() : [] }));
+const KEYS = ["RecalcStyleDuration", "ScriptDuration", "LayoutDuration", "TaskDuration"];
+let mark = null;
+const totals = Object.fromEntries(KEYS.map((k) => [k, 0]));
+const collect = async () => {
+	const m = await metrics();
+	for (const k of KEYS) totals[k] += m[k] - mark[k];
+	return p.evaluate(() => ({ frames: window.__frames.slice(1), loaf: window.__loaf, perf: window.crPerf ? window.crPerf() : [] }));
+};
 const scroll = async (ms) => {
 	const { x, y } = await p.evaluate(() => ({ x: Math.round(innerWidth / 2), y: Math.round(innerHeight / 2) }));
 	const end = Date.now() + ms;
@@ -42,7 +53,6 @@ const scroll = async (ms) => {
 
 await folder(p, "cloudreve://my/Photos");
 await p.waitForTimeout(3000);
-const m0 = await metrics();
 const parts = [];
 await begin();
 await scroll(8000);
@@ -60,10 +70,9 @@ await folder(p, "cloudreve://my/Documents");
 await begin();
 await scroll(5000);
 parts.push(await collect());
-const m1 = await metrics();
 
 const frames = parts.flatMap((x) => x.frames);
-const ms = (k) => Math.round((m1[k] - m0[k]) * 1000);
+const ms = (k) => Math.round(totals[k] * 1000);
 const res = {
 	form,
 	theme: perf ? "on, cr-perf" : "as installed",
