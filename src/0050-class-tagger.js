@@ -159,10 +159,22 @@
 		}
 		mo.takeRecords();
 	};
-	const wave = (m) => m.attributeName === "d" && !!m.target.closest && !!m.target.closest(".cr-wave");
+	const named = new Set(H.flatMap(([a, h, , , sel]) => (a + h + " " + sel).match(/\.[A-Za-z_][\w-]*/g) || []).map((c) => c.slice(1)));
+	const changed = (m) => {
+		if (m.type === "childList") return true;
+		if (m.attributeName === "d") return !(m.target.closest && m.target.closest(".cr-wave"));
+		if (m.attributeName !== "class") return true;
+		const now = m.target.getAttribute("class");
+		if ((m.oldValue === null) !== (now === null)) return true;
+		const before = new Set((m.oldValue || "").split(/\s+/));
+		const after = new Set((now || "").split(/\s+/));
+		for (const c of before) if (c && !after.has(c) && named.has(c)) return true;
+		for (const c of after) if (c && !before.has(c) && named.has(c)) return true;
+		return false;
+	};
 	const mo = new MutationObserver((muts) => {
-		if (!muts.every(wave)) sync();
+		if (muts.some(changed)) sync();
 	});
-	mo.observe(root, { subtree: true, childList: true, attributes: true, attributeFilter: ["class", "role", "data-rect-id", "d"] });
+	mo.observe(root, { subtree: true, childList: true, attributes: true, attributeOldValue: true, attributeFilter: ["class", "role", "data-rect-id", "d"] });
 	sync();
 })();
