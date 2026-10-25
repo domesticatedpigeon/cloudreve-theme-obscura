@@ -1,11 +1,11 @@
 @supports selector(::-webkit-scrollbar) {
-	html body :is(.cr-explorer, main div:has(> .MuiContainer-root)) {
+	html body :is(.cr-explorer, main div.cr-h29) {
 		scrollbar-color: auto !important;
 		scrollbar-width: auto !important;
 	}
 }
 
-html.cr-dock :is(.cr-explorer, main div:has(> .MuiContainer-root))::-webkit-scrollbar-track {
+html.cr-dock :is(.cr-explorer, main div.cr-h29)::-webkit-scrollbar-track {
 	margin-top: var(--cr-sbt, 0px);
 	margin-bottom: 20px;
 }

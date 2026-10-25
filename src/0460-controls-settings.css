@@ -902,7 +902,7 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 	--cr-sh-bg: var(--cr-menu-bg);
 }
 
-:is(.MuiDrawer-paper, .MuiPopover-paper > .MuiBox-root) > div:first-child:has(+ .MuiStack-root) {
+:is(.MuiDrawer-paper, .MuiPopover-paper > .MuiBox-root) > div:first-child.cr-h103 {
 	position: absolute !important;
 	top: 0;
 	left: 0;
@@ -910,7 +910,7 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 	z-index: 2;
 }
 
-:is(.MuiDrawer-paper, .MuiPopover-paper > .MuiBox-root) > div:first-child:has(+ .MuiStack-root)::before {
+:is(.MuiDrawer-paper, .MuiPopover-paper > .MuiBox-root) > div:first-child.cr-h103::before {
 	content: "";
 	position: absolute;
 	inset: 0 0 -48px;
@@ -924,7 +924,7 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 	transition: --cr-exta 0.35s ease;
 }
 
-:is(.MuiDrawer-paper, .MuiPopover-paper > .MuiBox-root) > div:first-child:has(+ .MuiStack-root.cr-scrolled)::before {
+:is(.MuiDrawer-paper, .MuiPopover-paper > .MuiBox-root) > div:first-child.cr-h104:not(.cr-x)::before {
 	--cr-exta: 1;
 }
 
@@ -1171,7 +1171,7 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 	min-width: 0;
 }
 
-:is(.notistack-MuiContent, .MuiSnackbarContent-root) > :last-child:not(.MuiSnackbarContent-message):has(.MuiButton-root),
+:is(.notistack-MuiContent, .MuiSnackbarContent-root) > :last-child:not(.MuiSnackbarContent-message).cr-h93,
 .MuiSnackbarContent-message > .MuiBox-root > .MuiBox-root:last-child:not(:first-child) {
 	display: flex;
 	align-items: center;

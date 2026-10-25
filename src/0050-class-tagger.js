@@ -90,7 +90,21 @@
 		["html.cr-settings body main .MuiGrid2-root", ":has(input[type=\"file\"])", "cr-h88", 1, "input[type=\"file\"]"],
 		[".MuiDialog-root .MuiDialog-paper > .MuiBox-root:first-child > .MuiDialogTitle-root", ":has(> :nth-child(3))", "cr-h89", 3, ""],
 		[".cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root", ":has(> .cr-lcb)", "cr-h90", 2, ".cr-lcb"],
-		["*", ":is(main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root .MuiTabs-root, .MuiDialog-paperFullScreen .MuiTabs-root)", "cr-ptabs", 0, ""]
+		["div", ":has(> div > div > .MuiToggleButtonGroup-root path[d^=\"M11.997 18.532\"]):not(:has(> .MuiGrid2-container))", "cr-h91", 1, "path[d^=\"M11.997 18.532\"]"],
+		[".MuiGrid2-container", ":has(> .MuiGrid2-root > .MuiToggleButtonGroup-root path[d^=\"M11.997 18.532\"])", "cr-h92", 1, "path[d^=\"M11.997 18.532\"]"],
+		[":is(.notistack-MuiContent, .MuiSnackbarContent-root) > :last-child:not(.MuiSnackbarContent-message)", ":has(.MuiButton-root)", "cr-h93", 3, ""],
+		["html:not(.cr-dock) body main > .MuiStack-root", ":has(> .cr-h72.cr-nav)", "cr-h94", 2, ".cr-h72.cr-nav"],
+		[".MuiBox-root", ":has([data-virtuoso-scroller])", "cr-h95", 1, "[data-virtuoso-scroller]"],
+		[".MuiBox-root", ":has(> [data-virtuoso-scroller])", "cr-h96", 2, "[data-virtuoso-scroller]"],
+		["html.cr-dock .cr-nav + .MuiBox-root > *", ":not(.cr-explorer)", "cr-h98", 3, ""],
+		[".cr-explorer div", ":has(> .MuiStack-root > div > .MuiGrid-container)", "cr-h100", 1, ".MuiGrid-container"],
+		["div", ":has(> header.MuiAppBar-root:not(.MuiDialog-root *))", "cr-h101", 2, "header.MuiAppBar-root"],
+		["div", ":has(> .MuiContainer-maxWidthXs > .MuiGrid-container)", "cr-h102", 1, ".MuiContainer-maxWidthXs"],
+		[":is(.MuiDrawer-paper, .MuiPopover-paper > .MuiBox-root) > div:first-child", ":has(+ .MuiStack-root)", "cr-h103", 3, ""],
+		[":is(.MuiDrawer-paper, .MuiPopover-paper > .MuiBox-root) > div:first-child", ":has(+ .MuiStack-root.cr-scrolled)", "cr-h104", 3, ""],
+		["[data-rect-id] *", ":has(> img:not(.MuiAvatar-img):not([draggable=\"false\"]))", "cr-h105", 2, "[data-rect-id] img:not(.MuiAvatar-img):not([draggable=\"false\"])"],
+		["*", ":is(main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root .MuiTabs-root, .MuiDialog-paperFullScreen .MuiTabs-root)", "cr-ptabs", 0, ""],
+		[".MuiBox-root", ":has(> .MuiTabs-root.cr-ptabs)", "cr-h99", 2, ".MuiTabs-root.cr-ptabs"]
 	];
 	const root = document.documentElement;
 	const collect = (a, h, mode, sel) => {

@@ -1,4 +1,4 @@
-html:not(.cr-dock) body main > .MuiStack-root:has(> .cr-h72.cr-nav) {
+html:not(.cr-dock) body main > .MuiStack-root.cr-h94:not(.cr-x) {
 	padding-top: var(--cr-pb-h, 50px);
 }
 

@@ -6,11 +6,11 @@
 	border-radius: 8px !important;
 }
 
-html:not(.cr-dock) body main > .MuiStack-root:has(> .cr-h72.cr-nav) > .MuiBox-root:has([data-virtuoso-scroller]) {
+html:not(.cr-dock) body main > .MuiStack-root.cr-h94:not(.cr-x) > .MuiBox-root.cr-h95 {
 	margin-top: -8px;
 }
 
-html:not(.cr-dock) body main > .MuiStack-root:has(> .cr-h72.cr-nav) [data-virtuoso-scroller] > [data-viewport-type] {
+html:not(.cr-dock) body main > .MuiStack-root.cr-h94:not(.cr-x) [data-virtuoso-scroller] > [data-viewport-type] {
 	padding-top: 8px;
 }
 
@@ -19,12 +19,12 @@ html:not(.cr-dock) body main > .MuiStack-root:has(> .cr-h72.cr-nav) [data-virtuo
 		transition: opacity 0.25s ease;
 	}
 
-	html.cr-dock .cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child {
+	html.cr-dock .cr-explorer .MuiBox-root.cr-h96 > .MuiBox-root:first-child {
 		box-shadow: 0 1px 0 transparent;
 		transition: box-shadow 0.25s ease;
 	}
 
-	html.cr-dock.cr-scrolled .cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child {
+	html.cr-dock.cr-scrolled .cr-explorer .MuiBox-root.cr-h96 > .MuiBox-root:first-child {
 		box-shadow: 0 1px 0 var(--cr-sep);
 	}
 

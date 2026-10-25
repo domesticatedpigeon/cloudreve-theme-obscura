@@ -3,7 +3,7 @@
 }
 
 .cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root > .MuiBox-root,
-.cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child > .MuiBox-root {
+.cr-explorer .MuiBox-root.cr-h96 > .MuiBox-root:first-child > .MuiBox-root {
 	padding-left: 6px !important;
 	padding-right: 6px !important;
 }
