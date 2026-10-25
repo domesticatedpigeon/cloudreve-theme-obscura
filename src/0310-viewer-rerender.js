@@ -1,16 +1,4 @@
 (() => {
-	const fiberOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
-	const slider = (portal) => {
-		let f = fiberOf(portal);
-		for (let i = 0; f && i < 40; i++, f = f.return) {
-			const p = f.memoizedProps;
-			if (p && Array.isArray(p.images) && typeof p.index === "number") return f;
-		}
-		return null;
-	};
 	const rerender = (f) => {
 		for (let h = f.memoizedState; h; h = h.next) {
 			const v = h.memoizedState;
@@ -28,7 +16,7 @@
 	};
 	const apply = () => {
 		const portal = document.querySelector(".PhotoView-Portal:not(.PhotoView-Slider__willClose)");
-		const f = portal && slider(portal);
+		const f = portal && cr.slider(portal);
 		if (!f) return;
 		const d = f.type.defaultProps;
 		if (!d || d.loop !== false || d.maskClosable !== false) f.type.defaultProps = { ...d, loop: false, maskClosable: false };

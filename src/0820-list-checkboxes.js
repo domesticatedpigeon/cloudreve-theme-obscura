@@ -3,29 +3,6 @@
 	const SQ_ON = "M9 3h6a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6Zm7.28 6.73a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.97-1.97a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0l5-5Z";
 	const SQ_OFF = "M9 3h6a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6ZM9 4a5 5 0 0 0-5 5v6a5 5 0 0 0 5 5h6a5 5 0 0 0 5-5V9a5 5 0 0 0-5-5H9Z";
 	const SQ = "M9 3h6a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6Z";
-	let store = null;
-	const getStore = () => {
-		if (store) return store;
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		let f = k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-		while (f) {
-			const p = f.memoizedProps;
-			if (p && p.store && p.store.dispatch && p.store.getState) return (store = p.store);
-			f = f.child;
-		}
-		return null;
-	};
-	const fileOf = (el) => {
-		const k = Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		let f = k ? el[k] : null;
-		for (let i = 0; f && i < 30; i++, f = f.return) if (f.memoizedProps && f.memoizedProps.file) return f.memoizedProps.file;
-		return null;
-	};
-	const propsOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactProps$"));
-		return k ? el[k] : null;
-	};
 	const isCheck = (svg) => {
 		const d = svg && svg.querySelector("path") && svg.querySelector("path").getAttribute("d");
 		return !!d && (d.startsWith(SQ) || d.startsWith("M12 2c5.523"));
@@ -46,12 +23,12 @@
 	const clickIcon = (row) => {
 		const host = hostOf(lineOf(row));
 		if (!host) return;
-		const target = [host, ...host.querySelectorAll("*")].find((x) => propsOf(x) && typeof propsOf(x).onClick === "function");
+		const target = [host, ...host.querySelectorAll("*")].find((x) => cr.propsOf(x) && typeof cr.propsOf(x).onClick === "function");
 		(target || host).dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
 	};
 	const stop = (e) => e.stopPropagation();
 	const decorate = (row, sel) => {
-		const file = fileOf(row);
+		const file = cr.fileOf(row, 30);
 		if (!file) return;
 		const line = lineOf(row);
 		const host = hostOf(line);
@@ -109,7 +86,7 @@
 	const run = () => {
 		const rows = document.querySelectorAll(ROW);
 		if (!rows.length) return;
-		const s = getStore();
+		const s = cr.store();
 		const fm = s && s.getState().fileManager;
 		const sel = (fm && fm[0] && fm[0].selected) || {};
 		rows.forEach((r) => decorate(r, sel));
@@ -125,7 +102,7 @@
 	};
 	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
 	const t = setInterval(() => {
-		const s = getStore();
+		const s = cr.store();
 		if (!s) return;
 		clearInterval(t);
 		let last = null;

@@ -2,16 +2,8 @@
 	const touch = matchMedia("(hover: none) and (pointer: coarse)");
 	const PAD = 140;
 	let z = null;
-	const fiberOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
 	const sliderState = (portal) => {
-		let f = fiberOf(portal);
-		for (let i = 0; f && i < 40; i++, f = f.return) {
-			const p = f.memoizedProps;
-			if (p && Array.isArray(p.images) && typeof p.index === "number") break;
-		}
+		const f = cr.slider(portal);
 		for (let h = f && f.memoizedState; h; h = h.next) {
 			const v = h.memoizedState;
 			if (v && typeof v === "object" && typeof v.onScale === "function" && typeof v.scale === "number") return Object.assign({}, v, { set: h.queue && h.queue.dispatch });
@@ -419,7 +411,7 @@
 			const img = box.querySelector("img.PhotoView__Photo");
 			const holder = img && img.parentElement;
 			if (!holder || holder.contains(e.target)) return;
-			const f = fiberOf(holder);
+			const f = cr.fiberOf(holder);
 			const h = f && f.memoizedProps && f.memoizedProps.onTouchStart;
 			if (typeof h !== "function") return;
 			e.stopPropagation();

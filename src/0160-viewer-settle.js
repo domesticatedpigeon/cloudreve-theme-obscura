@@ -1,11 +1,6 @@
 (() => {
-	const fiberOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
 	const boxOf = (wrap) => {
-		let f = fiberOf(wrap);
-		while (f && !(f.memoizedProps && "isActive" in f.memoizedProps && f.memoizedProps.onReachUp)) f = f.return;
+		const f = cr.upFiber(wrap, (p) => "isActive" in p && p.onReachUp);
 		if (!f) return null;
 		let h = f.memoizedState;
 		while (h) {

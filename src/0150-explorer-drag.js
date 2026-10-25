@@ -1,17 +1,4 @@
 (() => {
-	const fiberOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
-	const propsOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactProps$"));
-		return k ? el[k] : null;
-	};
-	const fiberFile = (el) => {
-		let f = fiberOf(el);
-		while (f && !(f.memoizedProps && f.memoizedProps.file)) f = f.return;
-		return f ? f.memoizedProps.file : null;
-	};
 	const hookValues = (fiber) => {
 		const out = [];
 		let h = fiber && fiber.memoizedState;
@@ -24,7 +11,7 @@
 		return out;
 	};
 	const findSpec = (el, test) => {
-		let f = fiberOf(el);
+		let f = cr.fiberOf(el);
 		while (f) {
 			for (const v of hookValues(f)) if (v && typeof v === "object" && test(v)) return v;
 			f = f.return;
@@ -35,7 +22,7 @@
 	const dropTargetAt = (x, y, item) => {
 		let el = document.elementFromPoint(x, y);
 		while (el && el !== document.body) {
-			let f = fiberOf(el);
+			let f = cr.fiberOf(el);
 			f = f && f.return;
 			while (f && typeof f.type !== "string") {
 				for (const v of hookValues(f)) {
@@ -55,43 +42,14 @@
 		}
 		return null;
 	};
-	let store = null;
-	const getStore = () => {
-		if (store) return store;
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		let f = k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-		while (f) {
-			const p = f.memoizedProps;
-			if (p && p.store && p.store.dispatch && p.store.getState) return (store = p.store);
-			f = f.child;
-		}
-		return null;
-	};
-	let routerRef = null;
-	const getRouter = () => {
-		if (routerRef) return routerRef;
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		const queue = k ? [(root[k].stateNode && root[k].stateNode.current) || root[k]] : [];
-		let n = 0;
-		while (queue.length && n++ < 5000) {
-			const f = queue.shift();
-			const p = f.memoizedProps;
-			if (p && p.router && typeof p.router.navigate === "function") return (routerRef = p.router);
-			if (f.child) queue.push(f.child);
-			if (f.sibling) queue.push(f.sibling);
-		}
-		return null;
-	};
 	const fm = () => {
-		const s = getStore();
+		const s = cr.store();
 		return s ? s.getState().fileManager[0] : null;
 	};
 	const selectedMap = () => (fm() && fm().selected) || {};
 	const listFiles = () => (fm() && fm().list && fm().list.files) || [];
 	const setSelected = (value) => {
-		const s = getStore();
+		const s = cr.store();
 		if (s) s.dispatch({ type: "fileManagerSlice/setSelected", payload: { index: 0, value } });
 	};
 	const TILE = ".MuiImageListItem-root, .MuiGrid-container [data-rect-id]";
@@ -114,7 +72,7 @@
 	const frameOf = (list) => {
 		let el = list;
 		while (el && el !== document.body) {
-			const p = propsOf(el);
+			const p = cr.propsOf(el);
 			if (p && typeof p.onContextMenu === "function") return el;
 			el = el.parentElement;
 		}
@@ -161,7 +119,7 @@
 		d.list.querySelectorAll(TILE).forEach((li) => {
 			const r = li.getBoundingClientRect();
 			if (r.left < x2 && r.right > x1 && r.top + top < y2 && r.bottom + top > y1) {
-				const file = fiberFile(li);
+				const file = cr.fileOf(li);
 				if (file) files.push(file);
 			}
 		});
@@ -172,7 +130,7 @@
 		setSelected(d.additive ? Object.values(d.base).concat(files.filter((f) => !d.base[f.path])) : files);
 	};
 	const setDragging = (dragging) => {
-		const s = getStore();
+		const s = cr.store();
 		if (s) s.dispatch({ type: "globalState/setDragging", payload: { dragging, draggingWithSelected: true } });
 	};
 	const buildPreview = (li, file) => {
@@ -229,7 +187,7 @@
 		const sel = selectedMap();
 		let el = target ? target.el : null;
 		if (el) {
-			const f = fiberFile(el);
+			const f = cr.fileOf(el);
 			if ((f && sel[f.path]) || el.contains(d.li)) el = null;
 		}
 		if (el !== d.over) {
@@ -261,7 +219,7 @@
 		const grid = !list.classList.contains("MuiImageList-root");
 		const editingPath = !!document.querySelector(".cr-path input, .cr-nav .MuiInputBase-root input");
 		if (grid && !t.closest(TILE) && !editingPath) e.stopPropagation();
-		const file = li ? fiberFile(li) : null;
+		const file = li ? cr.fileOf(li) : null;
 		const modifier = e.ctrlKey || e.metaKey || e.shiftKey;
 		if (li && file && !modifier && selectedMap()[file.path]) {
 			const spec = dragSpecOf(li);
@@ -334,7 +292,7 @@
 		if (t.closest(".cr-more, .cr-grid-more")) return;
 		const li = t.closest(TILE);
 		if (li) {
-			const file = fiberFile(li);
+			const file = cr.fileOf(li);
 			if (!file) return;
 			const onCheckButton = onCheckOf(li, t);
 			if (isGrid(li) && !onCheckButton && !e.shiftKey && !e.ctrlKey && !e.metaKey && !file.placeholder && !t.closest("input, textarea")) {
@@ -344,7 +302,7 @@
 				return;
 			}
 			if (file.type === 1 && !onCheckButton && !e.shiftKey && !e.ctrlKey && !e.metaKey && matchMedia("(pointer: coarse)").matches) {
-				const router = getRouter();
+				const router = cr.router();
 				if (router) {
 					e.stopPropagation();
 					e.preventDefault();

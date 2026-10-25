@@ -1,25 +1,5 @@
 (() => {
 	const SETTINGS_PATH = "M12.012 2.25c.734.008 1.465.093 2.182.253a.75.75 0 0 1 .582.649l.17 1.527a1.384 1.384 0 0 0 1.927 1.116l1.4-.615a.75.75 0 0 1 .85.174a9.793 9.793 0 0 1 2.205 3.792a.75.75 0 0 1-.272.825l-1.241.916a1.38 1.38 0 0 0 0 2.226l1.243.915a.75.75 0 0 1 .272.826a9.798 9.798 0 0 1-2.204 3.792a.75.75 0 0 1-.849.175l-1.406-.617a1.38 1.38 0 0 0-1.926 1.114l-.17 1.526a.75.75 0 0 1-.571.647a9.518 9.518 0 0 1-4.406 0a.75.75 0 0 1-.572-.647l-.169-1.524a1.382 1.382 0 0 0-1.925-1.11l-1.406.616a.75.75 0 0 1-.85-.175a9.798 9.798 0 0 1-2.203-3.796a.75.75 0 0 1 .272-.826l1.243-.916a1.38 1.38 0 0 0 0-2.226l-1.243-.914a.75.75 0 0 1-.272-.826a9.793 9.793 0 0 1 2.205-3.792a.75.75 0 0 1 .85-.174l1.4.615a1.387 1.387 0 0 0 1.93-1.118l.17-1.526a.75.75 0 0 1 .583-.65a10.72 10.72 0 0 1 2.201-.252m0 1.5a9.136 9.136 0 0 0-1.354.117l-.11.977A2.886 2.886 0 0 1 6.526 7.17l-.899-.394A8.293 8.293 0 0 0 4.28 9.092l.797.587a2.881 2.881 0 0 1 .001 4.643l-.799.588c.32.842.776 1.626 1.348 2.322l.905-.397a2.882 2.882 0 0 1 4.017 2.318l.109.984c.89.15 1.799.15 2.688 0l.11-.984a2.881 2.881 0 0 1 4.018-2.322l.904.396a8.299 8.299 0 0 0 1.348-2.318l-.798-.588a2.88 2.88 0 0 1-.001-4.643l.797-.587a8.293 8.293 0 0 0-1.348-2.317l-.897.393a2.884 2.884 0 0 1-4.023-2.324l-.109-.976a8.99 8.99 0 0 0-1.334-.117M12 8.25a3.75 3.75 0 1 1 0 7.5a3.75 3.75 0 0 1 0-7.5m0 1.5a2.25 2.25 0 1 0 0 4.5a2.25 2.25 0 0 0 0-4.5";
-	const propsOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactProps$"));
-		return k ? el[k] : null;
-	};
-	let router = null;
-	const getRouter = () => {
-		if (router) return router;
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		const queue = k ? [(root[k].stateNode && root[k].stateNode.current) || root[k]] : [];
-		let n = 0;
-		while (queue.length && n++ < 5000) {
-			const f = queue.shift();
-			const p = f.memoizedProps;
-			if (p && p.router && typeof p.router.navigate === "function") return (router = p.router);
-			if (f.child) queue.push(f.child);
-			if (f.sibling) queue.push(f.sibling);
-		}
-		return null;
-	};
 	const findNavHeader = () => {
 		const main = document.querySelector("main");
 		if (!main) return null;
@@ -27,7 +7,7 @@
 			const next = stack.nextElementSibling;
 			if (!next) continue;
 			const frame = [...next.children].find((c) => {
-				const p = propsOf(c);
+				const p = cr.propsOf(c);
 				return p && typeof p.onContextMenu === "function";
 			});
 			if (frame) {
@@ -38,12 +18,8 @@
 		return null;
 	};
 	let lastNav = null;
-	const fiberOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
 	const crumbOf = (frame) => {
-		const start = fiberOf(frame);
+		const start = cr.fiberOf(frame);
 		const queue = start ? [start.child] : [];
 		let n = 0;
 		while (queue.length && n++ < 400) {
@@ -80,7 +56,7 @@
 		return ctx.measureText(text || "").width;
 	};
 	const buttonsOf = (chain) => {
-		let f = fiberOf(chain);
+		let f = cr.fiberOf(chain);
 		for (let i = 0; f && i < 12; i++, f = f.return) {
 			let h = f.memoizedState;
 			let n = 0;
@@ -156,25 +132,15 @@
 	let store = null;
 	const getStore = () => {
 		if (store) return store;
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		let f = k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-		let n = 0;
-		while (f && n++ < 200) {
-			const p = f.memoizedProps;
-			if (p && p.store && typeof p.store.dispatch === "function") {
-				store = p.store;
-				const sync = () => {
-					const g = store.getState().globalState;
-					document.documentElement.classList.toggle("cr-drawer-closed", !!g && g.drawerOpen === false);
-				};
-				store.subscribe(sync);
-				sync();
-				return store;
-			}
-			f = f.child;
-		}
-		return null;
+		store = cr.store();
+		if (!store) return null;
+		const sync = () => {
+			const g = store.getState().globalState;
+			document.documentElement.classList.toggle("cr-drawer-closed", !!g && g.drawerOpen === false);
+		};
+		store.subscribe(sync);
+		sync();
+		return store;
 	};
 	const MENU_PATH = "M4 6h16a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2Zm0 5h16a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2Zm0 5h16a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2Z";
 	const ADD_PATH = "M11.883 3.007 12 3a1 1 0 0 1 .993.883L13 4v7h7a1 1 0 0 1 .993.883L21 12a1 1 0 0 1-.883.993L20 13h-7v7a1 1 0 0 1-.883.993L12 21a1 1 0 0 1-.993-.883L11 20v-7H4a1 1 0 0 1-.993-.883L3 12a1 1 0 0 1 .883-.993L4 11h7V4a1 1 0 0 1 .883-.993L12 3l-.117.007Z";
@@ -236,28 +202,14 @@
 		return lead;
 	};
 	const fiberProp = (el, name, depth) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		let f = k ? el[k] : null;
-		for (let i = 0; f && i < depth; i++) {
-			const p = f.memoizedProps;
-			if (p && typeof p[name] === "boolean") return p[name];
-			f = f.return;
-		}
-		return null;
+		const p = cr.up(el, (x) => typeof x[name] === "boolean", depth);
+		return p ? p[name] : null;
 	};
 	const pinOf = new WeakMap();
 	const pinUri = (li) => {
 		if (pinOf.has(li)) return pinOf.get(li);
-		const k = Object.keys(li).find((x) => x.startsWith("__reactFiber$"));
-		let f = k ? li[k] : null;
-		let v = null;
-		for (let i = 0; f && i < 30; i++, f = f.return) {
-			const p = f.memoizedProps;
-			if (p && p.pinned === true && typeof p.path === "string") {
-				v = p.path;
-				break;
-			}
-		}
+		const p = cr.up(li, (x) => x.pinned === true && typeof x.path === "string", 30);
+		const v = p ? p.path : null;
 		pinOf.set(li, v);
 		return v;
 	};
@@ -577,7 +529,7 @@
 				const root = list.closest(".MuiPopover-root");
 				const backdrop = root && (root.querySelector(".MuiBackdrop-root") || root);
 				if (backdrop) backdrop.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-				const r = getRouter();
+				const r = cr.router();
 				if (r) r.navigate("/settings");
 				else location.href = "/settings";
 			});

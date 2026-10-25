@@ -15,12 +15,8 @@
 		next: [["Click", "Next image"], ["Drag or swipe", "Swipe images"], ["Scroll or pinch", "Zoom"]]
 	};
 	const SKIP = ".cr-vdock, .cr-vtop, .PhotoView-Slider__BannerWrap, .PhotoView-Slider__BannerRight, .MuiIconButton-root, button, a, [role='button'], .cr-ctx";
-	const fiberOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
 	const stateOf = (el) => {
-		let f = fiberOf(el);
+		let f = cr.fiberOf(el);
 		while (f) {
 			let h = f.memoizedState;
 			while (h && typeof h === "object" && "next" in h) {

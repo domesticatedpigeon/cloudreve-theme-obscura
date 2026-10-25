@@ -20,29 +20,9 @@
 		});
 	});
 	let cm = null;
-	const getStore = () => {
-		if (store) return store;
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		let f = k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-		while (f) {
-			const p = f.memoizedProps;
-			if (p && p.store && p.store.dispatch && p.store.getState) return (store = p.store);
-			f = f.child;
-		}
-		return null;
-	};
 	const ctxRoot = () => {
 		if (cm && cm.isConnected) return cm;
-		cm = [...document.querySelectorAll("body > .MuiMenu-root")].find((m) => {
-			const k = Object.keys(m).find((x) => x.startsWith("__reactFiber$"));
-			let f = k ? m[k] : null;
-			for (let i = 0; f && i < 12; i++, f = f.return) {
-				const p = f.memoizedProps;
-				if (p && p.anchorReference === "anchorPosition" && p.keepMounted && p.disableAutoFocusItem) return true;
-			}
-			return false;
-		}) || null;
+		cm = [...document.querySelectorAll("body > .MuiMenu-root")].find((m) => cr.up(m, (p) => p.anchorReference === "anchorPosition" && p.keepMounted && p.disableAutoFocusItem, 12)) || null;
 		return cm;
 	};
 	const onStore = () => {
@@ -54,7 +34,7 @@
 		if (r && r.hasAttribute("data-cr-fabm") !== on) r.toggleAttribute("data-cr-fabm", on);
 	};
 	const run = () => {
-		if (!store && getStore()) store.subscribe(onStore);
+		if (!store && (store = cr.store())) store.subscribe(onStore);
 		if (!mq.matches || document.documentElement.classList.contains("cr-dock")) return;
 		const tb = document.querySelector("header.MuiAppBar-root:not(.MuiDialog-root *) > .MuiToolbar-root");
 		if (tb && tb !== obsTb) {

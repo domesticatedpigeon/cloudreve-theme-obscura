@@ -1,11 +1,7 @@
 (() => {
 	const synth = new WeakSet();
-	const fiberOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
 	const hookOf = (el) => {
-		let f = fiberOf(el);
+		let f = cr.fiberOf(el);
 		while (f) {
 			let h = f.memoizedState;
 			while (h && typeof h === "object" && "next" in h) {
@@ -188,7 +184,7 @@
 		lastIdx = sl.index;
 	}, 100);
 	const slider = (portal) => {
-		let f = fiberOf(portal);
+		let f = cr.fiberOf(portal);
 		while (f) {
 			const pr = f.memoizedProps;
 			if (pr && Array.isArray(pr.images) && typeof pr.index === "number" && pr.onIndexChange) {
