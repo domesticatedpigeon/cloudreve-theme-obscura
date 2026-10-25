@@ -185,7 +185,7 @@
 }
 
 .cr-recent-i:focus-visible {
-	outline: 2px solid #E989B4;
+	outline: 2px solid var(--cr-accent);
 }
 
 .cr-ficon {

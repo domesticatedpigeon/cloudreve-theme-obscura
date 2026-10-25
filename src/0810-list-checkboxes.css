@@ -52,7 +52,7 @@
 }
 
 .cr-lcb.cr-on {
-	color: #E989B4;
+	color: var(--cr-accent);
 	opacity: 1;
 }
 
