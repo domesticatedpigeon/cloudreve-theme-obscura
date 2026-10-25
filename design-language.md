@@ -2,7 +2,7 @@
 
 ## Colour
 - Black/white contrast.
-- Accent pink #E989B4, used sparingly: selection, checkmarks, link hover fill, selection rectangle.
+- Accent pink #E989B4 (`--cr-accent`; translucent tints `rgba(var(--cr-accent-rgb), a)`), used sparingly: selection, checkmarks, link hover fill, selection rectangle.
 
 ## Typography
 - Inter for UI text.

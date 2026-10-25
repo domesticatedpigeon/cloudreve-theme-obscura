@@ -745,7 +745,7 @@ img[draggable="false"]:not(.MuiAvatar-img):not(.PhotoView__Photo:not([style*="ob
 }
 
 .MuiImageListItem-root .MuiImageListItemBar-actionIcon .MuiIconButton-root::after {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect x='3' y='3' width='22' height='22' fill='%23E98AB4'/%3E%3Cpath transform='translate(2 2)' fill='%23ffffff' d='M15.22 8.97l-4.47 4.47-1.97-1.97a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0l5-5a.75.75 0 1 0-1.06-1.06Z'/%3E%3C/svg%3E") center / 28px 28px no-repeat;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect x='3' y='3' width='22' height='22' fill='%23E989B4'/%3E%3Cpath transform='translate(2 2)' fill='%23ffffff' d='M15.22 8.97l-4.47 4.47-1.97-1.97a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0l5-5a.75.75 0 1 0-1.06-1.06Z'/%3E%3C/svg%3E") center / 28px 28px no-repeat;
 	opacity: 0;
 }
 
@@ -767,7 +767,7 @@ img[draggable="false"]:not(.MuiAvatar-img):not(.PhotoView__Photo:not([style*="ob
 
 .MuiImageListItem-root.cr-gsel > div:first-child > .MuiBox-root,
 .MuiImageListItem-root.cr-gsel > div:first-child > .MuiBox-root > .MuiBox-root:has(> img) {
-	background-color: rgba(233, 138, 180, 0.18) !important;
+	background-color: rgba(var(--cr-accent-rgb), 0.18) !important;
 }
 
 .MuiImageListItem-root > div:first-child > .MuiBox-root > .MuiBox-root > img:not(.MuiAvatar-img) {
@@ -787,8 +787,8 @@ img[draggable="false"]:not(.MuiAvatar-img):not(.PhotoView__Photo:not([style*="ob
 	position: fixed;
 	z-index: 1300;
 	pointer-events: none;
-	border: 1px solid #E98AB4;
-	background: rgba(233, 138, 180, 0.15);
+	border: 1px solid var(--cr-accent);
+	background: rgba(var(--cr-accent-rgb), 0.15);
 }
 .cr-drag-preview {
 	position: fixed;
@@ -860,7 +860,7 @@ img[draggable="false"]:not(.MuiAvatar-img):not(.PhotoView__Photo:not([style*="ob
 	font-size: 0.75rem;
 	font-weight: 500;
 	color: rgba(0, 0, 0, 0.87);
-	background: #E98AB4;
+	background: var(--cr-accent);
 }
 
 .cr-drag-preview .cr-card,
@@ -903,11 +903,11 @@ html body .MuiBadge-badge.MuiBadge-standard:not(:has(> .MuiAvatar-root)) {
 
 .MuiImageListItem-root.cr-drop-over > div:first-child > .MuiBox-root,
 .MuiImageListItem-root.cr-drop-over > div:first-child > .MuiBox-root > .MuiBox-root:has(> img) {
-	background-color: rgba(233, 138, 180, 0.3) !important;
+	background-color: rgba(var(--cr-accent-rgb), 0.3) !important;
 }
 
 .cr-drop-over:not(.MuiImageListItem-root) {
-	background-color: rgba(233, 138, 180, 0.3) !important;
+	background-color: rgba(var(--cr-accent-rgb), 0.3) !important;
 }
 .MuiImageList-root {
 	box-sizing: border-box;
@@ -1146,6 +1146,8 @@ header.MuiAppBar-root:not(.MuiDialog-root *) .MuiIconButton-root:has(path[d^="M1
 }
 
 :root {
+	--cr-accent: #e989b4;
+	--cr-accent-rgb: 233, 137, 180;
 	--cr-bg: #050505;
 	--cr-raised: #161616;
 	--cr-sep: rgba(255, 255, 255, 0.1);
@@ -1181,10 +1183,10 @@ header.MuiAppBar-root:not(.MuiDialog-root *),
 
 .cr-explorer > div[style*="position: fixed"][style*="box-shadow"],
 .cr-drag-box {
-	box-shadow: inset 0 0 0 1px rgba(240, 160, 196, 0.95), inset 0 0 6px 0 rgba(233, 138, 180, 0.35), 0 0 4px 0 rgba(233, 138, 180, 0.6), 0 0 12px 0 rgba(233, 138, 180, 0.25) !important;
+	box-shadow: inset 0 0 0 1px rgba(240, 160, 196, 0.95), inset 0 0 6px 0 rgba(var(--cr-accent-rgb), 0.35), 0 0 4px 0 rgba(var(--cr-accent-rgb), 0.6), 0 0 12px 0 rgba(var(--cr-accent-rgb), 0.25) !important;
 	border: 0 !important;
 	border-radius: 20px !important;
-	background: rgba(233, 138, 180, 0.14) !important;
+	background: rgba(var(--cr-accent-rgb), 0.14) !important;
 }
 
 .MuiIconButton-root,
@@ -2083,7 +2085,7 @@ main div.cr-h29::-webkit-scrollbar-thumb:hover {
 }
 
 .MuiGrid-container [data-rect-id].cr-h17:not(cr-x):hover {
-	background-color: rgba(233, 138, 180, 0.18) !important;
+	background-color: rgba(var(--cr-accent-rgb), 0.18) !important;
 }
 
 .MuiGrid-container [data-rect-id]::after,
@@ -4069,7 +4071,7 @@ html body .MuiBadge-badge.MuiBadge-standard.MuiBadge-colorPrimary:not(:has(> .Mu
 }
 
 .MuiCheckbox-root.Mui-checked {
-	color: #E989B4 !important;
+	color: var(--cr-accent) !important;
 }
 
 .MuiCheckbox-root > svg {
@@ -5253,7 +5255,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root:not(:where
 
 .MuiLink-root,
 main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a {
-	background-image: linear-gradient(#E989B4, #E989B4) !important;
+	background-image: linear-gradient(var(--cr-accent), var(--cr-accent)) !important;
 	background-repeat: no-repeat !important;
 	background-size: 0% 100% !important;
 	background-position: 100% 0 !important;
@@ -5273,7 +5275,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 
 div.cr-h102:not(.cr-x) {
 	background: var(--cr-bg) !important;
-	background-image: radial-gradient(60% 50% at 50% 0%, rgba(233, 138, 180, 0.08), rgba(233, 138, 180, 0) 70%) !important;
+	background-image: radial-gradient(60% 50% at 50% 0%, rgba(var(--cr-accent-rgb), 0.08), rgba(var(--cr-accent-rgb), 0) 70%) !important;
 }
 
 @keyframes cr-card-in {
@@ -5387,7 +5389,7 @@ main .MuiContainer-root:not(:where(.cr-h35)):not(.cr-x) > .MuiBox-root:has(.MuiA
 	position: absolute;
 	inset: 0 0 auto 0;
 	height: 2px;
-	background: linear-gradient(90deg, #E989B4, rgba(233, 138, 180, 0));
+	background: linear-gradient(90deg, var(--cr-accent), rgba(var(--cr-accent-rgb), 0));
 	pointer-events: none;
 }
 
@@ -5434,7 +5436,7 @@ main .MuiContainer-root:not(:where(.cr-h35)):not(.cr-x) > .MuiBox-root:where(.cr
 	position: absolute;
 	inset: 0;
 	z-index: -1;
-	background: #E989B4;
+	background: var(--cr-accent);
 	transform: scaleX(0);
 	transform-origin: right center;
 	transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
@@ -8294,7 +8296,7 @@ html body .MuiImageListItem-root .MuiImageListItemBar-actionIcon .MuiIconButton-
 }
 
 html body .MuiImageListItem-root .MuiImageListItemBar-actionIcon .MuiIconButton-root::after {
-	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23E98AB4' fill-rule='evenodd' d='M9 3h6a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6Zm7.28 6.73a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.97-1.97a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0l5-5Z'/%3E%3C/svg%3E") center / 29.33px 29.33px no-repeat !important;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23E989B4' fill-rule='evenodd' d='M9 3h6a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6Zm7.28 6.73a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.97-1.97a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0l5-5Z'/%3E%3C/svg%3E") center / 29.33px 29.33px no-repeat !important;
 	transition: opacity 120ms ease, transform 0.2s ease;
 }
 
@@ -9205,8 +9207,8 @@ html body :where(.cr-h68):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > div:wher
 }
 
 .MuiSwitch-root > .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
-	border-color: #E989B4;
-	background: #E989B4 !important;
+	border-color: var(--cr-accent);
+	background: var(--cr-accent) !important;
 }
 
 .MuiSwitch-root .MuiSwitch-thumb {
@@ -15304,7 +15306,7 @@ main .MuiContainer-root > .MuiBox-root > .MuiTabs-root.cr-stabs {
 }
 
 .MuiChip-root:is(.MuiChip-colorPrimary, .MuiChip-colorSecondary) {
-	--cr-tint: #e989b4;
+	--cr-tint: var(--cr-accent);
 }
 
 .MuiChip-root:is(.MuiChip-colorSuccess, .MuiChip-colorError, .MuiChip-colorWarning, .MuiChip-colorInfo, .MuiChip-colorPrimary, .MuiChip-colorSecondary):not([data-cr-tag]) .MuiChip-icon {
@@ -15451,7 +15453,7 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 }
 
 .cr-tf :is(input, textarea)::selection {
-	background-color: rgba(233, 138, 180, 0.35);
+	background-color: rgba(var(--cr-accent-rgb), 0.35);
 	color: inherit;
 }
 
@@ -17573,7 +17575,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 }
 
 .cr-recent-i:focus-visible {
-	outline: 2px solid #E989B4;
+	outline: 2px solid var(--cr-accent);
 }
 
 .cr-ficon {
@@ -18919,7 +18921,7 @@ html.cr-dock body main {
 }
 
 .cr-lcb.cr-on {
-	color: #E989B4;
+	color: var(--cr-accent);
 	opacity: 1;
 }
 

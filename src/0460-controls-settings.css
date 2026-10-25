@@ -571,7 +571,7 @@ main .MuiContainer-root > .MuiBox-root > .MuiTabs-root.cr-stabs {
 }
 
 .MuiChip-root:is(.MuiChip-colorPrimary, .MuiChip-colorSecondary) {
-	--cr-tint: #e989b4;
+	--cr-tint: var(--cr-accent);
 }
 
 .MuiChip-root:is(.MuiChip-colorSuccess, .MuiChip-colorError, .MuiChip-colorWarning, .MuiChip-colorInfo, .MuiChip-colorPrimary, .MuiChip-colorSecondary):not([data-cr-tag]) .MuiChip-icon {
@@ -718,7 +718,7 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 }
 
 .cr-tf :is(input, textarea)::selection {
-	background-color: rgba(233, 138, 180, 0.35);
+	background-color: rgba(var(--cr-accent-rgb), 0.35);
 	color: inherit;
 }
 
