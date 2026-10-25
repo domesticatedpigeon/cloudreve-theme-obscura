@@ -509,8 +509,8 @@ textarea,
 	display: none !important;
 }
 
-div:has(> div > div > .MuiToggleButtonGroup-root path[d^="M11.997 18.532"]):not(:has(> .MuiGrid2-container)),
-.MuiGrid2-container:has(> .MuiGrid2-root > .MuiToggleButtonGroup-root path[d^="M11.997 18.532"]) {
+div.cr-h91:not(.cr-x):not(.cr-x):not(cr-x):not(cr-x):not(cr-x),
+.MuiGrid2-container.cr-h92:not(.cr-x):not(.cr-x):not(cr-x) {
 	display: none !important;
 }
 header.MuiAppBar-root:not(.MuiDialog-root *) .MuiIconButton-root:has(path[d^="M12.012 2.25c.734.008 1.465.093 2.182.253"]) {
@@ -533,7 +533,7 @@ header.MuiAppBar-root:not(.MuiDialog-root *) .MuiIconButton-root:has(path[d^="M1
 	}
 }
 
-div:has(> header.MuiAppBar-root:not(.MuiDialog-root *)),
+div.cr-h101:not(.cr-x):not(cr-x),
 header.MuiAppBar-root:not(.MuiDialog-root *),
 .MuiDrawer-paper,
 .MuiPopover-paper:where(.cr-h6):not(.cr-x) > .MuiBox-root {
@@ -1020,7 +1020,7 @@ html.cr-dock .cr-nav .cr-path .MuiButtonBase-root {
 	margin: 0 !important;
 }
 
-.cr-explorer div:has(> .MuiStack-root > div > .MuiGrid-container) {
+.cr-explorer div.cr-h100:not(.cr-x):not(cr-x) {
 	padding: 0 !important;
 }
 
@@ -1252,7 +1252,7 @@ header.MuiAppBar-root:not(.MuiDialog-root *) .MuiIconButton-root > .MuiAvatar-ro
 .cr-path > .MuiBox-root:first-of-type::-webkit-scrollbar {
 	display: none !important;
 }
-main div:has(> .MuiContainer-root) {
+main div.cr-h29 {
 	border: 0 !important;
 	background: var(--cr-bg) !important;
 }
@@ -1362,49 +1362,49 @@ html :where(body):where([data-cr-h~="h19"]):not(.cr-x) .MuiDialog-root:has(> .Mu
 }
 
 .cr-explorer,
-main div:has(> .MuiContainer-root) {
+main div.cr-h29 {
 	scrollbar-width: thin;
 	scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
 }
 
 .cr-explorer::-webkit-scrollbar,
-main div:has(> .MuiContainer-root)::-webkit-scrollbar {
+main div.cr-h29::-webkit-scrollbar {
 	width: 8px;
 	height: 8px;
 	background: transparent;
 }
 
 .cr-explorer::-webkit-scrollbar-thumb,
-main div:has(> .MuiContainer-root)::-webkit-scrollbar-thumb {
+main div.cr-h29::-webkit-scrollbar-thumb {
 	background: rgba(255, 255, 255, 0.22);
 	border: 2px solid transparent;
 	background-clip: padding-box;
 }
 
 .cr-explorer::-webkit-scrollbar-thumb:hover,
-main div:has(> .MuiContainer-root)::-webkit-scrollbar-thumb:hover {
+main div.cr-h29::-webkit-scrollbar-thumb:hover {
 	background-color: rgba(255, 255, 255, 0.4);
 }
 
 .cr-explorer::-webkit-scrollbar-track,
 .cr-explorer::-webkit-scrollbar-corner,
-main div:has(> .MuiContainer-root)::-webkit-scrollbar-track {
+main div.cr-h29::-webkit-scrollbar-track {
 	background: transparent;
 }
 
 @media (prefers-color-scheme: light) {
 	.cr-explorer,
-main div:has(> .MuiContainer-root) {
+main div.cr-h29 {
 		scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
 	}
 
 	.cr-explorer::-webkit-scrollbar-thumb,
-main div:has(> .MuiContainer-root)::-webkit-scrollbar-thumb {
+main div.cr-h29::-webkit-scrollbar-thumb {
 		background-color: rgba(0, 0, 0, 0.25);
 	}
 
 	.cr-explorer::-webkit-scrollbar-thumb:hover,
-main div:has(> .MuiContainer-root)::-webkit-scrollbar-thumb:hover {
+main div.cr-h29::-webkit-scrollbar-thumb:hover {
 		background-color: rgba(0, 0, 0, 0.4);
 	}
 }
@@ -1454,7 +1454,7 @@ main div:has(> .MuiContainer-root)::-webkit-scrollbar-thumb:hover {
 	background-color: var(--cr-tile) !important;
 }
 
-.MuiGrid-container [data-rect-id]:has(path[d^="M9 3h6a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6Zm7.28"]):hover {
+.MuiGrid-container [data-rect-id].cr-h17:not(cr-x):hover {
 	background-color: rgba(233, 138, 180, 0.18) !important;
 }
 
@@ -1492,7 +1492,7 @@ main div:has(> .MuiContainer-root)::-webkit-scrollbar-thumb:hover {
 		scroll-padding-top: 56px;
 	}
 
-	html.cr-dock .cr-nav + .MuiBox-root > :not(.cr-explorer) {
+	html.cr-dock .cr-nav + .MuiBox-root > .cr-h98 {
 		padding-top: 56px;
 		box-sizing: border-box;
 	}
@@ -1599,7 +1599,7 @@ html.cr-dock .cr-nav {
 		scroll-padding-top: calc(56px + 2 * var(--cr-nav-top, 8px));
 	}
 
-	html.cr-dock .cr-nav + .MuiBox-root > :not(.cr-explorer) {
+	html.cr-dock .cr-nav + .MuiBox-root > .cr-h98 {
 		padding-top: calc(56px + 2 * var(--cr-nav-top, 8px)) !important;
 	}
 
@@ -2833,7 +2833,7 @@ html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) .MuiIconButton-root:ho
 }
 
 html.cr-dock .cr-nav + .MuiBox-root,
-html.cr-dock .cr-nav + .MuiBox-root > :not(.cr-explorer) {
+html.cr-dock .cr-nav + .MuiBox-root > .cr-h98 {
 	background-color: var(--cr-bg) !important;
 	background-image: radial-gradient(circle 150px at var(--cr-tx, -999px) var(--cr-ty, -999px), rgba(var(--cr-spot-rgb), calc(var(--cr-tb-a) * var(--cr-spot-max) * 0.45)), rgba(var(--cr-spot-rgb), calc(var(--cr-tb-a) * var(--cr-spot-max) * 0.45 * 0.4)) 45%, rgba(var(--cr-spot-rgb), 0) 100%) !important;
 	background-attachment: fixed !important;
@@ -3181,18 +3181,18 @@ html body .MuiBadge-badge.MuiBadge-standard.MuiBadge-colorPrimary:not(:has(> .Mu
 	box-shadow: inset 0 -2px 0 var(--cr-contrast) !important;
 }
 
-.MuiBox-root:has(> .MuiTabs-root.cr-ptabs),
+.MuiBox-root.cr-h99:not(.cr-x):not(.cr-x),
 .MuiTabs-root.cr-ptabs {
 	border-top: 0 !important;
 }
 
-.MuiBox-root:has(> .MuiTabs-root.cr-ptabs) {
+.MuiBox-root.cr-h99:not(.cr-x):not(.cr-x) {
 	border-bottom: 0 !important;
 	padding: 0 12px !important;
 	background: transparent !important;
 }
 
-.MuiDialog-paperFullScreen .MuiBox-root:has(> .MuiTabs-root.cr-ptabs) {
+.MuiDialog-paperFullScreen .MuiBox-root.cr-h99:not(.cr-x):not(.cr-x) {
 	padding: 0 16px !important;
 }
 
@@ -3913,7 +3913,7 @@ html:is(.cr-shares, .cr-profile) main .MuiContainer-root > .MuiGrid-container > 
 		scroll-padding-top: 8px;
 	}
 
-	html.cr-dock .cr-nav + .MuiBox-root > :not(.cr-explorer) {
+	html.cr-dock .cr-nav + .MuiBox-root > .cr-h98 {
 		padding-top: 8px !important;
 	}
 }
@@ -4074,7 +4074,7 @@ main *,
 }
 
 .cr-explorer,
-main div:has(> .MuiContainer-root) {
+main div.cr-h29 {
 	scrollbar-color: var(--cr-sb) transparent !important;
 }
 
@@ -4643,7 +4643,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 	background-position: 0 0 !important;
 }
 
-div:has(> .MuiContainer-maxWidthXs > .MuiGrid-container) {
+div.cr-h102:not(.cr-x) {
 	background: var(--cr-bg) !important;
 	background-image: radial-gradient(60% 50% at 50% 0%, rgba(233, 138, 180, 0.08), rgba(233, 138, 180, 0) 70%) !important;
 }
@@ -5310,7 +5310,7 @@ html body .MuiDialog-paper:where(.cr-h42):not(.cr-x) [role="tree"] .MuiTreeItem-
 	padding: 0 !important;
 }
 
-[data-rect-id] *:has(> img:not(.MuiAvatar-img):not([draggable="false"])) {
+[data-rect-id] .cr-h105:not(.cr-x):not(cr-x) {
 	position: relative;
 	overflow: hidden;
 }

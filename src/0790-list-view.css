@@ -1,9 +1,9 @@
-.cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child {
+.cr-explorer .MuiBox-root.cr-h96 > .MuiBox-root:first-child {
 	margin: 0 20px;
 	border-bottom: 0 !important;
 }
 
-.cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child .MuiTypography-root {
+.cr-explorer .MuiBox-root.cr-h96 > .MuiBox-root:first-child .MuiTypography-root {
 	font-size: 12px !important;
 	font-weight: 500 !important;
 	opacity: 0.55;
@@ -52,11 +52,11 @@
 		overflow-x: hidden !important;
 	}
 
-	html:not(.cr-dock) .cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) {
+	html:not(.cr-dock) .cr-explorer .MuiBox-root.cr-h96 {
 		min-width: 0 !important;
 	}
 
-	html:not(.cr-dock) .cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child {
+	html:not(.cr-dock) .cr-explorer .MuiBox-root.cr-h96 > .MuiBox-root:first-child {
 		display: none !important;
 	}
 
