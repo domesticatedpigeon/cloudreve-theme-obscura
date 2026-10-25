@@ -84,6 +84,12 @@
 		[".MuiDialogActions-root", ":has(> .MuiBox-root:first-child .MuiButton-root)", "cr-h81", 1, ".MuiButton-root"],
 		["html:not(.cr-dock) body header.MuiAppBar-root > .MuiToolbar-root > .MuiStack-root:last-child .MuiIconButton-root", ":has(path[d^=\"M8 12a2 2 0 1\"])", "cr-h82", 1, "path[d^=\"M8 12a2 2 0 1\"]"],
 		["html:not(.cr-dock) body header.MuiAppBar-root > .MuiToolbar-root > .MuiStack-root:last-child", ":has(> .MuiBox-root:first-child:is(.fade-exit, .fade-enter:not(.fade-enter-active)))", "cr-h83", 2, ".MuiBox-root:first-child:is(.fade-exit, .fade-enter:not(.fade-enter-active))"],
+		["html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root", ":has(> .MuiGrid2-direction-xs-row-reverse)", "cr-h85", 2, ".MuiGrid2-direction-xs-row-reverse"],
+		["html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root", ":has(input[type=\"file\"])", "cr-h86", 1, "input[type=\"file\"]"],
+		["html.cr-settings body main .MuiStack-root", ":has(> .MuiGrid2-container input[type=\"file\"])", "cr-h87", 1, "input[type=\"file\"]"],
+		["html.cr-settings body main .MuiGrid2-root", ":has(input[type=\"file\"])", "cr-h88", 1, "input[type=\"file\"]"],
+		[".MuiDialog-root .MuiDialog-paper > .MuiBox-root:first-child > .MuiDialogTitle-root", ":has(> :nth-child(3))", "cr-h89", 3, ""],
+		[".cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root", ":has(> .cr-lcb)", "cr-h90", 2, ".cr-lcb"],
 		["*", ":is(main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root .MuiTabs-root, .MuiDialog-paperFullScreen .MuiTabs-root)", "cr-ptabs", 0, ""]
 	];
 	const root = document.documentElement;

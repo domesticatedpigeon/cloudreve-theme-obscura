@@ -412,6 +412,12 @@ html.cr-booted #root {
 		[".MuiDialogActions-root", ":has(> .MuiBox-root:first-child .MuiButton-root)", "cr-h81", 1, ".MuiButton-root"],
 		["html:not(.cr-dock) body header.MuiAppBar-root > .MuiToolbar-root > .MuiStack-root:last-child .MuiIconButton-root", ":has(path[d^=\"M8 12a2 2 0 1\"])", "cr-h82", 1, "path[d^=\"M8 12a2 2 0 1\"]"],
 		["html:not(.cr-dock) body header.MuiAppBar-root > .MuiToolbar-root > .MuiStack-root:last-child", ":has(> .MuiBox-root:first-child:is(.fade-exit, .fade-enter:not(.fade-enter-active)))", "cr-h83", 2, ".MuiBox-root:first-child:is(.fade-exit, .fade-enter:not(.fade-enter-active))"],
+		["html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root", ":has(> .MuiGrid2-direction-xs-row-reverse)", "cr-h85", 2, ".MuiGrid2-direction-xs-row-reverse"],
+		["html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root", ":has(input[type=\"file\"])", "cr-h86", 1, "input[type=\"file\"]"],
+		["html.cr-settings body main .MuiStack-root", ":has(> .MuiGrid2-container input[type=\"file\"])", "cr-h87", 1, "input[type=\"file\"]"],
+		["html.cr-settings body main .MuiGrid2-root", ":has(input[type=\"file\"])", "cr-h88", 1, "input[type=\"file\"]"],
+		[".MuiDialog-root .MuiDialog-paper > .MuiBox-root:first-child > .MuiDialogTitle-root", ":has(> :nth-child(3))", "cr-h89", 3, ""],
+		[".cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root", ":has(> .cr-lcb)", "cr-h90", 2, ".cr-lcb"],
 		["*", ":is(main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root .MuiTabs-root, .MuiDialog-paperFullScreen .MuiTabs-root)", "cr-ptabs", 0, ""]
 	];
 	const root = document.documentElement;
@@ -11198,7 +11204,7 @@ html.cr-pin-dragging * {
 		if (!e.relatedTarget) clear();
 	});
 	document.addEventListener("pointerdown", (e) => {
-		if (e.pointerType && e.pointerType !== "mouse" && stack) clear();
+		if (e.pointerType && e.pointerType !== "mouse" && (cur || document.documentElement.classList.contains("cr-tb-on"))) clear();
 	}, { passive: true, capture: true });
 	window.addEventListener("blur", clear);
 })();
@@ -14952,19 +14958,19 @@ html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child .MuiGrid2-roo
 }
 
 @media (min-width: 900px) {
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) {
 		gap: 0;
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > * {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > * {
 		margin: 0 !important;
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container + .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container + .MuiGrid2-container > .MuiGrid2-root {
 		border-top: 1px solid var(--cr-sep);
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container > .MuiGrid2-root {
 		display: grid;
 		grid-template-columns: 220px minmax(0, 1fr);
 		column-gap: 40px;
@@ -14974,12 +14980,12 @@ html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child .MuiGrid2-roo
 		padding: 24px 0;
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container > .MuiGrid2-root > * {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container > .MuiGrid2-root > * {
 		grid-column: 2;
 		min-width: 0;
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container > .MuiGrid2-root > p.MuiTypography-root:first-child {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container > .MuiGrid2-root > p.MuiTypography-root:first-child {
 		grid-column: 1;
 		grid-row: 1;
 		align-self: start;
@@ -15076,7 +15082,7 @@ html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child .MuiPaper-roo
 }
 
 @media (max-width: 899.95px) {
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container + .MuiGrid2-container {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container + .MuiGrid2-container {
 		margin-top: 28px !important;
 	}
 }
@@ -15540,17 +15546,17 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 	min-height: 0 !important;
 }
 
-.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root:has(> :nth-child(3)) > :first-child {
+.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root.cr-h89 > :first-child {
 	order: 2;
 }
 
-.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root:has(> :nth-child(3)) > :nth-child(2) {
+.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root.cr-h89 > :nth-child(2) {
 	order: 1;
 	flex: 1 1 auto;
 	min-width: 0;
 }
 
-.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root:has(> :nth-child(3)) > :nth-child(3) {
+.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root.cr-h89 > :nth-child(3) {
 	order: 3;
 }
 
@@ -18847,17 +18853,17 @@ html.cr-dock body main {
 	padding-right: 6px !important;
 }
 
-.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root:has(> .cr-lcb) > div:first-of-type > .MuiBox-root > :not(:first-child) {
+.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root.cr-h90 > div:first-of-type > .MuiBox-root > :not(:first-child) {
 	display: none !important;
 }
 
-.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root:has(> .cr-lcb) > div:first-of-type > .MuiBox-root {
+.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root.cr-h90 > div:first-of-type > .MuiBox-root {
 	border-radius: 8px !important;
 	outline: 1px solid var(--cr-tbp-br);
 	outline-offset: -1px;
 }
 
-.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root:has(> .cr-lcb) > div:first-of-type:not(:has(> .MuiBox-root)) {
+.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root.cr-h90 > div:first-of-type:not(:has(> .MuiBox-root)) {
 	display: none !important;
 }
 
@@ -19250,11 +19256,11 @@ html.cr-pf-wait main div.cr-h29 > .MuiContainer-root > * {
 //# sourceURL=cr/0870-profile-loading.js
 </script>
 <style>
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) {
 	max-width: 760px;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container {
 	display: flex !important;
 	flex-direction: column !important;
 	gap: 0 !important;
@@ -19262,7 +19268,7 @@ html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="
 	width: 100% !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root {
 	display: block !important;
 	order: 0 !important;
 	width: 100% !important;
@@ -19272,27 +19278,27 @@ html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="
 	margin: 0 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) {
 	order: -1 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container,
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container,
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root {
 	box-sizing: border-box;
 	width: 100% !important;
 	margin: 0 !important;
 	padding: 0 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container {
 	padding: 16px 0 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root {
 	border-top: 1px solid var(--cr-sep);
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root {
 	display: grid !important;
 	grid-template-columns: 72px minmax(0, 1fr);
 	grid-template-rows: 1fr auto auto 1fr;
@@ -19305,18 +19311,18 @@ html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="
 	padding: 0 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > div {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > div {
 	display: contents !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > p {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > p {
 	grid-column: 2;
 	grid-row: 2;
 	align-self: center;
 	margin: 0 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) .MuiAvatar-root {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) .MuiAvatar-root {
 	grid-column: 1;
 	grid-row: 1 / 5;
 	width: 72px !important;
@@ -19325,7 +19331,7 @@ html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="
 	font-size: 30px !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) .MuiAvatar-root ~ .MuiButton-root {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) .MuiAvatar-root ~ .MuiButton-root {
 	grid-column: 2;
 	grid-row: 3;
 	justify-self: start;
@@ -19333,22 +19339,22 @@ html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="
 	margin: 8px 0 0 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root {
 	display: flex !important;
 	flex-direction: column;
 	gap: 0 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > * {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > * {
 	margin: 0 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container {
 	display: contents !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container),
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container),
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root {
 	display: grid !important;
 	grid-template-columns: 160px minmax(0, 1fr);
 	column-gap: 16px;
@@ -19363,77 +19369,77 @@ html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="
 	border-top: 1px solid var(--cr-sep);
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):first-child {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):first-child {
 	border-top: 0;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > p.MuiTypography-body2:first-child,
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > p.MuiTypography-body2:first-child {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > p.MuiTypography-body2:first-child,
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > p.MuiTypography-body2:first-child {
 	margin: 0 !important;
 	align-self: center;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > div,
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > div {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > div,
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > div {
 	min-width: 0;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > div > .MuiButton-root,
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > div > .MuiButton-root {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > div > .MuiButton-root,
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > div > .MuiButton-root {
 	margin: 0 !important;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) {
 	align-items: start;
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) > p.MuiTypography-body2:first-child {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) > p.MuiTypography-body2:first-child {
 	align-self: start !important;
 	padding-top: 10px;
 }
 
 @media (max-width: 599.95px) {
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) {
 		grid-template-columns: minmax(0, 1fr);
 		row-gap: 8px;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) > p.MuiTypography-body2:first-child {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) > p.MuiTypography-body2:first-child {
 		padding-top: 0;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container),
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container),
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root {
 		grid-template-columns: minmax(0, 1fr) auto;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > div,
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > div {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > div,
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > div {
 		justify-self: end;
 		text-align: right;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) > div {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) > div {
 		justify-self: stretch;
 		text-align: left;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > div > .MuiButton-root,
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > div > .MuiButton-root {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container) > div > .MuiButton-root,
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-container > .MuiGrid2-root > div > .MuiButton-root {
 		margin: 0 !important;
 	}
 }
 /*# sourceURL=cr/0880-settings-avatar.css */
 </style>
 <style>
-html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) {
+html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h86):not(cr-x) {
 	box-sizing: border-box;
 	max-width: 760px;
 	padding: 0 !important;
 }
 
 @media (min-width: 900px) {
-	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h86):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root {
 		grid-template-columns: 160px minmax(0, 1fr) !important;
 		column-gap: 16px !important;
 		max-width: none !important;
@@ -19442,23 +19448,23 @@ html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBo
 }
 
 @media (max-width: 899.95px) {
-	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) {
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h86):not(cr-x) {
 		gap: 0 !important;
 	}
 
-	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > * {
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h86):not(cr-x) > * {
 		margin: 0 !important;
 	}
 
-	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > .MuiGrid2-container + .MuiGrid2-container {
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h86):not(cr-x) > .MuiGrid2-container + .MuiGrid2-container {
 		margin-top: 0 !important;
 	}
 
-	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h86):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root {
 		padding: 16px 0 !important;
 	}
 
-	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > .MuiGrid2-container + .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h86):not(cr-x) > .MuiGrid2-container + .MuiGrid2-container > .MuiGrid2-root {
 		border-top: 1px solid var(--cr-sep);
 	}
 }
@@ -19529,8 +19535,16 @@ html.cr-settings main :is(.MuiTableContainer-root, .MuiTable-root, .MuiPaper-roo
 /*# sourceURL=cr/0920-settings-tables.css */
 </style>
 <style>
-html:is(.cr-h46, :has(.PhotoView-Portal.PhotoView-Slider__clean)) :is(.PhotoView-Slider__BannerWrap, .cr-vtop, .cr-vdock, .cr-vstrip, .cr-legend),
-html:is(.cr-h46, :has(.PhotoView-Portal.PhotoView-Slider__clean)) :is(.PhotoView-Slider__BannerWrap, .cr-vtop, .cr-vdock, .cr-vstrip, .cr-legend) * {
+body[data-cr-h~="h46"]:not(.cr-x) .PhotoView-Slider__BannerWrap,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vtop,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vdock,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vstrip,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-legend,
+body[data-cr-h~="h46"]:not(.cr-x) .PhotoView-Slider__BannerWrap *,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vtop *,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vdock *,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vstrip *,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-legend * {
 	pointer-events: none !important;
 }
 /*# sourceURL=cr/0930-viewer-clean-mode.css */
@@ -19705,7 +19719,7 @@ html:not(.cr-dock) body main .cr-path > .MuiBox-root > button:first-child .MuiBu
 /*# sourceURL=cr/1020-path-bar-mobile.css */
 </style>
 <style>
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > :not(.MuiGrid2-container) {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > :not(.MuiGrid2-container) {
 	box-sizing: border-box;
 	width: 100%;
 	margin: 0 !important;
@@ -19713,7 +19727,7 @@ html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="
 	border-top: 1px solid var(--cr-sep);
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > :not(.MuiGrid2-container) p.MuiTypography-body2:first-child {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > :not(.MuiGrid2-container) p.MuiTypography-body2:first-child {
 	margin: 0 0 12px !important;
 }
 
@@ -19740,23 +19754,23 @@ html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child .MuiGrid
 </style>
 <style>
 @media (min-width: 600px) {
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root {
 		grid-template-columns: 160px 72px minmax(0, 1fr) !important;
 		grid-template-rows: auto !important;
 		column-gap: 16px !important;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > p {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > p {
 		grid-column: 1 !important;
 		grid-row: 1 !important;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root {
 		grid-column: 2 !important;
 		grid-row: 1 !important;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root ~ .MuiButton-root {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root ~ .MuiButton-root {
 		grid-column: 3 !important;
 		grid-row: 1 !important;
 		align-self: center !important;
@@ -19772,24 +19786,24 @@ html:not(.cr-dock).cr-settings body main .MuiContainer-root {
 }
 
 @media (max-width: 599.95px) {
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root {
 		grid-template-columns: 72px auto minmax(0, 1fr) !important;
 		grid-template-rows: auto auto !important;
 		column-gap: 16px !important;
 		row-gap: 10px !important;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > p {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > p {
 		grid-column: 1 / -1 !important;
 		grid-row: 1 !important;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root {
 		grid-column: 1 !important;
 		grid-row: 2 !important;
 	}
 
-	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root ~ .MuiButton-root {
+	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root ~ .MuiButton-root {
 		grid-column: 2 !important;
 		grid-row: 2 !important;
 		align-self: center !important;

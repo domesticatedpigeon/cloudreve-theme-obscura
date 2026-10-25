@@ -126,7 +126,7 @@
 		if (!e.relatedTarget) clear();
 	});
 	document.addEventListener("pointerdown", (e) => {
-		if (e.pointerType && e.pointerType !== "mouse" && stack) clear();
+		if (e.pointerType && e.pointerType !== "mouse" && (cur || document.documentElement.classList.contains("cr-tb-on"))) clear();
 	}, { passive: true, capture: true });
 	window.addEventListener("blur", clear);
 })();

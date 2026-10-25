@@ -1,4 +1,12 @@
-html:is(.cr-h46, :has(.PhotoView-Portal.PhotoView-Slider__clean)) :is(.PhotoView-Slider__BannerWrap, .cr-vtop, .cr-vdock, .cr-vstrip, .cr-legend),
-html:is(.cr-h46, :has(.PhotoView-Portal.PhotoView-Slider__clean)) :is(.PhotoView-Slider__BannerWrap, .cr-vtop, .cr-vdock, .cr-vstrip, .cr-legend) * {
+body[data-cr-h~="h46"]:not(.cr-x) .PhotoView-Slider__BannerWrap,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vtop,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vdock,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vstrip,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-legend,
+body[data-cr-h~="h46"]:not(.cr-x) .PhotoView-Slider__BannerWrap *,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vtop *,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vdock *,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-vstrip *,
+body[data-cr-h~="h46"]:not(.cr-x) .cr-legend * {
 	pointer-events: none !important;
 }

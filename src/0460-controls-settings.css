@@ -239,19 +239,19 @@ html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child .MuiGrid2-roo
 }
 
 @media (min-width: 900px) {
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) {
 		gap: 0;
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > * {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > * {
 		margin: 0 !important;
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container + .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container + .MuiGrid2-container > .MuiGrid2-root {
 		border-top: 1px solid var(--cr-sep);
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container > .MuiGrid2-root {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container > .MuiGrid2-root {
 		display: grid;
 		grid-template-columns: 220px minmax(0, 1fr);
 		column-gap: 40px;
@@ -261,12 +261,12 @@ html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child .MuiGrid2-roo
 		padding: 24px 0;
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container > .MuiGrid2-root > * {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container > .MuiGrid2-root > * {
 		grid-column: 2;
 		min-width: 0;
 	}
 
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container > .MuiGrid2-root > p.MuiTypography-root:first-child {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container > .MuiGrid2-root > p.MuiTypography-root:first-child {
 		grid-column: 1;
 		grid-row: 1;
 		align-self: start;
@@ -363,7 +363,7 @@ html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child .MuiPaper-roo
 }
 
 @media (max-width: 899.95px) {
-	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(> .MuiGrid2-direction-xs-row-reverse)) > .MuiGrid2-container + .MuiGrid2-container {
+	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container + .MuiGrid2-container {
 		margin-top: 28px !important;
 	}
 }
@@ -827,17 +827,17 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 	min-height: 0 !important;
 }
 
-.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root:has(> :nth-child(3)) > :first-child {
+.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root.cr-h89 > :first-child {
 	order: 2;
 }
 
-.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root:has(> :nth-child(3)) > :nth-child(2) {
+.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root.cr-h89 > :nth-child(2) {
 	order: 1;
 	flex: 1 1 auto;
 	min-width: 0;
 }
 
-.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root:has(> :nth-child(3)) > :nth-child(3) {
+.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:first-child > .MuiDialogTitle-root.cr-h89 > :nth-child(3) {
 	order: 3;
 }
 
