@@ -17,11 +17,7 @@
 	} catch (e) {}
 	let tries = 0;
 	const reset = () => {
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		let f = k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-		while (f && !(f.memoizedProps && f.memoizedProps.store && f.memoizedProps.store.getState)) f = f.child;
-		const store = f && f.memoizedProps.store;
+		const store = cr.store();
 		if (!store) {
 			if (tries++ < 50) setTimeout(reset, 200);
 			return;

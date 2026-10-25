@@ -1,9 +1,6 @@
 (() => {
 	const label = (li) => {
-		const key = Object.keys(li).find((k) => k.startsWith("__reactFiber$"));
-		let f = key && li[key];
-		while (f && !(f.memoizedProps && f.memoizedProps.file)) f = f.return;
-		const file = f && f.memoizedProps.file;
+		const file = cr.fileOf(li);
 		let el = li.querySelector(":scope > .cr-gallery-name");
 		if (!file || !file.name) {
 			if (el) el.remove();

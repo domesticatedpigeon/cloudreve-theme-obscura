@@ -361,17 +361,9 @@
 	let dockRow = null;
 	let info = null;
 	let infoKey = "";
-	const fiberOfEl = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
 	const sliderProps = (portal) => {
-		let f = fiberOfEl(portal);
-		for (let i = 0; f && i < 40; i++, f = f.return) {
-			const p = f.memoizedProps;
-			if (p && Array.isArray(p.images) && typeof p.index === "number") return p;
-		}
-		return null;
+		const f = cr.slider(portal);
+		return f ? f.memoizedProps : null;
 	};
 	const fmtSize = (n) => {
 		if (!(n >= 0)) return "";
@@ -972,7 +964,7 @@
 	let stripIdx = -1;
 	const thumbs = new Map();
 	const sliderGo = (portal) => {
-		let f = fiberOfEl(portal);
+		let f = cr.fiberOf(portal);
 		while (f) {
 			const pr = f.memoizedProps;
 			if (pr && Array.isArray(pr.images) && typeof pr.index === "number") {
@@ -990,31 +982,12 @@
 	const gridThumbs = () => {
 		document.querySelectorAll("main [data-rect-id] img, main .MuiImageListItem-root img").forEach((img) => {
 			if (!img.src || img.src.startsWith("data:")) return;
-			let f = fiberOfEl(img);
-			for (let i = 0; f && i < 30; i++, f = f.return) {
-				const p = f.memoizedProps;
-				if (p && p.file && p.file.path) {
-					if (!thumbs.has(p.file.path)) thumbs.set(p.file.path, img.src);
-					return;
-				}
-			}
+			const p = cr.up(img, (x) => x.file && x.file.path, 30);
+			if (p && !thumbs.has(p.file.path)) thumbs.set(p.file.path, img.src);
 		});
 	};
-	let vStore = null;
-	const getVStore = () => {
-		if (vStore) return vStore;
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		let f = k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-		while (f) {
-			const pp = f.memoizedProps;
-			if (pp && pp.store && pp.store.getState) return (vStore = pp.store);
-			f = f.child;
-		}
-		return null;
-	};
 	const cacheThumbs = () => {
-		const stv = getVStore();
+		const stv = cr.store();
 		const fm = stv && stv.getState().fileManager;
 		const tree = fm && fm[0] && fm[0].tree;
 		if (!tree) return;
@@ -1029,7 +1002,7 @@
 		if (Date.now() - last < 5000) return;
 		askedAt.set(path, Date.now());
 		for (const el of document.querySelectorAll("main [data-rect-id], main .MuiImageListItem-root")) {
-			let f = fiberOfEl(el);
+			let f = cr.fiberOf(el);
 			let file = null;
 			for (let i2 = 0; f && i2 < 25; i2++, f = f.return) {
 				const pp = f.memoizedProps;

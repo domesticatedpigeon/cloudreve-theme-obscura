@@ -1,11 +1,6 @@
 (() => {
 	const seen = new WeakSet();
-	const isTag = (el) => {
-		const k = Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		let f = k ? el[k] : null;
-		for (let i = 0; f && i < 20; i++, f = f.return) if (f.memoizedProps && "tagColor" in f.memoizedProps) return true;
-		return false;
-	};
+	const isTag = (el) => !!cr.up(el, (p) => "tagColor" in p, 20);
 	const run = () => {
 		for (const c of document.getElementsByClassName("MuiChip-root")) {
 			if (seen.has(c)) continue;

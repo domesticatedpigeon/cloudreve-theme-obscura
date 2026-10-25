@@ -1,16 +1,6 @@
 (() => {
-	let store = null;
 	const icons = () => {
-		if (!store) {
-			const root = document.getElementById("root");
-			const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-			let f = k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-			while (f && !store) {
-				const p = f.memoizedProps;
-				if (p && p.store && p.store.getState) store = p.store;
-				f = f.child;
-			}
-		}
+		const store = cr.store();
 		const c = store && store.getState().siteConfig;
 		return (c && c.explorer && c.explorer.typed && c.explorer.typed.icons) || null;
 	};
@@ -22,8 +12,7 @@
 		return !!(o && (dark.matches ? o.color_dark || o.color : o.color));
 	};
 	const colorOf = (el) => {
-		const k = Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		let f = k ? el[k] : null;
+		let f = cr.fiberOf(el);
 		let sx = "";
 		for (let i = 0; f && i < 6; i++) {
 			const p = f.memoizedProps;

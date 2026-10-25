@@ -14,12 +14,12 @@ Customization theme for Cloudreve v4, delivered as one HTML file that runs in Cl
 - The README loader fetches the file, moves each `<style>` into `<head>` and re-creates each `<script>` from its `textContent` at the end of `<body>`. Consequences:
 	- Only `<style>` and `<script>` blocks survive. Never add markup, `<link>`, `<script src>`, `type="module"`, `import`/`export` or top-level `await`. Build DOM from scripts; load external CSS/fonts by appending `<link>` from a script (see the font loader block).
 	- Scripts run after the app has booted and in file order. Never wait for `DOMContentLoaded`/`load`.
-	- Every script is a self-contained IIFE: `(() => { ... })();`. No globals except deliberate shared helpers (`window.crT`).
+	- Every script is a self-contained IIFE: `(() => { ... })();`. No globals except deliberate shared helpers (`window.crT`, `window.crApi`, `window.cr`).
 - Cloudreve is a React 18 + MUI + Redux SPA built with Vite. Its DOM is re-rendered constantly, so:
 	- Anything added (classes, nodes, attributes) must be re-applied idempotently from a `MutationObserver` and/or interval. Check before writing (`if (!el.classList.contains(c))`) to avoid observer feedback loops.
 	- React rewrites `className` on re-render; MUI rewrites Modal root classes. Use `data-cr-*` attributes where a class would be wiped.
 	- Never rely on hashed `.css-*` classes or positional children that Cloudreve may change. Target `.Mui*` classes, roles, `data-*` attributes, or structural `:has()` checks.
-- Internals are reached through React fibers (`el[__reactFiber$…]`, root `__reactContainer$`) and the Redux store found on the root's children; see `architecture.md` → React and Redux access. Dispatch Cloudreve's own actions instead of reimplementing its logic.
+- Internals are reached through React fibers and the Redux store via the `window.cr` helpers (`cr.fiberOf`, `cr.up`, `cr.store()`, …); never read `__react*` keys directly. See `architecture.md` → React and Redux access. Dispatch Cloudreve's own actions instead of reimplementing its logic.
 
 ## Conventions
 - Prefix everything with `cr-`: classes (`.cr-*`), custom properties (`--cr-*`), html state classes (`html.cr-dock`, `html.cr-boot`), storage keys (`cr-recent:<userId>`), data attributes (`data-cr-*`).

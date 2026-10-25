@@ -1,21 +1,8 @@
 (() => {
-	let store = null;
-	const getStore = () => {
-		if (store) return store;
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		let f = k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-		while (f) {
-			const p = f.memoizedProps;
-			if (p && p.store && p.store.dispatch && p.store.getState) return (store = p.store);
-			f = f.child;
-		}
-		return null;
-	};
 	let prev = {};
 	let unsub = null;
 	const watch = () => {
-		const st = getStore();
+		const st = cr.store();
 		if (!st || unsub) return;
 		unsub = st.subscribe(() => {
 			const s = st.getState();
@@ -43,7 +30,7 @@
 	let saved = null;
 	let unsubV = null;
 	const watchViewer = () => {
-		const st = getStore();
+		const st = cr.store();
 		if (!st || unsubV) return;
 		unsubV = st.subscribe(() => {
 			const g = st.getState().globalState || {};

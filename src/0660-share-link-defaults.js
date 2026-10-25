@@ -1,12 +1,7 @@
 (() => {
 	const NONE = { list: false, read: false, update: false, create: false, delete: false, share: false };
-	const fiberRoot = () => {
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		return k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-	};
 	const patch = () => {
-		const stack = [fiberRoot()];
+		const stack = [cr.rootFiber()];
 		while (stack.length) {
 			const f = stack.pop();
 			if (!f) continue;
@@ -26,9 +21,7 @@
 	};
 	let tries = 0;
 	const hook = () => {
-		let f = fiberRoot();
-		while (f && !(f.memoizedProps && f.memoizedProps.store && f.memoizedProps.store.subscribe)) f = f.child;
-		const s = f && f.memoizedProps.store;
+		const s = cr.store();
 		if (!s) {
 			if (tries++ < 50) setTimeout(hook, 200);
 			return;

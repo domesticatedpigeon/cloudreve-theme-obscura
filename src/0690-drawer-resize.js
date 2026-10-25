@@ -33,21 +33,8 @@
 		const css = sel + " { pointer-events: none !important; cursor: inherit !important; opacity: 0 !important; }";
 		if (style.textContent !== css) style.textContent = css;
 	};
-	let store = null;
-	const getStore = () => {
-		if (store) return store;
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		let f = k ? (root[k].stateNode && root[k].stateNode.current) || root[k] : null;
-		while (f) {
-			const p = f.memoizedProps;
-			if (p && p.store && p.store.dispatch && p.store.getState) return (store = p.store);
-			f = f.child;
-		}
-		return null;
-	};
 	const width = () => {
-		const s = getStore();
+		const s = cr.store();
 		const g = s && s.getState().globalState;
 		if (g && typeof g.drawerWidth === "number" && g.drawerWidth !== 240) s.dispatch({ type: "globalState/setDrawerWidth", payload: 240 });
 	};

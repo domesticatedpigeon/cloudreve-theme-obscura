@@ -8,8 +8,13 @@
 - JS files keep their own IIFE wrapper so each file is valid on its own and the build stays a plain join.
 
 ## React and Redux access
-- React fiber: from root[__reactContainer$].stateNode.current.
-- Redux store: found via props on the root's children.
+- All fiber, props, store and router lookups go through window.cr (src/0015-core.js, right after crT). Never read __reactFiber$/__reactProps$/__reactContainer$ keys elsewhere:
+	- cr.fiberOf(el) / cr.propsOf(el): the element's fiber / React props, or null (null-safe).
+	- cr.rootFiber(): root[__reactContainer$].stateNode.current.
+	- cr.up(el, test, max) / cr.upFiber(el, test, max): walk fiber.return from el, at most max steps (default unlimited), and return the first memoizedProps (or its fiber) where test(props) is truthy. test only sees object props. Keep each caller's original max: the limits stop walks escaping into unrelated ancestors.
+	- cr.fileOf(el, max): the nearest props.file (Cloudreve file object). cr.slider(el): the PhotoView slider fiber (props.images + props.index, 40 steps).
+	- cr.store(): the Redux store, found via props on the root's children and cached (Cloudreve has one store for the page's lifetime). Returns null until the app has mounted; callers retry. cr.router(): react-router's router (BFS from the root, 5000 nodes), cached.
+	- Hook-state walks (memoizedState chains: viewer slider state, crumb hooks, snackbar) stay in their feature files; their shapes are feature-specific.
 - Per-element fiber: el[__reactFiber$…]. Component state is reached by walking hooks (e.g. the viewer slider hook holding onScale/scale; its queue.dispatch sets {overlay}).
 - API calls: use window.crApi(path, params) (defined right after crT; GET /api/v4/<path>, resolves to the JSON body). Never read access_token from cloudreve_session directly: it expires after access_token_ttl (1h) and Cloudreve only refreshes it lazily, inside its own requests, so a page left idle sent a stale token (401) and recent thumbnails stopped loading. crApi mirrors SessionManager.getAccessToken: a token within 10 minutes of access_expires is refreshed via POST /session/token/refresh (one shared in-flight request) and kept in memory, and the newer of that and the stored token is used. Refresh tokens are stateless JWTs, so refreshing alongside Cloudreve is safe (it refreshes in parallel itself). Signed out or refresh token expired: no Authorization header.
 

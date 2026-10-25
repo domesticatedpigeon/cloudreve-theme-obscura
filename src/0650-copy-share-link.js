@@ -11,10 +11,8 @@
 	};
 	let snk = null;
 	const notify = () => {
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		if (!k) return;
-		const cur = root[k].stateNode.current;
+		const cur = cr.rootFiber();
+		if (!cur) return;
 		if (!snk || !snk._reactInternals) {
 			snk = null;
 			const stack = [cur];
@@ -37,12 +35,8 @@
 	};
 	const isShare = (v) => v && typeof v === "object" && typeof v.id === "string" && "visited" in v;
 	const urlOf = (v) => v.url || location.origin + "/s/" + v.id + (v.password ? "/" + v.password : "");
-	const fiberOf = (el) => {
-		const k = Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
 	const shareOf = (tr) => {
-		const fib = fiberOf(tr);
+		const fib = cr.fiberOf(tr);
 		if (!fib) return "";
 		const stack = fib.child ? [fib.child] : [];
 		while (stack.length) {

@@ -1,15 +1,7 @@
 (() => {
 	const SEL = "main .MuiContainer-root > .MuiBox-root > .MuiTabs-root:not(.cr-stabs)";
 	const NS = "http://www.w3.org/2000/svg";
-	const propsOf = (el) => {
-		const k = Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		let f = k ? el[k] : null;
-		for (let i = 0; f && i < 14; i++, f = f.return) {
-			const p = f.memoizedProps;
-			if (p && Array.isArray(p.tabs) && typeof p.onChange === "function") return p;
-		}
-		return null;
-	};
+	const tabsOf = (el) => cr.up(el, (p) => Array.isArray(p.tabs) && typeof p.onChange === "function", 14);
 	const call = (t, p, d) => {
 		if (typeof t === "function") return t(p, null);
 		if (t && typeof t.render === "function") return t.render(p, null);
@@ -69,7 +61,7 @@
 		else if (r > fc.scrollLeft + fc.clientWidth) fc.scrollTo({ left: r - fc.clientWidth, behavior });
 	};
 	const build = (mui) => {
-		const p = propsOf(mui);
+		const p = tabsOf(mui);
 		if (!p) return;
 		let bar = mui.nextElementSibling;
 		if (!bar || !bar.classList.contains("cr-stabs")) {
@@ -107,7 +99,7 @@
 				if (svg) b.appendChild(svg);
 				b.appendChild(document.createTextNode(typeof t.label === "string" ? t.label : String(t.value)));
 				b.addEventListener("click", (e) => {
-					const q = propsOf(mui);
+					const q = tabsOf(mui);
 					if (q && String(q.value) !== String(t.value)) q.onChange(e, t.value);
 					requestAnimationFrame(() => build(mui));
 				});

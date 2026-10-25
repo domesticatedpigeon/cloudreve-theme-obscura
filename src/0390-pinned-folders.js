@@ -1,34 +1,9 @@
 (() => {
 	const GRIP = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>';
 	const EASE = "cubic-bezier(0.32, 0.72, 0, 1)";
-	let store = null;
-	const rootFiber = () => {
-		const root = document.getElementById("root");
-		const k = root && Object.keys(root).find((x) => x.startsWith("__reactContainer$"));
-		const r = k ? root[k] : null;
-		return r && r.stateNode && r.stateNode.current ? r.stateNode.current : r;
-	};
-	const getStore = () => {
-		if (store) return store;
-		let f = rootFiber();
-		while (f) {
-			const p = f.memoizedProps;
-			if (p && p.store && p.store.dispatch && p.store.getState) return (store = p.store);
-			f = f.child;
-		}
-		return null;
-	};
-	const fiberOf = (el) => {
-		const k = el && Object.keys(el).find((x) => x.startsWith("__reactFiber$"));
-		return k ? el[k] : null;
-	};
 	const pinPath = (li) => {
-		let f = fiberOf(li);
-		for (let i = 0; f && i < 30; i++, f = f.return) {
-			const p = f.memoizedProps;
-			if (p && p.pinned === true && typeof p.path === "string") return p.path;
-		}
-		return null;
+		const p = cr.up(li, (x) => x.pinned === true && typeof x.path === "string", 30);
+		return p ? p.path : null;
 	};
 	const topItems = (tree) => [...tree.querySelectorAll('[role="treeitem"]')].filter((li) => !li.parentElement.closest('[role="group"]') && pinPath(li));
 	const domPins = () => {
@@ -47,7 +22,7 @@
 	};
 	const findSession = () => {
 		if (session && Date.now() - sessionAt < 4000 && fits(session)) return session;
-		const start = rootFiber();
+		const start = cr.rootFiber();
 		const stack = start ? [start] : [];
 		const seen = new Set();
 		let n = 0;
@@ -112,14 +87,14 @@
 		return s.user.pined === sorted;
 	};
 	const bump = () => {
-		const st = getStore();
+		const st = cr.store();
 		if (st) st.dispatch({ type: "globalState/increasePinedGeneration" });
 	};
 	let gen = null;
 	let subscribed = false;
 	const ensureSub = () => {
 		if (subscribed) return;
-		const st = getStore();
+		const st = cr.store();
 		if (!st) return;
 		subscribed = true;
 		st.subscribe(() => {
