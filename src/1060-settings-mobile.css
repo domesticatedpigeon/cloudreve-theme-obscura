@@ -3,7 +3,7 @@ html:not(.cr-dock).cr-settings body main .MuiContainer-root {
 	padding-right: 20px !important;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root.cr-h88:not(cr-x) > .MuiGrid2-container > .MuiGrid2-root {
 		grid-template-columns: 72px auto minmax(0, 1fr) !important;
 		grid-template-rows: auto auto !important;

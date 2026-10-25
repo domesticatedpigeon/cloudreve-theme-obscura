@@ -1,4 +1,4 @@
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html:not(.cr-dock).cr-bnav-on .cr-explorer [data-testid="virtuoso-item-list"]::after {
 		content: "";
 		display: block;

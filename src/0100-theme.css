@@ -946,7 +946,7 @@ html.cr-dock .cr-nav.cr-tbp > .cr-path {
 	cursor: text;
 }
 
-@media (max-width: 599.95px), (hover: none) and (pointer: coarse) {
+@media (--cr-phone), (hover: none) and (pointer: coarse) {
 	html .cr-nav + .MuiBox-root::after,
 	html .cr-nav + .MuiBox-root::before {
 		display: none !important;
@@ -1198,7 +1198,7 @@ html:not(.cr-dock) .cr-nav > .MuiBox-root:not(.cr-path) {
 	color: inherit;
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html:not(.cr-dock) header.MuiAppBar-root:not(.MuiDialog-root *) .MuiButton-root:has(path[d^="M11.883 3.007 12 3a1 1 0 0 1 .993.883"]),
 html:not(.cr-dock) header.MuiAppBar-root:not(.MuiDialog-root *) .MuiButton-root:has(path[d^="M10 2.5a7.5 7.5 0 0 1 5.964 12.048"]),
 html:not(.cr-dock) header.MuiAppBar-root:not(.MuiDialog-root *) .MuiIconButton-root:has(path[d^="M10 2.5a7.5 7.5 0 0 1 5.964 12.048"]) {
@@ -1351,7 +1351,7 @@ html :where(body):where([data-cr-h~="h19"]):not(.cr-x) .MuiDialog-root:has(> .Mu
 	pointer-events: none !important;
 	transition: opacity 0.2s ease, translate 0.2s ease, visibility 0s 0.2s;
 }
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	main {
 		margin-right: 0 !important;
 	}
@@ -1473,7 +1473,7 @@ main div.cr-h29::-webkit-scrollbar-thumb:hover {
 .MuiImageListItem-root {
 	position: relative;
 }
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock .cr-nav {
 		position: relative;
 		z-index: 6;
@@ -1498,7 +1498,7 @@ main div.cr-h29::-webkit-scrollbar-thumb:hover {
 	}
 }
 
-@media (min-width: 600px) and (prefers-color-scheme: light) {
+@media (--cr-tablet-up) and (prefers-color-scheme: light) {
 	html.cr-dock .cr-nav {
 		background: rgba(255, 255, 255, 0.82);
 	}
@@ -1524,7 +1524,7 @@ html.cr-tb-on {
 	initial-value: #050505;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html:not(.cr-dock) {
 		transition: --cr-tb-a 0.35s ease, --cr-bg 0.35s ease;
 	}
@@ -1555,7 +1555,7 @@ html.cr-dock .cr-nav {
 	}
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock .cr-nav {
 		margin-top: 0 !important;
 		padding-top: var(--cr-nav-top, 8px) !important;
@@ -1629,7 +1629,7 @@ html.cr-dock .cr-nav {
 	display: none;
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock .cr-nav::before {
 		content: none !important;
 		display: none !important;
@@ -1703,7 +1703,7 @@ html.cr-dock .cr-fade > i:nth-child(3) {
 	opacity: 1 !important;
 }
 
-@media (hover: hover) and (min-width: 600px) {
+@media (hover: hover) and (--cr-tablet-up) {
 	.MuiDrawer-docked .MuiDrawer-paper > div:first-child .MuiIconButton-root {
 		opacity: 0 !important;
 	}
@@ -1723,7 +1723,7 @@ html.cr-dock .cr-fade > i:nth-child(3) {
 	display: none !important;
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	.MuiDrawer-root.MuiDrawer-docked .MuiDrawer-paper,
 .MuiDrawer-root.MuiDrawer-docked .MuiPopover-paper:where(.cr-h21):not(.cr-x) > .MuiBox-root {
 		visibility: visible !important;
@@ -3021,13 +3021,13 @@ html:not(.cr-dock):not(.cr-home) .cr-new {
 	transition-duration: 0.1s;
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	.cr-nav .MuiButtonGroup-root > .MuiButtonBase-root:not(.cr-pinbtn):has(path[d^="M8 12a2 2 0 1 1-4 0 2 2 0"]):not(#cr-x) {
 		display: none !important;
 	}
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	.cr-pinbtn:not(#cr-x) {
 		display: none !important;
 	}
@@ -3565,7 +3565,7 @@ html body .cr-path .MuiButton-root.MuiButton-root.cr-path-over {
 	color: var(--cr-bg) !important;
 	box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.45) !important;
 }
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock body .cr-nav::after {
 		content: "" !important;
 		display: block !important;
@@ -3592,7 +3592,7 @@ html body .cr-path .MuiButton-root.MuiButton-root.cr-path-over {
 		opacity: 1;
 	}
 }
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock body .cr-nav::after {
 		display: none !important;
 	}
@@ -3891,7 +3891,7 @@ html:is(.cr-shares, .cr-profile) main .MuiContainer-root > .MuiGrid-container > 
 	overflow: hidden;
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock-page main > div:first-child {
 		min-height: 0 !important;
 		height: var(--cr-page-top, 64px) !important;
@@ -3903,7 +3903,7 @@ html:is(.cr-shares, .cr-profile) main .MuiContainer-root > .MuiGrid-container > 
 	transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1) !important;
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock .cr-nav + .MuiBox-root {
 		margin-top: 0 !important;
 	}
@@ -3923,7 +3923,7 @@ html:is(.cr-shares, .cr-profile) main .MuiContainer-root > .MuiGrid-container > 
 	transition: none !important;
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock body .cr-fade {
 		background-color: color-mix(in srgb, var(--cr-bg) 72%, transparent) !important;
 		background-image: radial-gradient(circle 150px at var(--cr-tx, -999px) var(--cr-ty, -999px), rgba(var(--cr-spot-rgb), calc(var(--cr-tb-a) * var(--cr-spot-max) * 0.45)), rgba(var(--cr-spot-rgb), calc(var(--cr-tb-a) * var(--cr-spot-max) * 0.45 * 0.4)) 45%, rgba(var(--cr-spot-rgb), 0) 100%) !important;
@@ -4478,7 +4478,7 @@ html:not(.cr-vlight) :where(body):where([data-cr-h~="h30"]):not(.cr-x) .MuiPoppe
 	}
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	.MuiPopover-root:where(.cr-h31):not(.cr-x) > .MuiBackdrop-root,
 	html:not(.cr-vopen) .MuiDialog-root > .MuiBackdrop-root {
 		background: transparent !important;
@@ -4779,7 +4779,7 @@ main .MuiContainer-root:not(:where(.cr-h35)):not(.cr-x) > .MuiBox-root:where(.cr
 	margin-left: 24px !important;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	.MuiContainer-maxWidthXs > .MuiGrid-container > .MuiBox-root > .MuiPaper-root {
 		padding: 24px 20px !important;
 	}
@@ -4837,7 +4837,7 @@ main .MuiContainer-root:not(:where(.cr-h35)):not(.cr-x) > .MuiBox-root:where(.cr
 	border-bottom-color: transparent !important;
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock .cr-nav::before {
 		background-image: none !important;
 		background-color: transparent !important;
@@ -4861,7 +4861,7 @@ main .MuiContainer-root:not(:where(.cr-h35)):not(.cr-x) > .MuiBox-root:where(.cr
 	backface-visibility: hidden;
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html.cr-dock .cr-nav {
 		background-image: none !important;
 	}
@@ -5011,7 +5011,7 @@ main .MuiContainer-maxWidthLg > .MuiBox-root:not(:first-child) .MuiTypography-h4
 	font-size: 18px;
 }
 
-@media (hover: none), (max-width: 599.95px) {
+@media (hover: none), (--cr-phone) {
 	.MuiMenuItem-root > .MuiTypography-root:has(> code) {
 		display: none !important;
 	}
@@ -5921,7 +5921,7 @@ html .PhotoView-Slider__BannerRight {
 	font-variant-numeric: tabular-nums;
 }
 
-@media (max-width: 599px) {
+@media (--cr-phone) {
 	.cr-vtop {
 		left: 12px;
 		right: 12px;
@@ -6177,7 +6177,7 @@ html :where(body):where([data-cr-h~="h19"]):not(.cr-x) :is(.MuiPopover-root, .Mu
 	margin-right: auto;
 }
 
-@media (hover: none) and (pointer: coarse), (max-width: 599px) {
+@media (hover: none) and (pointer: coarse), (--cr-phone) {
 	.cr-vtop.cr-m {
 		display: grid;
 		grid-template-columns: auto minmax(0, 1fr) auto;
@@ -6409,7 +6409,7 @@ html.cr-vlight {
 	transform: translate(-50%, -50%) !important;
 }
 
-@media (hover: none) and (pointer: coarse), (max-width: 599px) {
+@media (hover: none) and (pointer: coarse), (--cr-phone) {
 	.cr-vtop.cr-m > .cr-vbtns {
 		width: 44px;
 		padding: 0 !important;
@@ -6460,7 +6460,7 @@ html.cr-vlight {
 	}
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	.MuiPopover-root:where(.cr-h31):not(.cr-x) .MuiPopover-paper:is([style*="opacity: 0;"], [style$="opacity: 0"]) {
 		transition: scale 0.24s cubic-bezier(0.2, 0, 0, 1), translate 0.24s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s cubic-bezier(0.4, 0, 1, 1) !important;
 	}
@@ -6598,7 +6598,7 @@ html.cr-vlight {
 	}
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html:not(.cr-dock):not(.cr-x) .MuiBackdrop-root:has(> .PhotoView-Portal) {
 		background-color: var(--cr-bg) !important;
 		transition: opacity 0.225s ease !important;
@@ -6848,7 +6848,7 @@ html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) [data-cr-selbar] .MuiB
 	padding: 4px calc(50% - 26px) !important;
 }
 
-@media (hover: none) and (pointer: coarse), (max-width: 599px) {
+@media (hover: none) and (pointer: coarse), (--cr-phone) {
 	.cr-vstrip {
 		bottom: calc(env(safe-area-inset-bottom) + 64px) !important;
 	}
@@ -6893,7 +6893,7 @@ html.cr-vlight .PhotoView-Portal::after {
 	opacity: 0;
 }
 
-@media (hover: none) and (pointer: coarse), (max-width: 599px) {
+@media (hover: none) and (pointer: coarse), (--cr-phone) {
 	.PhotoView-Portal::before {
 		height: 150px;
 	}
@@ -7984,7 +7984,7 @@ html body main .MuiContainer-root:where(.cr-h51):not(.cr-x) .MuiListItem-contain
 	}
 }
 
-@media (max-width: 599.95px), (hover: none) {
+@media (--cr-phone), (hover: none) {
 	html body .MuiDialog-root .MuiDialog-paper:has(> .MuiBox-root:first-child > .MuiTextField-root + .MuiIconButton-root) {
 		transform: none !important;
 	}
@@ -8177,7 +8177,7 @@ html body main .MuiContainer-root:not(:where(.cr-h51)):not(.cr-x) > .MuiBox-root
 	line-height: 1.3 !important;
 }
 
-@media (max-width: 599.95px) and (prefers-color-scheme: light) {
+@media (--cr-phone) and (prefers-color-scheme: light) {
 	html.cr-sbo main,
 	html.cr-sbo header.MuiAppBar-root:not(.MuiDialog-root *) > .MuiToolbar-root {
 		filter: blur(2px) contrast(0.613) brightness(1.24);
@@ -8365,13 +8365,13 @@ html body main .MuiGrid-container:has(> .MuiGrid-item > [data-rect-id]) {
 	grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)) !important;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html body main .MuiGrid-container:has(> .MuiGrid-item > [data-rect-id]) {
 		grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr)) !important;
 	}
 }
 
-@media (min-width: 600px) {
+@media (--cr-tablet-up) {
 	html body main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root {
 		box-sizing: border-box !important;
 		height: calc(100% - 20px) !important;
@@ -8454,7 +8454,7 @@ html body .MuiDialog-root .MuiDialog-paper:where(.cr-h64):not(.cr-x):not(.cr-x):
 	border-color: var(--cr-sep) !important;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html.cr-slock body {
 		position: fixed !important;
 		top: var(--cr-sy, 0px) !important;
@@ -8721,7 +8721,7 @@ html.cr-dock body header.MuiAppBar-root .MuiIconButton-root.MuiIconButton-root.M
 	margin: 0 !important;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html:not(.cr-dock) body header.MuiAppBar-root:not(.MuiDialog-root *) > .MuiToolbar-root .MuiIconButton-root.MuiIconButton-root.MuiIconButton-root:has(> svg > path[d^="M17.754 14a2.249"]) {
 		margin: 0 0 0 3px !important;
 	}
@@ -8762,7 +8762,7 @@ html body header.MuiAppBar-root .MuiIconButton-root.MuiIconButton-root.MuiIconBu
 	transition: transform 0.4s cubic-bezier(0.34, 1.35, 0.64, 1), width 0.34s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease, background-color 0.35s ease, box-shadow 0.3s ease !important;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html:not(.cr-dock) body .cr-tbp-mc.cr-tbp-mc.cr-tbp-mc,
 	html:not(.cr-dock) body header.MuiAppBar-root:not(.MuiDialog-root *) > .MuiToolbar-root .MuiIconButton-root:not(:has(> .MuiAvatar-root)):not(.cr-lp) {
 		width: 44px !important;

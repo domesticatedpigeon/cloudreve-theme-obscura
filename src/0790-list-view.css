@@ -47,7 +47,7 @@
 	font-weight: 500;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html:not(.cr-dock) .cr-explorer:has([data-virtuoso-scroller]) {
 		overflow-x: hidden !important;
 	}

@@ -6,6 +6,7 @@
 - The built file stays committed because the README loader fetches it from raw.githubusercontent.com on main. It is marked linguist-generated so PR diffs focus on src/.
 - 0100-theme.css (~9k lines) and 0460-controls-settings.css interleave many features. Splitting them by feature means moving rules, and moving rules can change the cascade between equal-specificity selectors, so it needs visual checks in a real instance and is not done mechanically.
 - JS files keep their own IIFE wrapper so each file is valid on its own and the build stays a plain join.
+- `@custom-media --name (query);` lines (src/0001-breakpoints.css) are removed by the build, and `(--name)` inside `@media` preludes is replaced with the query; a file left empty emits no block. Unknown or duplicate names fail the build. Breakpoints: --cr-phone ≤599.95px, --cr-tablet-up ≥600px, --cr-tablet-down ≤899.95px, --cr-desktop-up ≥900px, --cr-xs ≤359.95px. The phone cutoff is 599.95px everywhere (it used to be 599px in some viewer rules and the viewer's mobile matchMedia, which disagreed with the rest between 599 and 600px).
 - The build appends `//# sourceURL=cr/<file>` (JS) and `/*# sourceURL=cr/<file> */` (CSS) to every block, so DevTools (Sources, Styles, Performance, stack traces) name the src file instead of anonymous VM scripts.
 
 ## Performance measurement

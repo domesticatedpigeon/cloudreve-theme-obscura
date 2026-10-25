@@ -4,7 +4,7 @@ html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBo
 	padding: 0 !important;
 }
 
-@media (min-width: 900px) {
+@media (--cr-desktop-up) {
 	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h86):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root {
 		grid-template-columns: 160px minmax(0, 1fr) !important;
 		column-gap: 16px !important;
@@ -13,7 +13,7 @@ html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBo
 	}
 }
 
-@media (max-width: 899.95px) {
+@media (--cr-tablet-down) {
 	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h86):not(cr-x) {
 		gap: 0 !important;
 	}

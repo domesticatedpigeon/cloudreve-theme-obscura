@@ -103,7 +103,7 @@
 	opacity: 1;
 }
 
-@media (hover: none), (max-width: 599.95px) {
+@media (hover: none), (--cr-phone) {
 	.cr-recent-arrow.cr-lp,
 	.cr-recent-shade {
 		display: none !important;
@@ -330,7 +330,7 @@ img.cr-ficon {
 	}
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	.cr-recent-i {
 		flex-basis: 132px;
 		height: 132px;

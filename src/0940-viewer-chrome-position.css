@@ -9,7 +9,7 @@ html body .cr-legend {
 	bottom: 10px !important;
 }
 
-@media (hover: none) and (pointer: coarse), (max-width: 599px) {
+@media (hover: none) and (pointer: coarse), (--cr-phone) {
 	html body .cr-vtop.cr-m {
 		top: calc(env(safe-area-inset-top) + 6px) !important;
 		left: 20px !important;

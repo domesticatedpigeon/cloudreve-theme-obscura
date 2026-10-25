@@ -806,7 +806,7 @@
 	let top = null;
 	let topBtns = null;
 	let topClose = null;
-	const mobile = matchMedia("(hover: none) and (pointer: coarse) and (orientation: portrait), (max-width: 599px)");
+	const mobile = matchMedia("(hover: none) and (pointer: coarse) and (orientation: portrait), (max-width: 599.95px)");
 	let topKey = "";
 	const sig = (b) => {
 		if (b.classList.contains("cr-vbtn")) return "cr-vbtn";
