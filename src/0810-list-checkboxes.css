@@ -8,17 +8,17 @@
 	padding-right: 6px !important;
 }
 
-.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root:has(> .cr-lcb) > div:first-of-type > .MuiBox-root > :not(:first-child) {
+.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root.cr-h90 > div:first-of-type > .MuiBox-root > :not(:first-child) {
 	display: none !important;
 }
 
-.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root:has(> .cr-lcb) > div:first-of-type > .MuiBox-root {
+.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root.cr-h90 > div:first-of-type > .MuiBox-root {
 	border-radius: 8px !important;
 	outline: 1px solid var(--cr-tbp-br);
 	outline-offset: -1px;
 }
 
-.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root:has(> .cr-lcb) > div:first-of-type:not(:has(> .MuiBox-root)) {
+.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root.cr-h90 > div:first-of-type:not(:has(> .MuiBox-root)) {
 	display: none !important;
 }
 

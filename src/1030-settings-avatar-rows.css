@@ -1,4 +1,4 @@
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > :not(.MuiGrid2-container) {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > :not(.MuiGrid2-container) {
 	box-sizing: border-box;
 	width: 100%;
 	margin: 0 !important;
@@ -6,7 +6,7 @@ html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="
 	border-top: 1px solid var(--cr-sep);
 }
 
-html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > :not(.MuiGrid2-container) p.MuiTypography-body2:first-child {
+html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > :not(.MuiGrid2-container) p.MuiTypography-body2:first-child {
 	margin: 0 0 12px !important;
 }
 
