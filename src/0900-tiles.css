@@ -1,0 +1,8 @@
+.MuiGrid-container [data-rect-id],
+.cr-recent-i,
+.cr-explorer [data-testid=virtuoso-item-list] > [data-index] > .MuiBox-root,
+.MuiImageListItem-root,
+html:is(.cr-shares, .cr-profile) main .MuiContainer-root > .MuiGrid-container > .MuiGrid-item > .MuiButtonBase-root {
+	--cr-tx: -999px;
+	--cr-ty: -999px;
+}

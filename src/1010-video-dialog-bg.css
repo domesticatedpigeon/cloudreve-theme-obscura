@@ -1,0 +1,3 @@
+.MuiDialog-root.cr-vdark .MuiDialog-paper > .MuiBox-root:nth-child(2) {
+	background: #000 !important;
+}

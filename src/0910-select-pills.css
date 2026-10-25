@@ -1,0 +1,30 @@
+.cr-lp.MuiSelect-root > .MuiSelect-select,
+.cr-lp.MuiSelect-root > .MuiSelect-icon {
+	transition: scale 0.2s cubic-bezier(0.32, 0.72, 0, 1), transform 0.2s ease;
+}
+
+.cr-lp.MuiSelect-root > .MuiSelect-select {
+	transform-origin: left center;
+}
+
+.cr-lp.MuiSelect-root > .MuiSelect-icon {
+	transform-origin: center;
+	translate: 0 0;
+}
+
+@media (hover: hover) {
+	.cr-lp.MuiSelect-root:hover,
+	.cr-lp.MuiSelect-root:hover::before,
+	.cr-lp.MuiSelect-root:hover::after {
+		transform: none;
+	}
+
+	.cr-lp.MuiSelect-root:hover > .MuiSelect-select {
+		scale: 1.06;
+	}
+
+	.cr-lp.MuiSelect-root:hover > .MuiSelect-icon {
+		scale: 1.06;
+		translate: 1px 0;
+	}
+}

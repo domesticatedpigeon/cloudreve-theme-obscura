@@ -1,0 +1,22 @@
+html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > :not(.MuiGrid2-container) {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0 !important;
+	padding: 16px 0 !important;
+	border-top: 1px solid var(--cr-sep);
+}
+
+html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > :not(.MuiGrid2-container) p.MuiTypography-body2:first-child {
+	margin: 0 0 12px !important;
+}
+
+html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child .MuiGrid2-root > .MuiBox-root:has(> .MuiBox-root > .MuiFormControlLabel-root),
+html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child .MuiGrid2-root > div > .MuiBox-root:has(> .MuiBox-root > .MuiFormControlLabel-root) {
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	-webkit-backdrop-filter: none;
+	backdrop-filter: none;
+	overflow: visible;
+}

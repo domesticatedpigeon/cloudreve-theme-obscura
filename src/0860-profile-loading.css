@@ -1,0 +1,5 @@
+html.cr-pf-wait main div.cr-h29 > .MuiContainer-root,
+html.cr-pf-wait main div.cr-h29 > .MuiContainer-root > * {
+	opacity: 0 !important;
+	animation: none !important;
+}

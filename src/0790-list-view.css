@@ -1,0 +1,87 @@
+.cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child {
+	margin: 0 20px;
+	border-bottom: 0 !important;
+}
+
+.cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child .MuiTypography-root {
+	font-size: 12px !important;
+	font-weight: 500 !important;
+	opacity: 0.55;
+}
+
+.cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root {
+	position: relative;
+	margin: 0 20px;
+	border-bottom: 0 !important;
+	border-radius: 12px;
+	overflow: hidden;
+	isolation: isolate;
+	transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), scale 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (hover: hover) {
+	.cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root:hover {
+		background-color: var(--cr-tile);
+	}
+}
+
+.cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root:active {
+	scale: 0.99;
+}
+
+.cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root::after {
+	--cr-tx: inherit;
+	--cr-ty: inherit;
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	border-radius: inherit;
+	pointer-events: none;
+	background-image: radial-gradient(circle 150px at var(--cr-tx, -999px) var(--cr-ty, -999px), rgba(var(--cr-spot-rgb), calc(var(--cr-tb-a) * var(--cr-spot-max) * 1.9)), rgba(var(--cr-spot-rgb), calc(var(--cr-tb-a) * var(--cr-spot-max) * 1.9 * 0.4)) 45%, rgba(var(--cr-spot-rgb), 0) 100%);
+}
+
+
+.cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root > .MuiBox-root:first-child > .MuiTypography-root > .MuiBox-root > .MuiBox-root:last-child > .MuiBox-root:first-child {
+	font-size: 12px;
+	font-weight: 500;
+}
+
+@media (max-width: 599.95px) {
+	html:not(.cr-dock) .cr-explorer:has([data-virtuoso-scroller]) {
+		overflow-x: hidden !important;
+	}
+
+	html:not(.cr-dock) .cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) {
+		min-width: 0 !important;
+	}
+
+	html:not(.cr-dock) .cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child {
+		display: none !important;
+	}
+
+	html:not(.cr-dock) .cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root > .MuiBox-root:first-child {
+		flex: 1 1 auto;
+		width: auto !important;
+		min-width: 0;
+	}
+
+	html:not(.cr-dock) .cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root > .MuiBox-root:not(:first-child) {
+		display: none !important;
+	}
+}
+
+.cr-gallery-name {
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+@media (hover: hover) {
+	.MuiImageListItem-root:hover > .cr-gallery-name {
+		opacity: 1;
+	}
+}
+
+.MuiImageListItem-root:has(path[d^="M9 3h6a6 6 0 0 1 6 6v6a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6Zm7.28"]) > .cr-gallery-name {
+	opacity: 1;
+}

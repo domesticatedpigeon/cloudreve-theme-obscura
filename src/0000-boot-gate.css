@@ -1,0 +1,13 @@
+html.cr-boot #root {
+	opacity: 0 !important;
+}
+
+html.cr-boot *:not([class*="fade-e"]),
+html.cr-boot *::before,
+html.cr-boot *::after {
+	transition: none !important;
+}
+
+html.cr-booted #root {
+	transition: opacity 0.32s ease;
+}

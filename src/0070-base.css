@@ -1,0 +1,32 @@
+:root {
+	color-scheme: light dark;
+}
+html,
+body,
+#app-loader {
+	background-color: #ffffff !important;
+}
+
+#app-loader .spinner .stroke {
+	stroke: #000000 !important;
+}
+
+#app-loader .spinner .background {
+	stroke: rgba(0, 0, 0, 0.08) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+	html,
+	body,
+	#app-loader {
+		background-color: #050505 !important;
+	}
+
+	#app-loader .spinner .stroke {
+		stroke: #ffffff !important;
+	}
+
+	#app-loader .spinner .background {
+		stroke: rgba(255, 255, 255, 0.1) !important;
+	}
+}

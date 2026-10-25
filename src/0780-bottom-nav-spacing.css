@@ -1,0 +1,7 @@
+@media (max-width: 599.95px) {
+	html:not(.cr-dock).cr-bnav-on .cr-explorer [data-testid="virtuoso-item-list"]::after {
+		content: "";
+		display: block;
+		height: calc(64px + var(--cr-fab-gap, 8px));
+	}
+}

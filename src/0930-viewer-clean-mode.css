@@ -1,0 +1,4 @@
+html:is(.cr-h46, :has(.PhotoView-Portal.PhotoView-Slider__clean)) :is(.PhotoView-Slider__BannerWrap, .cr-vtop, .cr-vdock, .cr-vstrip, .cr-legend),
+html:is(.cr-h46, :has(.PhotoView-Portal.PhotoView-Slider__clean)) :is(.PhotoView-Slider__BannerWrap, .cr-vtop, .cr-vdock, .cr-vstrip, .cr-legend) * {
+	pointer-events: none !important;
+}
