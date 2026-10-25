@@ -3,7 +3,7 @@ html:not(.cr-bnav-on) body .cr-bnav.cr-tbp-m.cr-tbp-m.cr-tbp-m.cr-tbp-m {
 	display: none !important;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html:not(.cr-dock).cr-bnav-on body .cr-bnav.cr-tbp-m.cr-tbp-m.cr-tbp-m {
 		position: fixed !important;
 		top: var(--cr-fab-top);
@@ -46,7 +46,7 @@ html:not(.cr-bnav-on) body .cr-bnav.cr-tbp-m.cr-tbp-m.cr-tbp-m.cr-tbp-m {
 	}
 }
 
-@media (max-width: 359.95px) {
+@media (--cr-xs) {
 	html.cr-bnav-on:not(.cr-bnav-wide) .cr-bnav-i {
 		padding: 0 10px;
 	}

@@ -29,7 +29,8 @@ Customization theme for Cloudreve v4, delivered as one HTML file that runs in Cl
 - Colours, surfaces and radii come from `--cr-*` tokens. Dark values are the default in `:root`; light values override under `@media (prefers-color-scheme: light)`. Add a new token to both. The viewer has its own palette (`html.cr-vlight`); scripts that paint colours (e.g. the viewer's `PAL`) must change together with the CSS tokens.
 - Reuse shared classes (`.cr-lp` pill, `.cr-tbp-mc`, `.cr-tseg-thumb`, spotlight `TILES`) rather than restyling a new element from scratch.
 - Animated custom properties are registered with `@property` (e.g. `--cr-fo` for pill fades, so `backdrop-filter` keeps working). Animate `transform`/`scale`/`opacity` or registered properties only; easing `cubic-bezier(0.32,0.72,0,1)`.
-- Hover effects only inside `@media (hover: hover)`. Mobile layout is `html:not(.cr-dock)` within `@media (max-width: 599.95px)`; desktop is `html.cr-dock`.
+- Hover effects only inside `@media (hover: hover)`. Mobile layout is `html:not(.cr-dock)` within `@media (--cr-phone)`; desktop is `html.cr-dock`.
+- Width breakpoints are named in `src/0001-breakpoints.css` (`@custom-media --cr-phone (max-width: 599.95px);` etc.) and `build.mjs` expands them; never write a literal width in a CSS `@media`. Scripts can't use the names: `matchMedia` strings must repeat the same values (`599.95px` for phones, never `599px`).
 - `!important` is normal here (it has to beat MUI's emotion styles), but prefer a more specific existing hook over stacking more overrides.
 - UI strings: use Cloudreve's own i18n keys via `crT(key, englishFallback)` / `crT.set(el, …)`; CSS strings via `--cr-t-*` variables. Record new keys in `architecture.md` → Translations.
 - Style: tabs for indentation, double quotes, arrow functions, `const` by default, terse names matching nearby code, no comments. Wrap `localStorage`/`sessionStorage` access in `try/catch` (it throws in private modes).

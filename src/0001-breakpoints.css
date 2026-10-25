@@ -1,0 +1,5 @@
+@custom-media --cr-phone (max-width: 599.95px);
+@custom-media --cr-tablet-up (min-width: 600px);
+@custom-media --cr-tablet-down (max-width: 899.95px);
+@custom-media --cr-desktop-up (min-width: 900px);
+@custom-media --cr-xs (max-width: 359.95px);

@@ -164,7 +164,7 @@ header.MuiAppBar-root :has(> .cr-lp) {
 	}
 }
 
-@media (hover: none), (max-width: 599px) {
+@media (hover: none), (--cr-phone) {
 	.cr-vbtns > .cr-lp {
 		width: 40px !important;
 		padding: 0 !important;
@@ -238,7 +238,7 @@ html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child .MuiGrid2-roo
 	font-weight: 600 !important;
 }
 
-@media (min-width: 900px) {
+@media (--cr-desktop-up) {
 	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) {
 		gap: 0;
 	}
@@ -362,7 +362,7 @@ html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child .MuiPaper-roo
 	border-bottom: 0 !important;
 }
 
-@media (max-width: 899.95px) {
+@media (--cr-tablet-down) {
 	html.cr-settings main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(.cr-h85) > .MuiGrid2-container + .MuiGrid2-container {
 		margin-top: 28px !important;
 	}
@@ -899,7 +899,7 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 	text-overflow: ellipsis;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	.MuiDialog-paper:where(.cr-h74):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) .MuiListItemAvatar-root {
 		min-width: 36px !important;
 	}
@@ -1041,7 +1041,7 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 	white-space: nowrap !important;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	.MuiDialogActions-root > .MuiBox-root:first-child:has(.MuiButton-root) {
 		flex: 1 1 100%;
 	}
@@ -1226,7 +1226,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 }
 
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child > .MuiBox-root {
 		gap: 6px;
 	}

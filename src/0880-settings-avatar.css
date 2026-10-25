@@ -140,7 +140,7 @@ html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid
 	padding-top: 10px;
 }
 
-@media (max-width: 599.95px) {
+@media (--cr-phone) {
 	html.cr-settings body main .MuiStack-root.cr-h87:not(.cr-x):not(cr-x) > .MuiGrid2-container > .MuiGrid2-root > .MuiStack-root > .MuiGrid2-root:not(.MuiGrid2-container):has(.MuiFormControl-root) {
 		grid-template-columns: minmax(0, 1fr);
 		row-gap: 8px;
