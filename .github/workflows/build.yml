@@ -13,3 +13,4 @@ jobs:
         with:
           node-version: 22
       - run: node build.mjs --check
+      - run: node tools/lint-has.mjs
