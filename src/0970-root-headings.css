@@ -1,0 +1,47 @@
+.cr-root-h {
+	display: none;
+}
+
+html.cr-myroot .cr-root-h {
+	display: block;
+	align-self: center;
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0;
+	font-family: "Boldonse", "Inter", sans-serif;
+	font-size: 24px;
+	font-weight: 400;
+	line-height: 1.35;
+	letter-spacing: 0;
+	text-transform: uppercase;
+	white-space: nowrap;
+	overflow: visible;
+	color: inherit;
+	text-box: trim-both cap alphabetic;
+}
+
+html.cr-myroot body main .cr-nav > .cr-path:has(> .cr-root-h),
+html.cr-myroot .cr-path:has(> .cr-root-h) {
+	display: flex !important;
+	align-items: center !important;
+	height: 44px !important;
+	padding: 0 !important;
+	border-color: transparent !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	overflow: visible !important;
+	pointer-events: none;
+}
+
+html.cr-myroot .cr-path:has(> .cr-root-h)::before,
+html.cr-myroot .cr-path:has(> .cr-root-h)::after,
+html.cr-myroot .cr-path > :not(.cr-root-h) {
+	display: none !important;
+}
+
+html.cr-myroot .cr-root-h,
+html:not(.cr-myroot) .cr-path:has(> .cr-root-h) {
+	animation: cr-page-in 0.3s ease;
+}

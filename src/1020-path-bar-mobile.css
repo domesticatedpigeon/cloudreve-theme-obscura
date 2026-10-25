@@ -1,0 +1,12 @@
+html:not(.cr-dock) body main .cr-path {
+	padding-left: 0 !important;
+}
+
+html:not(.cr-dock) body main .cr-path > .MuiBox-root > button:first-child {
+	padding-left: 0 !important;
+}
+
+html:not(.cr-dock) body main .cr-path > .MuiBox-root > button:first-child svg:first-child,
+html:not(.cr-dock) body main .cr-path > .MuiBox-root > button:first-child .MuiButton-startIcon {
+	margin-left: 0 !important;
+}

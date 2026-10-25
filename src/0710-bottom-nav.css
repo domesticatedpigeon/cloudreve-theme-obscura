@@ -1,0 +1,113 @@
+.cr-bnav,
+html:not(.cr-bnav-on) body .cr-bnav.cr-tbp-m.cr-tbp-m.cr-tbp-m.cr-tbp-m {
+	display: none !important;
+}
+
+@media (max-width: 599.95px) {
+	html:not(.cr-dock).cr-bnav-on body .cr-bnav.cr-tbp-m.cr-tbp-m.cr-tbp-m {
+		position: fixed !important;
+		top: var(--cr-fab-top);
+		left: max(20px, calc(env(safe-area-inset-left) + 8px));
+		z-index: 1100;
+		right: calc(max(20px, calc(env(safe-area-inset-right) + 8px)) + 44px + 6px);
+		display: flex !important;
+		gap: 2px;
+		max-width: none !important;
+		overflow: hidden !important;
+	}
+
+	html.cr-bnav-on .cr-bnav-i {
+		flex: 1 1 auto;
+		justify-content: center;
+	}
+
+	html:not(.cr-dock).cr-bnav-on.cr-bnav-wide body .cr-bnav.cr-tbp-m.cr-tbp-m.cr-tbp-m {
+		right: max(20px, calc(env(safe-area-inset-right) + 8px));
+	}
+
+	html.cr-bnav-on.cr-bnav-wide .cr-bnav-i {
+		flex: 1 1 0;
+	}
+
+	html.cr-boot:not(.cr-booted) .cr-bnav {
+		visibility: hidden;
+	}
+
+	html:not(.cr-dock).cr-bnav-on body:not(:has(.cr-explorer [data-virtuoso-scroller])) {
+		padding-bottom: calc(44px + var(--cr-fab-gap, 8px));
+	}
+
+	html:not(.cr-dock).cr-bnav-on body:not(:has(.cr-explorer [data-virtuoso-scroller])) main {
+		min-height: calc(100svh - 44px - var(--cr-fab-gap, 8px)) !important;
+	}
+
+	html:not(.cr-dock).cr-bnav-on .cr-explorer .MuiImageList-root {
+		margin-bottom: 20px !important;
+	}
+}
+
+@media (max-width: 359.95px) {
+	html.cr-bnav-on:not(.cr-bnav-wide) .cr-bnav-i {
+		padding: 0 10px;
+	}
+
+	html.cr-bnav-on:not(.cr-bnav-wide) .cr-bnav-i > svg {
+		display: none !important;
+	}
+}
+
+.cr-bnav-i {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex: 0 1 auto;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+	height: 36px;
+	margin: 0;
+	padding: 0 14px 0 12px;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--cr-contrast);
+	font: inherit;
+	font-size: 13px;
+	font-weight: 500;
+	white-space: nowrap;
+	opacity: 0.55;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	transition: opacity 0.2s ease;
+}
+
+.cr-bnav-i.Mui-selected {
+	opacity: 1;
+}
+
+.cr-bnav-i > svg {
+	flex: none;
+	width: 20px;
+	height: 20px;
+	fill: currentColor;
+	transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.cr-bnav-i:active > svg {
+	transform: scale(0.9);
+}
+
+.cr-bnav-i > span {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.cr-bnav-i > svg + svg,
+.cr-bnav-i.Mui-selected > svg:first-child {
+	display: none;
+}
+
+.cr-bnav-i.Mui-selected > svg + svg {
+	display: block;
+}

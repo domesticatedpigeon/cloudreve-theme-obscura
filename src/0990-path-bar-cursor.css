@@ -1,0 +1,4 @@
+html:not(.cr-dock) .cr-path,
+html:not(.cr-dock) .cr-path * {
+	cursor: default !important;
+}

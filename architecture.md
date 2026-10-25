@@ -1,5 +1,12 @@
 # Architecture
 
+## Source layout and build
+- src/NNNN-name.css|js: one file per block of the shipped HTML; build.mjs wraps each in <style>/<script>, joins them with newlines in filename order, and writes cloudreveCustomFooter.html.
+- Numbers started at 0000 in steps of 10 so new files fit between neighbours. Order is load-bearing: i18n (0010) and crApi (0020) before their users, the class tagger (0050) and boot gate (0060) before feature scripts, later CSS overriding earlier CSS.
+- The built file stays committed because the README loader fetches it from raw.githubusercontent.com on main. It is marked linguist-generated so PR diffs focus on src/.
+- 0100-theme.css (~9k lines) and 0460-controls-settings.css interleave many features. Splitting them by feature means moving rules, and moving rules can change the cascade between equal-specificity selectors, so it needs visual checks in a real instance and is not done mechanically.
+- JS files keep their own IIFE wrapper so each file is valid on its own and the build stays a plain join.
+
 ## React and Redux access
 - React fiber: from root[__reactContainer$].stateNode.current.
 - Redux store: found via props on the root's children.

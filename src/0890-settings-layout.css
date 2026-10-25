@@ -1,0 +1,36 @@
+html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) {
+	box-sizing: border-box;
+	max-width: 760px;
+	padding: 0 !important;
+}
+
+@media (min-width: 900px) {
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > .MuiGrid2-container > .MuiGrid2-root {
+		grid-template-columns: 160px minmax(0, 1fr) !important;
+		column-gap: 16px !important;
+		max-width: none !important;
+		padding: 16px 0 !important;
+	}
+}
+
+@media (max-width: 899.95px) {
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) {
+		gap: 0 !important;
+	}
+
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > * {
+		margin: 0 !important;
+	}
+
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > .MuiGrid2-container + .MuiGrid2-container {
+		margin-top: 0 !important;
+	}
+
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > .MuiGrid2-container > .MuiGrid2-root {
+		padding: 16px 0 !important;
+	}
+
+	html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child > .MuiBox-root > .MuiStack-root:not(:has(input[type="file"])) > .MuiGrid2-container + .MuiGrid2-container > .MuiGrid2-root {
+		border-top: 1px solid var(--cr-sep);
+	}
+}

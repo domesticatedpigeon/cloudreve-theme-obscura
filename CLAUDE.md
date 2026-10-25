@@ -3,7 +3,9 @@
 Customization theme for Cloudreve v4, delivered as one HTML file that runs in Cloudreve's **Custom footer HTML** setting.
 
 ## Files
-- `cloudreveCustomFooter.html`: the whole theme (~20k lines). A flat sequence of `<style>` and `<script>` blocks, nothing else.
+- `src/`: the theme source. One file per block: `NNNN-name.css` becomes a `<style>`, `NNNN-name.js` a `<script>`. The number sets load order.
+- `build.mjs`: joins `src/` in filename order into `cloudreveCustomFooter.html` and syntax-checks every script. `node build.mjs --check` fails if the output is stale (CI runs it).
+- `cloudreveCustomFooter.html`: build output (~20k lines), the file users install. Committed because the README loader fetches it from `main`. Never edit it by hand.
 - `architecture.md`: how each feature hooks into Cloudreve (fibers, store, viewer, layout modes, gotchas). Read the relevant section before touching a feature.
 - `design-language.md`: visual rules (colour, type, corners, spacing, motion). Every UI change must follow it.
 - `README.md`: install loader snippet and feature list.
@@ -32,13 +34,13 @@ Customization theme for Cloudreve v4, delivered as one HTML file that runs in Cl
 - Performance: observers must be cheap. Debounce with `requestAnimationFrame`/`setTimeout`, call `mo.takeRecords()` after self-induced mutations, cap per-frame work, and filter `attributeFilter` tightly.
 
 ## Making changes
-1. Find the feature: `grep -n` the `cr-` class or keyword in `cloudreveCustomFooter.html`, and read its `architecture.md` section.
-2. Edit the existing block for that feature. Add a new `<style>`/`<script>` block only for a genuinely new feature, placed next to related blocks (order matters: earlier scripts define helpers, the boot gate and the class tagger).
+1. Find the feature: `grep -rn` the `cr-` class or keyword in `src/`, and read its `architecture.md` section.
+2. Edit the existing file for that feature. Add a new file only for a genuinely new feature, numbered next to related files (order matters: earlier scripts define helpers, the boot gate and the class tagger). Pick an unused number between neighbours (e.g. `0385-` between `0380-` and `0390-`); never renumber existing files.
 3. Check both themes, desktop (≥600px) and phone widths, touch and mouse, and that the boot gate (`html.cr-boot`) still reveals without flashes or layout shifts.
-4. Update `architecture.md` (behaviour, gotchas, why) and `design-language.md` (if a visual rule changed) in the same commit. Keep them as terse bullet lists.
+4. Run `node build.mjs` and commit `src/` together with the rebuilt `cloudreveCustomFooter.html`.
+5. Update `architecture.md` (behaviour, gotchas, why) and `design-language.md` (if a visual rule changed) in the same commit. Keep them as terse bullet lists.
 
 ## Testing
-- No build, linter or test suite. Validate by loading the file into a Cloudreve v4 instance (paste the README loader pointing at a served copy of the file, or paste the file directly into Custom footer HTML).
-- Quick syntax check of all scripts:
-  `node -e 'const s=require("fs").readFileSync("cloudreveCustomFooter.html","utf8");[...s.matchAll(/<script>([\s\S]*?)<\/script>/g)].forEach((m,i)=>{try{new Function(m[1])}catch(e){console.log(i,e.message)}})'`
+- No linter or test suite. Validate by loading the file into a Cloudreve v4 instance (paste the README loader pointing at a served copy of the file, or paste the file directly into Custom footer HTML).
+- `node build.mjs` syntax-checks every script and names the failing file.
 - Chromium + Playwright are available for screenshots; iOS Safari / Liquid Glass behaviour cannot be reproduced in Chrome (see `architecture.md` → iOS Safari).

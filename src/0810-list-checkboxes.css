@@ -1,0 +1,118 @@
+.cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root {
+	padding-right: 40px;
+}
+
+.cr-explorer [data-testid="virtuoso-item-list"] > [data-index] > .MuiBox-root > .MuiBox-root,
+.cr-explorer .MuiBox-root:has(> [data-virtuoso-scroller]) > .MuiBox-root:first-child > .MuiBox-root {
+	padding-left: 6px !important;
+	padding-right: 6px !important;
+}
+
+.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root:has(> .cr-lcb) > div:first-of-type > .MuiBox-root > :not(:first-child) {
+	display: none !important;
+}
+
+.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root:has(> .cr-lcb) > div:first-of-type > .MuiBox-root {
+	border-radius: 8px !important;
+	outline: 1px solid var(--cr-tbp-br);
+	outline-offset: -1px;
+}
+
+.cr-explorer [data-index] > .MuiBox-root > :first-child > p > .MuiBox-root:has(> .cr-lcb) > div:first-of-type:not(:has(> .MuiBox-root)) {
+	display: none !important;
+}
+
+.cr-lcb {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	margin-right: 2px;
+	color: var(--cr-contrast);
+	opacity: 0.55;
+	cursor: pointer;
+	transition: opacity 0.15s ease, transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.cr-lcb > svg {
+	width: 20px;
+	height: 20px;
+	fill: currentColor;
+}
+
+.cr-lcb > svg + svg,
+.cr-lcb.cr-on > svg:first-child {
+	display: none;
+}
+
+.cr-lcb.cr-on > svg + svg {
+	display: block;
+}
+
+.cr-lcb.cr-on {
+	color: #E989B4;
+	opacity: 1;
+}
+
+@media (hover: hover) {
+	.cr-lcb:hover {
+		opacity: 1;
+	}
+
+	.cr-lcb:hover {
+		transform: scale(1.1);
+	}
+}
+
+.cr-lcb:active {
+	transform: scale(0.9);
+}
+
+.cr-lti {
+	display: flex;
+	flex: none;
+	align-items: center;
+	width: 18px;
+	height: 18px;
+}
+
+.cr-lti > svg,
+.cr-lti > .cr-ficon {
+	width: 18px !important;
+	height: 18px !important;
+	font-size: 18px !important;
+}
+
+.cr-lti.cr-lti-p {
+	width: 22px;
+	height: 22px;
+	margin-right: 4px;
+}
+
+.cr-lti.cr-lti-p > svg,
+.cr-lti.cr-lti-p > .cr-ficon {
+	width: 22px !important;
+	height: 22px !important;
+	font-size: 22px !important;
+}
+
+.cr-grid-more.cr-lmore {
+	position: absolute;
+	top: 50%;
+	right: 6px;
+	z-index: 3;
+	flex-basis: 28px !important;
+	width: 28px !important;
+	margin: -14px 0 0 !important;
+	opacity: 0.55;
+}
+
+@media (hover: hover) {
+	.cr-grid-more.cr-lmore:hover {
+		opacity: 1 !important;
+		transform: scale(1.1);
+	}
+}
+

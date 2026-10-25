@@ -1,0 +1,17 @@
+html body .MuiDialog-paper:where(.cr-h41) .MuiGrid2-root:has(> .MuiBox-root > [role="tree"]),
+html body .MuiDialog-paper:where(.cr-h41) .MuiGrid2-root:has(> [role="tree"]) {
+	margin-left: -10px !important;
+	margin-right: 10px !important;
+	padding-left: 10px !important;
+	scrollbar-gutter: stable;
+	-webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 30px, #000 54px);
+	mask-image: linear-gradient(to bottom, transparent 0, transparent 30px, #000 54px);
+}
+
+html body .MuiDialog-paper:where(.cr-h41) [role="tree"] .MuiTreeItem-content {
+	border-radius: 999px !important;
+}
+
+html body .MuiDialog-paper:where(.cr-h41) [role="tree"] [role="group"] {
+	padding-left: 16px !important;
+}

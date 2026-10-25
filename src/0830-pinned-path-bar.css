@@ -1,0 +1,34 @@
+html:not(.cr-dock) body main > .MuiStack-root:has(> .cr-h72.cr-nav) {
+	padding-top: var(--cr-pb-h, 50px);
+}
+
+html:not(.cr-dock) body main > .MuiStack-root > .cr-h72.cr-nav {
+	position: fixed;
+	top: var(--cr-pb-top, 56px);
+	left: 0;
+	right: 0;
+	z-index: 1090;
+	padding-bottom: 6px;
+	background: var(--cr-bg);
+}
+
+html:not(.cr-dock) body main > .MuiStack-root > .cr-h72.cr-nav::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 1px;
+	background: var(--cr-sep);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.25s ease;
+}
+
+html.cr-scrolled:not(.cr-dock) body main > .MuiStack-root > .cr-h72.cr-nav::after {
+	opacity: 1;
+}
+
+html:not(.cr-dock):has(body main > .MuiStack-root > .cr-h72.cr-nav) header.MuiAppBar-root:not(.MuiDialog-root *)::after {
+	display: none;
+}

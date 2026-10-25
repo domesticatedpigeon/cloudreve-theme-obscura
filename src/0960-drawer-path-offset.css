@@ -1,0 +1,7 @@
+html.cr-dock.cr-swm:not(.cr-drawer-closed) .cr-nav.cr-tbp > .cr-lead {
+	display: none !important;
+}
+
+html.cr-dock.cr-swm:not(.cr-drawer-closed) .cr-nav.cr-tbp > .cr-path {
+	margin-left: 20px !important;
+}

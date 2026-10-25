@@ -1,0 +1,12 @@
+html.cr-dock .MuiDrawer-root.MuiDrawer-docked {
+	box-sizing: content-box !important;
+	padding-left: env(safe-area-inset-left, 0px);
+}
+
+html.cr-dock .MuiDrawer-root.MuiDrawer-docked > .MuiDrawer-paper {
+	left: env(safe-area-inset-left, 0px) !important;
+}
+
+html.cr-dock body main {
+	padding-right: env(safe-area-inset-right, 0px) !important;
+}

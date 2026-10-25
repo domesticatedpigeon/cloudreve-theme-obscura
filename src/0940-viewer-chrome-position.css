@@ -1,0 +1,28 @@
+html body .cr-vtop:not(.cr-m) {
+	top: calc(env(safe-area-inset-top) + 10px) !important;
+	left: 20px !important;
+	right: 20px !important;
+}
+
+html body .cr-vdock:not(.cr-m),
+html body .cr-legend {
+	bottom: 10px !important;
+}
+
+@media (hover: none) and (pointer: coarse), (max-width: 599px) {
+	html body .cr-vtop.cr-m {
+		top: calc(env(safe-area-inset-top) + 6px) !important;
+		left: 20px !important;
+		right: 20px !important;
+	}
+
+	html body .cr-vdock.cr-m {
+		left: 20px !important;
+		right: 20px !important;
+		bottom: var(--cr-fab-gap, 8px) !important;
+	}
+
+	html body .cr-vstrip {
+		bottom: calc(var(--cr-fab-gap, 8px) + 52px) !important;
+	}
+}

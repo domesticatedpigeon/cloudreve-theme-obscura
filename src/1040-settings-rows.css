@@ -1,0 +1,6 @@
+html.cr-settings body main .MuiContainer-root > .MuiBox-root:last-child .MuiGrid2-root > div > .MuiBox-root > .MuiBox-root:has(> .MuiFormControlLabel-root) {
+	flex-direction: column;
+	align-items: flex-start !important;
+	gap: 4px;
+	padding-left: 0 !important;
+}

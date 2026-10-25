@@ -1,0 +1,4 @@
+.MuiAvatar-root:has(> img[src*="/user/avatar/"]),
+header.MuiAppBar-root .MuiIconButton-root > .MuiAvatar-root.MuiAvatar-colorDefault {
+	background-color: rgba(var(--cr-spot-rgb), 0.12) !important;
+}

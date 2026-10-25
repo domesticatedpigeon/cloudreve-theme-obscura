@@ -1,0 +1,40 @@
+.MuiDialog-root:is(:has(.art-video-player), .cr-vdark) {
+	color-scheme: dark;
+	--cr-bg: #050505;
+	--cr-contrast: #ffffff;
+	--cr-sep: rgba(255, 255, 255, 0.1);
+	--cr-hover: rgba(255, 255, 255, 0.08);
+	--cr-icon: #ffffff;
+	--cr-menu-bg: rgba(16, 16, 16, 0.84);
+	--cr-spot-rgb: 255, 255, 255;
+	--cr-spot-max: 0.06;
+	--cr-raised: #161616;
+	--cr-tile: #121212;
+	--cr-tbp-bg: rgba(22, 22, 22, 0.62);
+	--cr-tbp-br: rgba(255, 255, 255, 0.1);
+}
+
+.MuiDialog-root:is(:has(.art-video-player), .cr-vdark) .MuiDialog-paper {
+	color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.MuiDialog-root:is(:has(.art-video-player), .cr-vdark) .MuiDialog-paper :is(.MuiDialogTitle-root, .MuiTypography-root, .MuiIconButton-root) {
+	color: inherit !important;
+}
+
+.art-video-player .art-loading > * {
+	display: none !important;
+}
+
+.art-video-player .art-loading {
+	align-items: center;
+	justify-content: center;
+}
+
+.art-video-player .art-loading::after {
+	content: "";
+	width: 36px;
+	height: 36px;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='white'%3E%3Cpath d='M16 0 A16 16 0 0 1 32 16 L28 16 A12 12 0 0 0 16 4z'/%3E%3C/svg%3E") center / contain no-repeat;
+	animation: cr-spin 0.6s linear infinite, cr-spin-in 0.3s ease 0.4s backwards;
+}

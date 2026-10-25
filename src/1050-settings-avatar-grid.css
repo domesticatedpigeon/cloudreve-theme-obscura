@@ -1,0 +1,24 @@
+@media (min-width: 600px) {
+	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root {
+		grid-template-columns: 160px 72px minmax(0, 1fr) !important;
+		grid-template-rows: auto !important;
+		column-gap: 16px !important;
+	}
+
+	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root > p {
+		grid-column: 1 !important;
+		grid-row: 1 !important;
+	}
+
+	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root {
+		grid-column: 2 !important;
+		grid-row: 1 !important;
+	}
+
+	html.cr-settings body main .MuiStack-root:has(> .MuiGrid2-container input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root:has(input[type="file"]) > .MuiGrid2-container > .MuiGrid2-root .MuiAvatar-root ~ .MuiButton-root {
+		grid-column: 3 !important;
+		grid-row: 1 !important;
+		align-self: center !important;
+		margin: 0 !important;
+	}
+}

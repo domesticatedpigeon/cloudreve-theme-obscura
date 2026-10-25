@@ -1,0 +1,17 @@
+html.cr-settings main :is(table, thead, tbody, tfoot, tr, th, td, .MuiTableContainer-root, .MuiTableRow-root, .MuiTableCell-root, [role="row"], [role="cell"], [role="columnheader"], [role="gridcell"]) {
+	border-color: var(--cr-tbp-br) !important;
+}
+
+html.cr-settings main .MuiDataGrid-root {
+	--DataGrid-rowBorderColor: var(--cr-tbp-br) !important;
+	--rowBorderColor: var(--cr-tbp-br) !important;
+}
+
+html.cr-settings main .MuiDataGrid-root :is(.MuiDataGrid-withBorderColor, .MuiDataGrid-cell, .MuiDataGrid-columnHeaders, .MuiDataGrid-columnHeader, .MuiDataGrid-row, .MuiDataGrid-footerContainer) {
+	border-color: var(--cr-tbp-br) !important;
+}
+
+html.cr-settings main :is(.MuiTableContainer-root, .MuiTable-root, .MuiPaper-root:has(> table)) :is(hr, .MuiDivider-root) {
+	border-color: var(--cr-tbp-br) !important;
+	background-color: var(--cr-tbp-br) !important;
+}

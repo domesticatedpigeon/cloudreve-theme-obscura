@@ -61,6 +61,7 @@ It is a single HTML that sits in the <strong>Custom footer HTML</strong> setting
 ```
 
 ## Development
-- `cloudreveCustomFooter.html` is the whole theme: a flat list of `<style>` and `<script>` blocks.
+- The theme source lives in `src/`, one file per `<style>` or `<script>` block, loaded in filename order.
+- `node build.mjs` joins it into `cloudreveCustomFooter.html`, the file the loader fetches. Commit both; CI fails if the built file is out of date.
 - [`architecture.md`](architecture.md) explains how each feature hooks into Cloudreve, and [`design-language.md`](design-language.md) lists the visual rules.
 - [`CLAUDE.md`](CLAUDE.md) covers conventions and how to test changes.
