@@ -814,12 +814,20 @@ html.cr-shares main .MuiContainer-maxWidthLg > .MuiBox-root:first-child .MuiTypo
 }
 
 .MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:nth-child(2):has(> .art-video-player) {
+	position: relative;
 	background: #000;
 }
 
-.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:nth-child(2) > .art-video-player:not(.art-fullscreen-web) {
+.MuiDialog-root .MuiDialog-paper:where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:nth-child(2) > .art-video-player:not(.art-fullscreen-web):not(.art-fullscreen) {
+	position: absolute !important;
+	inset: 0;
 	width: 100% !important;
 	height: 100% !important;
+}
+
+.MuiDialog-paper:has(> .MuiBox-root > .art-video-player:is(.art-fullscreen, .art-fullscreen-web)) {
+	backdrop-filter: none !important;
+	-webkit-backdrop-filter: none !important;
 }
 
 .MuiDialog-root .MuiDialog-paper:not(.MuiDialog-paperFullScreen):where(.cr-h73):not(.cr-x):not(.cr-x):not(.cr-x):not(.cr-x) > .MuiBox-root:nth-child(2):has(> .art-video-player) {

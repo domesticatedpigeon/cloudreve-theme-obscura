@@ -9,6 +9,7 @@ Customization theme for Cloudreve v4, delivered as one HTML file that runs in Cl
 - `architecture.md`: how each feature hooks into Cloudreve (fibers, store, viewer, layout modes, gotchas). Read the relevant section before touching a feature.
 - `design-language.md`: visual rules (colour, type, corners, spacing, motion). Every UI change must follow it.
 - `README.md`: install loader snippet and feature list.
+- `tools/`: dev-only scripts that run the theme in a real Cloudreve with headless Chromium (visual regression check, performance measurement, `:has()` lint). See `tools/README.md`.
 
 ## Runtime model
 - The README loader fetches the file, moves each `<style>` into `<head>` and re-creates each `<script>` from its `textContent` at the end of `<body>`. Consequences:
@@ -42,7 +43,8 @@ Customization theme for Cloudreve v4, delivered as one HTML file that runs in Cl
 5. Update `architecture.md` (behaviour, gotchas, why) and `design-language.md` (if a visual rule changed) in the same commit. Keep them as terse bullet lists.
 
 ## Testing
-- No linter or test suite. Validate by loading the file into a Cloudreve v4 instance (paste the README loader pointing at a served copy of the file, or paste the file directly into Custom footer HTML).
+- No unit tests. Validate in a real Cloudreve v4: `tools/cloudreve.sh start`, `node tools/serve.mjs`, `node tools/seed.mjs`, then browse it or run the checks in `tools/README.md`. For CSS or class tagger changes, run the visual regression check (capture before/after, `tools/compare.mjs`).
+- `node tools/lint-has.mjs` (CI) rejects whole-subtree `:has()` selectors.
 - `node build.mjs` syntax-checks every script and names the failing file.
 - Script cost per file: see `architecture.md` → Performance measurement (`localStorage cr-perf` + `crPerf()`).
 - Chromium + Playwright are available for screenshots; iOS Safari / Liquid Glass behaviour cannot be reproduced in Chrome (see `architecture.md` → iOS Safari).
