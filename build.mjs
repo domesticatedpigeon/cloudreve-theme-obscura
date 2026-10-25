@@ -25,7 +25,8 @@ const blocks = readdirSync(SRC).sort().map((file) => {
 		}
 	}
 	const tag = TAG[ext];
-	return `<${tag}>\n${body}</${tag}>`;
+	const url = ext === "js" ? `//# sourceURL=cr/${file}\n` : `/*# sourceURL=cr/${file} */\n`;
+	return `<${tag}>\n${body}${url}</${tag}>`;
 });
 
 if (errors.length) {

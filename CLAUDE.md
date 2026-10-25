@@ -43,4 +43,5 @@ Customization theme for Cloudreve v4, delivered as one HTML file that runs in Cl
 ## Testing
 - No linter or test suite. Validate by loading the file into a Cloudreve v4 instance (paste the README loader pointing at a served copy of the file, or paste the file directly into Custom footer HTML).
 - `node build.mjs` syntax-checks every script and names the failing file.
+- Script cost per file: see `architecture.md` → Performance measurement (`localStorage cr-perf` + `crPerf()`).
 - Chromium + Playwright are available for screenshots; iOS Safari / Liquid Glass behaviour cannot be reproduced in Chrome (see `architecture.md` → iOS Safari).

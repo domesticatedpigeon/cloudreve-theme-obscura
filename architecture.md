@@ -6,6 +6,13 @@
 - The built file stays committed because the README loader fetches it from raw.githubusercontent.com on main. It is marked linguist-generated so PR diffs focus on src/.
 - 0100-theme.css (~9k lines) and 0460-controls-settings.css interleave many features. Splitting them by feature means moving rules, and moving rules can change the cascade between equal-specificity selectors, so it needs visual checks in a real instance and is not done mechanically.
 - JS files keep their own IIFE wrapper so each file is valid on its own and the build stays a plain join.
+- The build appends `//# sourceURL=cr/<file>` (JS) and `/*# sourceURL=cr/<file> */` (CSS) to every block, so DevTools (Sources, Styles, Performance, stack traces) name the src file instead of anonymous VM scripts.
+
+## Performance measurement
+- src/0005-perf.js runs before every other script. Off unless localStorage cr-perf is set; when off it only reads that key.
+- When on, it wraps MutationObserver, ResizeObserver, setInterval, setTimeout and requestAnimationFrame, times every callback, and attributes it to the cr/<file> found in the stack where the observer/timer was created (via sourceURL). Callers outside the theme count as (cloudreve).
+- Use: `localStorage.setItem("cr-perf", "1"); location.reload()`, let the page settle, `crPerf(true)` (print and reset, drops boot work), interact, `crPerf()` (console.table per file and kind: calls, total ms, ms/s, max ms). Turn off with `localStorage.removeItem("cr-perf"); location.reload()`.
+- Measures callback time only. Style/layout work a callback forces is included; work it schedules runs in its own callback and is counted there.
 
 ## React and Redux access
 - All fiber, props, store and router lookups go through window.cr (src/0015-core.js, right after crT). Never read __reactFiber$/__reactProps$/__reactContainer$ keys elsewhere:
