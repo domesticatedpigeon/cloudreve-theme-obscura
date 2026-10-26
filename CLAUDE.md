@@ -34,6 +34,7 @@ Customization theme for Cloudreve v4, delivered as one HTML file that runs in Cl
 - `!important` is normal here (it has to beat MUI's emotion styles), but prefer a more specific existing hook over stacking more overrides.
 - UI strings: use Cloudreve's own i18n keys via `crT(key, englishFallback)` / `crT.set(el, …)`; CSS strings via `--cr-t-*` variables. Record new keys in `architecture.md` → Translations.
 - Style: tabs for indentation, double quotes, arrow functions, `const` by default, terse names matching nearby code, no comments. Wrap `localStorage`/`sessionStorage` access in `try/catch` (it throws in private modes).
+- iOS Liquid Glass status bar: Safari tints it from the first visible fixed/sticky element ≥90% wide at the top-centre of the page, and keeps the last one's colour while it still renders (a `<header>` even when `visibility: hidden`). To let content show under the bar, take full-width fixed bars out of rendering with `display: none`, not `visibility`/`opacity`. See `architecture.md` → iOS Safari / Liquid Glass.
 - Performance: observers must be cheap. Debounce with `requestAnimationFrame`/`setTimeout`, call `mo.takeRecords()` after self-induced mutations, cap per-frame work, and filter `attributeFilter` tightly.
 
 ## Making changes
