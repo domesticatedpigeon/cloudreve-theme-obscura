@@ -10815,11 +10815,12 @@ html.cr-pin-dragging * {
 		}
 		const mainBox = document.querySelector("main");
 		if (!nav) {
-			html.classList.remove("cr-sel");
+			html.classList.toggle("cr-sel", false);
 			if (lead && lead.parentElement) lead.remove();
 			const page = header && mainBox && window.innerWidth >= 600 ? mainBox.querySelector("div:has(> .MuiContainer-root)") || (/^\/(shares|profile)/.test(location.pathname) ? mainBox : null) : null;
 			if (!page) {
-				html.classList.remove("cr-dock", "cr-dock-page");
+				html.classList.toggle("cr-dock", false);
+				html.classList.toggle("cr-dock-page", false);
 				return;
 			}
 			const mr = mainBox.getBoundingClientRect();
@@ -10833,11 +10834,12 @@ html.cr-pin-dragging * {
 			html.style.setProperty("--cr-dock-h", dockGeo.h + "px");
 			html.style.setProperty("--cr-dock-right", window.innerWidth - mr.right + dockGeo.inset + 20 + "px");
 			html.style.setProperty("--cr-page-top", Math.round(2 * dockGeo.top + dockGeo.h) + "px");
-			html.classList.add("cr-dock", "cr-dock-page");
+			html.classList.toggle("cr-dock", true);
+			html.classList.toggle("cr-dock-page", true);
 			return;
 		}
-		html.classList.remove("cr-dock-page");
-		html.classList.add("cr-dock");
+		html.classList.toggle("cr-dock-page", false);
+		html.classList.toggle("cr-dock", true);
 		const selOn = !!(selBox && selBox.querySelector(".MuiButtonGroup-root"));
 		if (selBox) {
 			if (selOn) selBox.setAttribute("data-cr-selbar", "");
@@ -12660,7 +12662,7 @@ html.cr-pin-dragging * {
 		if (!settled) {
 			clearTimeout(openT);
 			openT = 0;
-			h.classList.remove("cr-vopen");
+			h.classList.toggle("cr-vopen", false);
 		} else if (!openT && !h.classList.contains("cr-vopen")) {
 			openT = setTimeout(() => {
 				if (document.querySelector(".PhotoView-Portal:not(.PhotoView-Slider__willClose)")) h.classList.add("cr-vopen");
@@ -13487,7 +13489,7 @@ html.cr-pin-dragging * {
 		});
 	};
 	const syncTop = (portal, show) => {
-		if (!showTop) {
+		if (!show) {
 			if (top) top.classList.remove("cr-on");
 			return;
 		}
@@ -13737,7 +13739,7 @@ html.cr-pin-dragging * {
 		syncChrome();
 		if (!document.querySelector(".PhotoView-Portal")) {
 			hideTip();
-			document.documentElement.classList.remove("cr-notip");
+			document.documentElement.classList.toggle("cr-notip", false);
 		}
 		document.querySelectorAll(".PhotoView-Slider__BannerRight > .MuiIconButton-root").forEach((b) => {
 			if (b.querySelector('path[d^="' + CLP + '"]') && !b.dataset.crTip) {
@@ -18498,7 +18500,8 @@ html:not(.cr-bnav-on) body .cr-bnav.cr-tbp-m.cr-tbp-m.cr-tbp-m.cr-tbp-m {
 		bar.querySelectorAll(":scope > .cr-bnav-i").forEach((b, i) => {
 			const sel = location.pathname.startsWith("/home") && TABS[i].match(p);
 			if (b.classList.contains("Mui-selected") !== sel) b.classList.toggle("Mui-selected", sel);
-			b.setAttribute("aria-current", sel ? "page" : "false");
+			const cur = sel ? "page" : "false";
+			if (b.getAttribute("aria-current") !== cur) b.setAttribute("aria-current", cur);
 		});
 	};
 	cr.onDom(sync);

@@ -55,7 +55,8 @@
 		bar.querySelectorAll(":scope > .cr-bnav-i").forEach((b, i) => {
 			const sel = location.pathname.startsWith("/home") && TABS[i].match(p);
 			if (b.classList.contains("Mui-selected") !== sel) b.classList.toggle("Mui-selected", sel);
-			b.setAttribute("aria-current", sel ? "page" : "false");
+			const cur = sel ? "page" : "false";
+			if (b.getAttribute("aria-current") !== cur) b.setAttribute("aria-current", cur);
 		});
 	};
 	cr.onDom(sync);

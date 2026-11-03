@@ -82,7 +82,7 @@
 		if (!settled) {
 			clearTimeout(openT);
 			openT = 0;
-			h.classList.remove("cr-vopen");
+			h.classList.toggle("cr-vopen", false);
 		} else if (!openT && !h.classList.contains("cr-vopen")) {
 			openT = setTimeout(() => {
 				if (document.querySelector(".PhotoView-Portal:not(.PhotoView-Slider__willClose)")) h.classList.add("cr-vopen");
@@ -909,7 +909,7 @@
 		});
 	};
 	const syncTop = (portal, show) => {
-		if (!showTop) {
+		if (!show) {
 			if (top) top.classList.remove("cr-on");
 			return;
 		}
@@ -1159,7 +1159,7 @@
 		syncChrome();
 		if (!document.querySelector(".PhotoView-Portal")) {
 			hideTip();
-			document.documentElement.classList.remove("cr-notip");
+			document.documentElement.classList.toggle("cr-notip", false);
 		}
 		document.querySelectorAll(".PhotoView-Slider__BannerRight > .MuiIconButton-root").forEach((b) => {
 			if (b.querySelector('path[d^="' + CLP + '"]') && !b.dataset.crTip) {
