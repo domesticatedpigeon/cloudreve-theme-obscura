@@ -1,14 +1,5 @@
 (() => {
 	const COPY = "M5.503 4.627 5.5 6.75v10.504a3.25 3.25 0 0 0 3.25 3.25h8.616a2.251 2.251 0 0 1-2.122 1.5H8.75A4.75 4.75 0 0 1 4 17.254V6.75c0-.98.627-1.815 1.503-2.123ZM17.75 2A2.25 2.25 0 0 1 20 4.25v13a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-13A2.25 2.25 0 0 1 8.75 2h9Zm0 1.5h-9a.75.75 0 0 0-.75.75v13c0 .414.336.75.75.75h9a.75.75 0 0 0 .75-.75v-13a.75.75 0 0 0-.75-.75Z";
-	const i18n = (ns, path, fb) => {
-		try {
-			const o = JSON.parse(localStorage.getItem("i18next_res_" + (localStorage.getItem("i18nextLng") || "en-US") + "-" + ns) || "{}");
-			const v = path.split(".").reduce((a, k) => a && a[k], o);
-			return typeof v === "string" ? v : fb;
-		} catch (e) {
-			return fb;
-		}
-	};
 	let snk = null;
 	const notify = () => {
 		const cur = cr.rootFiber();
@@ -29,8 +20,8 @@
 		const T = cur.memoizedState && cur.memoizedState.element && cur.memoizedState.element.$$typeof;
 		if (!snk || !T) return;
 		const inst = snk;
-		inst.enqueueSnackbar(i18n("application", "setting.copied", "Copied to clipboard."), {
-			action: (key) => ({ $$typeof: T, type: "button", key: null, ref: null, _owner: null, props: { type: "button", className: "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeSmall MuiButton-colorInherit cr-snackbtn", onClick: () => inst.closeSnackbar(key), children: i18n("common", "dismiss", "Dismiss") } }),
+		inst.enqueueSnackbar(crT("setting.copied", "Copied to clipboard."), {
+			action: (key) => ({ $$typeof: T, type: "button", key: null, ref: null, _owner: null, props: { type: "button", className: "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeSmall MuiButton-colorInherit cr-snackbtn", onClick: () => inst.closeSnackbar(key), children: crT("common:dismiss", "Dismiss") } }),
 		});
 	};
 	const isShare = (v) => v && typeof v === "object" && typeof v.id === "string" && "visited" in v;
@@ -57,17 +48,17 @@
 		}
 		return "";
 	};
-	const copy = (text) => {
-		if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+	const copyLegacy = (text) => {
 		const ta = document.createElement("textarea");
 		ta.value = text;
 		ta.style.cssText = "position:fixed;opacity:0";
 		document.body.appendChild(ta);
 		ta.select();
-		document.execCommand("copy");
+		const ok = document.execCommand("copy");
 		ta.remove();
-		return Promise.resolve();
+		return ok ? Promise.resolve() : Promise.reject(new Error("copy failed"));
 	};
+	const copy = (text) => (navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(text).catch(() => copyLegacy(text)) : copyLegacy(text));
 	const inject = () => {
 		document.querySelectorAll(".MuiDialog-root tbody > tr > :first-child .MuiIconButton-root:not(.cr-copylink)").forEach((more) => {
 			if (more.nextElementSibling && more.nextElementSibling.classList.contains("cr-copylink")) return;
@@ -83,7 +74,7 @@
 			b.addEventListener("click", (e) => {
 				e.stopPropagation();
 				const url = shareOf(tr);
-				if (url) copy(url).then(notify);
+				if (url) copy(url).then(notify, () => {});
 			});
 			more.after(b);
 		});

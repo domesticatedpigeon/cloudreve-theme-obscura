@@ -30,6 +30,7 @@
 		return hit;
 	};
 	let chromeOn = false;
+	let bgSet = "";
 	let openT = 0;
 	let metaPrev = null;
 	let metaTo = null;
@@ -93,6 +94,7 @@
 			if (!chromeOn) return;
 			chromeOn = false;
 			h.classList.remove("cr-vtint");
+			bgSet = "";
 			h.style.removeProperty("background-color");
 			document.body.style.removeProperty("background-color");
 			if (meta && metaPrev !== null) setMeta(meta, metaPrev, mob);
@@ -113,9 +115,11 @@
 		h.style.setProperty("--cr-vbgc", c);
 		h.classList.add("cr-vtint");
 		if (mob) {
+			bgSet = "";
 			h.style.removeProperty("background-color");
 			document.body.style.removeProperty("background-color");
-		} else if (h.style.backgroundColor !== c) {
+		} else if (bgSet !== c) {
+			bgSet = c;
 			h.style.setProperty("background-color", c, "important");
 			document.body.style.setProperty("background-color", c, "important");
 		}
@@ -749,12 +753,10 @@
 				if (portal.isConnected) playHint(portal);
 			}, 350);
 		}
-		if (!portal) hintFor = null;
 		const showTop = !!portal && !!portal.querySelector(".PhotoView-Slider__BannerWrap") && !portal.classList.contains("PhotoView-Slider__willClose");
-		const show = showTop;
 		syncTop(portal, showTop);
 		if (!showTop && strip) strip.classList.remove("cr-on");
-		if (!show) {
+		if (!showTop) {
 			if (dock) dock.classList.remove("cr-on");
 			if (bgPop) {
 				bgPop = false;
@@ -823,7 +825,7 @@
 		more.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window, clientX: r.left, clientY: r.bottom }));
 		const t0 = performance.now();
 		const look = () => {
-			const it = [...document.querySelectorAll('.MuiPopover-root [role="menu"] [role="menuitem"]')].find((m) => /^\s*rename\s*$/i.test(m.textContent || ""));
+			const it = [...document.querySelectorAll('.MuiPopover-root [role="menu"] [role="menuitem"]')].find((m) => crT.is(m.textContent, "fileManager.rename", "Rename"));
 			if (it) {
 				it.click();
 				setTimeout(() => html.classList.remove("cr-ghostmenu"), 250);
@@ -907,7 +909,7 @@
 		});
 	};
 	const syncTop = (portal, show) => {
-		if (!show) {
+		if (!showTop) {
 			if (top) top.classList.remove("cr-on");
 			return;
 		}
@@ -1162,7 +1164,7 @@
 		document.querySelectorAll(".PhotoView-Slider__BannerRight > .MuiIconButton-root").forEach((b) => {
 			if (b.querySelector('path[d^="' + CLP + '"]') && !b.dataset.crTip) {
 				b.dataset.crTip = "1";
-				b.addEventListener("mouseenter", () => showTip(b, "Close"));
+				b.addEventListener("mouseenter", () => showTip(b, crT("common:close", "Close")));
 				b.addEventListener("mouseleave", hideTip);
 				b.addEventListener("click", hideTip);
 			}
@@ -1178,7 +1180,7 @@
 			if (!b.querySelector(":scope > .cr-dl-t")) {
 				const t = document.createElement("span");
 				t.className = "cr-dl-t";
-				t.textContent = "Download";
+				crT.set(t, "fileManager.download", "Download");
 				b.appendChild(t);
 			}
 		});

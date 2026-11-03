@@ -315,6 +315,13 @@
 			{ passive: false }
 		);
 		sc.addEventListener(
+			"touchcancel",
+			(e) => {
+				if (z === cur && e.touches.length < 2) cur.pinch = null;
+			},
+			{ passive: true }
+		);
+		sc.addEventListener(
 			"touchend",
 			(e) => {
 				if (z !== cur || cur.mode !== "scroll") return;
@@ -429,6 +436,13 @@
 			if (z && z.mode === "scroll") return;
 			cancelAnimationFrame(checkT);
 			checkT = requestAnimationFrame(watch);
+		},
+		{ capture: true, passive: true }
+	);
+	window.addEventListener(
+		"touchcancel",
+		(e) => {
+			if (!e.touches.length && z && z.mode === "mirror") z.touching = false;
 		},
 		{ capture: true, passive: true }
 	);

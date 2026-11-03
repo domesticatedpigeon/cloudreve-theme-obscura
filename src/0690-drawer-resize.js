@@ -1,29 +1,29 @@
 (() => {
-	const RESIZE = /cursor:\s*(col-resize|ew-resize|e-resize|w-resize)/;
+	const RESIZE = /^(col|ew|e|w)-resize$/;
 	const ONLY = /^\.css-[\w-]+(?::{1,2}[\w-]+(?:\([^)]*\))?)*$/;
 	const found = new Set();
 	let style = null;
 	let seen = 0;
 	const scan = () => {
+		const sheets = [];
 		let n = 0;
 		for (const sh of document.styleSheets) {
-			let rules;
 			try {
-				rules = sh.cssRules;
-			} catch (e) {
-				continue;
-			}
-			n += rules.length;
+				n += sh.cssRules.length;
+				sheets.push(sh.cssRules);
+			} catch (e) {}
+		}
+		if (n === seen) return;
+		seen = n;
+		for (const rules of sheets) {
 			for (const r of rules) {
-				if (!r.selectorText || !RESIZE.test(r.cssText)) continue;
+				if (!r.selectorText || !r.style || !RESIZE.test(r.style.cursor)) continue;
 				r.selectorText.split(",").forEach((sel) => {
 					sel = sel.trim();
 					if (ONLY.test(sel)) found.add(sel.replace(/:.*$/, ""));
 				});
 			}
 		}
-		if (n === seen) return;
-		seen = n;
 		if (!found.size) return;
 		if (!style) {
 			style = document.createElement("style");

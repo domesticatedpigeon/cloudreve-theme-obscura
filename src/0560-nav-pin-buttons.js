@@ -34,7 +34,7 @@
 	const make = (more, cls, key, label, d, re) => {
 		const b = document.createElement("button");
 		b.type = "button";
-		b.className = more.className.replace("cr-more-hide", "") + " " + cls;
+		b.className = more.className + " " + cls;
 		crT.set(b, key, label, "title");
 		crT.set(b, key, label, "aria");
 		b.innerHTML = '<svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall" viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '"></path></svg>';
@@ -47,7 +47,6 @@
 	const inject = () => {
 		const share = onShare() && loggedIn();
 		document.querySelectorAll(".cr-nav .MuiButtonGroup-root > .MuiButtonBase-root:not(.cr-pinbtn):has(" + MORE + ")").forEach((more) => {
-			more.classList.add("cr-more-hide");
 			const box = more.parentElement;
 			let pb = box.querySelector(":scope > .cr-pinbtn:not(.cr-linkbtn)");
 			if (!pb) {

@@ -613,7 +613,6 @@ body,
 	add("https://fonts.gstatic.com", "preconnect");
 	add("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 	add("https://fonts.googleapis.com/css2?family=Boldonse&display=swap");
-	add("https://cdn.jsdelivr.net/npm/@fontsource/boldonse@5/index.css");
 	if (document.fonts && document.fonts.load) document.fonts.load('400 24px "Boldonse"').catch(() => {});
 })();
 //# sourceURL=cr/0080-fonts.js
@@ -9856,54 +9855,6 @@ html.cr-pin-dragging * {
 </script>
 <script>
 (() => {
-	const FACTOR = 1;
-	const PILL = 999;
-	const px = (v) => v.replace(/(\d*\.?\d+)px/g, (m, n) => {
-		const value = parseFloat(n);
-		return (value >= 999 ? PILL : Math.round(value * FACTOR * 2) / 2) + "px";
-	});
-	const scaleText = (text) => text.replace(/(border(?:-(?:top|bottom)-(?:left|right))?-radius\s*:\s*)([^;}]+)/gi, (m, prop, value) => prop + px(value));
-	const done = new WeakSet();
-	const scaleRules = (rules) => {
-		for (const rule of rules) {
-			if (done.has(rule)) continue;
-			done.add(rule);
-			if (rule.selectorText && /\.cr-(v|legend|wrap-toast|tip|tbp)|cr-selbar/.test(rule.selectorText)) continue;
-			if (rule.style) {
-				for (let i = 0; i < rule.style.length; i++) {
-					const name = rule.style[i];
-					if (name.includes("radius")) {
-						rule.style.setProperty(name, px(rule.style.getPropertyValue(name)), rule.style.getPropertyPriority(name));
-					}
-				}
-			}
-			if (rule.cssRules) scaleRules(rule.cssRules);
-		}
-	};
-	const scaleSheet = (sheet) => {
-		try {
-			scaleRules(sheet.cssRules);
-		} catch (e) {}
-	};
-	const insertRule = CSSStyleSheet.prototype.insertRule;
-	CSSStyleSheet.prototype.insertRule = function (rule, index) {
-		const i = insertRule.call(this, typeof rule === "string" ? scaleText(rule) : rule, index);
-		try {
-			done.add(this.cssRules[i]);
-		} catch (e) {}
-		return i;
-	};
-	const scaleAll = () => {
-		for (const sheet of document.styleSheets) scaleSheet(sheet);
-	};
-	scaleAll();
-	new MutationObserver(scaleAll).observe(document.head, { childList: true, subtree: true, characterData: true });
-	document.addEventListener("DOMContentLoaded", scaleAll);
-})();
-//# sourceURL=cr/0120-corner-radius-scale.js
-</script>
-<script>
-(() => {
 	const label = (li) => {
 		const file = cr.fileOf(li);
 		let el = li.querySelector(":scope > .cr-gallery-name");
@@ -9985,6 +9936,7 @@ html.cr-pin-dragging * {
 		});
 	};
 	let menuTimer = null;
+	let menuGiveUp = null;
 	let pointer = { x: -1, y: -1 };
 	document.addEventListener("mousemove", (e) => {
 		pointer = { x: e.clientX, y: e.clientY };
@@ -10001,6 +9953,7 @@ html.cr-pin-dragging * {
 		document.querySelectorAll(".cr-menu-open").forEach((x) => x !== li && x.classList.remove("cr-menu-open"));
 		li.classList.add("cr-menu-open");
 		clearInterval(menuTimer);
+		clearTimeout(menuGiveUp);
 		let seen = false;
 		menuTimer = setInterval(() => {
 			const open = [...document.querySelectorAll(".MuiMenu-root")].some((m) => getComputedStyle(m).visibility !== "hidden" && m.getAttribute("aria-hidden") !== "true");
@@ -10010,7 +9963,7 @@ html.cr-pin-dragging * {
 				clearInterval(menuTimer);
 			}
 		}, 150);
-		setTimeout(() => {
+		menuGiveUp = setTimeout(() => {
 			if (!seen) {
 				li.classList.remove("cr-menu-open");
 				clearInterval(menuTimer);
@@ -10034,6 +9987,7 @@ html.cr-pin-dragging * {
 </script>
 <script>
 (() => {
+	const coarse = matchMedia("(pointer: coarse)");
 	const iconFiber = (el) => cr.upFiber(el, (p) => p.file && p.file.path && ("selected" in p || ("isSelected" in p && "noThumb" in p)));
 	const hostOf = (f) => {
 		let h = f.child;
@@ -10057,7 +10011,7 @@ html.cr-pin-dragging * {
 			setHovered(cur.path, false);
 			cur = null;
 		}
-		if (!t || matchMedia("(pointer: coarse)").matches) return;
+		if (!t || coarse.matches) return;
 		const f = iconFiber(t);
 		if (!f) return;
 		const host = hostOf(f);
@@ -11269,6 +11223,10 @@ html.cr-pin-dragging * {
 	["mousemove", "mouseup"].forEach((type) => {
 		window.addEventListener(type, (e) => {
 			if (!drag || !e.isTrusted) return;
+			if (type === "mousemove" && !(e.buttons & 1)) {
+				drag = null;
+				return;
+			}
 			const sl = drag;
 			if (type === "mouseup") drag = null;
 			e.stopImmediatePropagation();
@@ -11735,9 +11693,9 @@ html.cr-pin-dragging * {
 	}, { capture: true, passive: false });
 	window.addEventListener("resize", close);
 	window.addEventListener("blur", close);
-	new MutationObserver(() => {
+	cr.onDom(() => {
 		if (menu && !document.querySelector(".PhotoView-Portal")) close();
-	}).observe(document.body, { childList: true, subtree: true });
+	});
 })();
 //# sourceURL=cr/0270-viewer-context-menu.js
 </script>
@@ -12084,7 +12042,7 @@ html.cr-pin-dragging * {
 		P.timer = setTimeout(settle, 120);
 	};
 	window.addEventListener("wheel", (e) => {
-		if (synth.has(e) || e.crSynth) return;
+		if (synth.has(e) || e.crSynth || !document.querySelector(".PhotoView-Portal")) return;
 		const under = document.elementFromPoint(e.clientX, e.clientY);
 		const t = under || (e.target instanceof Element && e.target.isConnected ? e.target : null);
 		const portal = (t && t.closest(".PhotoView-Portal")) || (e.target instanceof Element && !e.target.isConnected ? document.querySelector(".PhotoView-Portal") : null);
@@ -12298,11 +12256,13 @@ html.cr-pin-dragging * {
 		down = true;
 		glyph();
 	}, true);
-	window.addEventListener("pointerup", () => {
+	const release = () => {
 		if (!down) return;
 		down = false;
 		glyph();
-	}, true);
+	};
+	window.addEventListener("pointerup", release, true);
+	window.addEventListener("pointercancel", release, true);
 	const reeval = () => {
 		const portal = portalEl();
 		if (!on || !portal || !lastPt) return;
@@ -12317,11 +12277,11 @@ html.cr-pin-dragging * {
 		clearTimeout(reT);
 		reT = setTimeout(reeval, 200);
 	}, { capture: true, passive: true });
-	document.addEventListener("mouseleave", hide);
+	document.documentElement.addEventListener("mouseleave", hide);
 	window.addEventListener("blur", hide);
-	new MutationObserver(() => {
+	cr.onDom(() => {
 		if (on && !portalEl()) hide();
-	}).observe(document.body, { childList: true, subtree: true });
+	});
 })();
 //# sourceURL=cr/0300-viewer-cursors-legend.js
 </script>
@@ -12538,8 +12498,9 @@ html.cr-pin-dragging * {
 </script>
 <script>
 (() => {
+	const papers = document.getElementsByClassName("cr-h41");
 	const tag = () => {
-		document.querySelectorAll('.MuiDialog-paper:has([role="tree"]) .MuiDialogContent-root .MuiStack-root').forEach((st) => {
+		document.querySelectorAll(".MuiDialog-paper.cr-h41 .MuiDialogContent-root .MuiStack-root").forEach((st) => {
 			if (st.classList.contains("cr-subnav")) return;
 			const kids = [...st.children];
 			if (kids.length < 2 || !kids.some((k) => k.querySelector(".MuiButtonGroup-root"))) return;
@@ -12548,7 +12509,7 @@ html.cr-pin-dragging * {
 			st.classList.add("cr-subnav");
 			first.classList.add("cr-path");
 		});
-		document.querySelectorAll('.MuiDialog-paper:has([role="tree"])').forEach((paper) => {
+		[...papers].forEach((paper) => {
 			const title = paper.querySelector(".MuiDialogTitle-root");
 			const nav = paper.querySelector(".cr-subnav");
 			if (title && nav) {
@@ -12575,10 +12536,6 @@ html.cr-pin-dragging * {
 			}
 		});
 	};
-	let papers = [];
-	setInterval(() => {
-		papers = [...document.querySelectorAll('.MuiDialog-paper:has([role="tree"])')];
-	}, 300);
 	let lastX = 0;
 	let lastY = 0;
 	let queued = false;
@@ -12587,7 +12544,7 @@ html.cr-pin-dragging * {
 		const x = lastX;
 		const y = lastY;
 		const jobs = [];
-		papers.forEach((paper) => {
+		[...papers].forEach((paper) => {
 			if (!paper.isConnected) return;
 			const r = paper.getBoundingClientRect();
 			const tiles = [...paper.querySelectorAll("[data-rect-id]")];
@@ -12613,7 +12570,7 @@ html.cr-pin-dragging * {
 		requestAnimationFrame(frame);
 	}, { capture: true, passive: true });
 	setInterval(() => {
-		if (document.querySelector(".MuiDialog-root")) tag();
+		if (papers.length) tag();
 	}, 250);
 })();
 //# sourceURL=cr/0370-copy-move-dialog.js
@@ -12651,6 +12608,7 @@ html.cr-pin-dragging * {
 		return hit;
 	};
 	let chromeOn = false;
+	let bgSet = "";
 	let openT = 0;
 	let metaPrev = null;
 	let metaTo = null;
@@ -12714,6 +12672,7 @@ html.cr-pin-dragging * {
 			if (!chromeOn) return;
 			chromeOn = false;
 			h.classList.remove("cr-vtint");
+			bgSet = "";
 			h.style.removeProperty("background-color");
 			document.body.style.removeProperty("background-color");
 			if (meta && metaPrev !== null) setMeta(meta, metaPrev, mob);
@@ -12734,9 +12693,11 @@ html.cr-pin-dragging * {
 		h.style.setProperty("--cr-vbgc", c);
 		h.classList.add("cr-vtint");
 		if (mob) {
+			bgSet = "";
 			h.style.removeProperty("background-color");
 			document.body.style.removeProperty("background-color");
-		} else if (h.style.backgroundColor !== c) {
+		} else if (bgSet !== c) {
+			bgSet = c;
 			h.style.setProperty("background-color", c, "important");
 			document.body.style.setProperty("background-color", c, "important");
 		}
@@ -13370,12 +13331,10 @@ html.cr-pin-dragging * {
 				if (portal.isConnected) playHint(portal);
 			}, 350);
 		}
-		if (!portal) hintFor = null;
 		const showTop = !!portal && !!portal.querySelector(".PhotoView-Slider__BannerWrap") && !portal.classList.contains("PhotoView-Slider__willClose");
-		const show = showTop;
 		syncTop(portal, showTop);
 		if (!showTop && strip) strip.classList.remove("cr-on");
-		if (!show) {
+		if (!showTop) {
 			if (dock) dock.classList.remove("cr-on");
 			if (bgPop) {
 				bgPop = false;
@@ -13444,7 +13403,7 @@ html.cr-pin-dragging * {
 		more.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window, clientX: r.left, clientY: r.bottom }));
 		const t0 = performance.now();
 		const look = () => {
-			const it = [...document.querySelectorAll('.MuiPopover-root [role="menu"] [role="menuitem"]')].find((m) => /^\s*rename\s*$/i.test(m.textContent || ""));
+			const it = [...document.querySelectorAll('.MuiPopover-root [role="menu"] [role="menuitem"]')].find((m) => crT.is(m.textContent, "fileManager.rename", "Rename"));
 			if (it) {
 				it.click();
 				setTimeout(() => html.classList.remove("cr-ghostmenu"), 250);
@@ -13528,7 +13487,7 @@ html.cr-pin-dragging * {
 		});
 	};
 	const syncTop = (portal, show) => {
-		if (!show) {
+		if (!showTop) {
 			if (top) top.classList.remove("cr-on");
 			return;
 		}
@@ -13783,7 +13742,7 @@ html.cr-pin-dragging * {
 		document.querySelectorAll(".PhotoView-Slider__BannerRight > .MuiIconButton-root").forEach((b) => {
 			if (b.querySelector('path[d^="' + CLP + '"]') && !b.dataset.crTip) {
 				b.dataset.crTip = "1";
-				b.addEventListener("mouseenter", () => showTip(b, "Close"));
+				b.addEventListener("mouseenter", () => showTip(b, crT("common:close", "Close")));
 				b.addEventListener("mouseleave", hideTip);
 				b.addEventListener("click", hideTip);
 			}
@@ -13799,7 +13758,7 @@ html.cr-pin-dragging * {
 			if (!b.querySelector(":scope > .cr-dl-t")) {
 				const t = document.createElement("span");
 				t.className = "cr-dl-t";
-				t.textContent = "Download";
+				crT.set(t, "fileManager.download", "Download");
 				b.appendChild(t);
 			}
 		});
@@ -14240,7 +14199,7 @@ html.cr-pin-dragging * {
 			const r = g.getBoundingClientRect();
 			g.style.setProperty("--cr-px", e.clientX - r.left + "px");
 			g.style.setProperty("--cr-py", e.clientY - r.top + "px");
-			g.classList.add("cr-spot-on");
+			if (!g.classList.contains("cr-spot-on")) g.classList.add("cr-spot-on");
 		});
 	}, { passive: true });
 	document.addEventListener("pointerleave", off);
@@ -14253,6 +14212,9 @@ html.cr-pin-dragging * {
 	const mq = matchMedia("(max-width: 599.95px)");
 	const tag = (el, c) => {
 		if (el && !el.classList.contains(c)) el.classList.add(c);
+	};
+	const untag = (el, c) => {
+		if (el && el.classList.contains(c)) el.classList.remove(c);
 	};
 	const fadeBc = (sc) => {
 		const max = sc.scrollWidth - sc.clientWidth;
@@ -14300,9 +14262,9 @@ html.cr-pin-dragging * {
 			const rs = tb.lastElementChild;
 			if (rs && rs.classList.contains("MuiStack-root")) {
 				[...rs.querySelectorAll(".MuiIconButton-root")].forEach((b) => {
-					if (b.querySelector(".MuiAvatar-root, .MuiSkeleton-root")) b.classList.remove("cr-tbp-mc");
+					if (b.querySelector(".MuiAvatar-root, .MuiSkeleton-root")) untag(b, "cr-tbp-mc");
 					else if (b.querySelector(':scope > svg > path[d^="M11.883 3.007"]')) {
-						b.classList.remove("cr-tbp-mc");
+						untag(b, "cr-tbp-mc");
 						tag(b, "cr-lp");
 						tag(b, "cr-new");
 					} else tag(b, "cr-tbp-mc");
@@ -14636,7 +14598,7 @@ html.cr-pin-dragging * {
 			const path = document.createElementNS(NS, "path");
 			svg.appendChild(path);
 			p.appendChild(svg);
-			items.set(p, { svg, path, w: 0, k: 0, v: 0, ph: 0, lt: 0 });
+			items.set(p, { svg, path, d: "", w: 0, k: 0, v: 0, ph: 0, lt: 0 });
 		});
 		for (const [p, it] of items) if (!p.isConnected) items.delete(p);
 	};
@@ -14683,7 +14645,10 @@ html.cr-pin-dragging * {
 				const y = mid + amp * breathe * e * Math.sin((2 * Math.PI * x) / lambda - phase);
 				d += "L" + x.toFixed(1) + " " + y.toFixed(2);
 			}
-			it.path.setAttribute("d", d);
+			if (it.d !== d) {
+				it.d = d;
+				it.path.setAttribute("d", d);
+			}
 			p.style.setProperty("--cr-wave-w", W.toFixed(1) + "px");
 		}
 		requestAnimationFrame(draw);
@@ -16323,7 +16288,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 	const make = (more, cls, key, label, d, re) => {
 		const b = document.createElement("button");
 		b.type = "button";
-		b.className = more.className.replace("cr-more-hide", "") + " " + cls;
+		b.className = more.className + " " + cls;
 		crT.set(b, key, label, "title");
 		crT.set(b, key, label, "aria");
 		b.innerHTML = '<svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall" viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '"></path></svg>';
@@ -16336,7 +16301,6 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 	const inject = () => {
 		const share = onShare() && loggedIn();
 		document.querySelectorAll(".cr-nav .MuiButtonGroup-root > .MuiButtonBase-root:not(.cr-pinbtn):has(" + MORE + ")").forEach((more) => {
-			more.classList.add("cr-more-hide");
 			const box = more.parentElement;
 			let pb = box.querySelector(":scope > .cr-pinbtn:not(.cr-linkbtn)");
 			if (!pb) {
@@ -16447,7 +16411,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		return Math.round(b) + " " + U[i];
 	};
 	const run = () => {
-		document.querySelectorAll(":is(.MuiDrawer-paper, .MuiPopover-paper) div:has(> .MuiLinearProgress-root)").forEach((box) => {
+		document.querySelectorAll(".cr-h47").forEach((box) => {
 			const cap = box.querySelector(":scope > .MuiTypography-caption");
 			if (!cap) return;
 			const raw = cap.textContent || "";
@@ -16456,7 +16420,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			const used0 = parts[0].trim();
 			const used = toBytes(used0) != null ? fmt(toBytes(used0)) : used0;
 			const total = parts.slice(1).join("/").trim();
-			const ub = toBytes(used);
+			const ub = toBytes(used0);
 			const tb = toBytes(total);
 			const free = ub != null && tb != null ? fmt(Math.max(0, tb - ub)) : "";
 			const key = raw;
@@ -16637,15 +16601,6 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		st = { bd, portal, saved: null, orig };
 		size();
 		if (document.documentElement.classList.contains("cr-vopen")) unclip();
-	};
-	let q = false;
-	const queue = () => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			lift();
-		});
 	};
 	cr.onDom(lift);
 	new MutationObserver(lift).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
@@ -16985,6 +16940,13 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			{ passive: false }
 		);
 		sc.addEventListener(
+			"touchcancel",
+			(e) => {
+				if (z === cur && e.touches.length < 2) cur.pinch = null;
+			},
+			{ passive: true }
+		);
+		sc.addEventListener(
 			"touchend",
 			(e) => {
 				if (z !== cur || cur.mode !== "scroll") return;
@@ -17102,6 +17064,13 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		},
 		{ capture: true, passive: true }
 	);
+	window.addEventListener(
+		"touchcancel",
+		(e) => {
+			if (!e.touches.length && z && z.mode === "mirror") z.touching = false;
+		},
+		{ capture: true, passive: true }
+	);
 	const guard = () => {
 		if (!z) return;
 		if (!z.portal.isConnected || z.portal.classList.contains("PhotoView-Slider__willClose") || !z.box.isConnected || activeBox(z.portal) !== z.box) finish(true);
@@ -17189,15 +17158,6 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 <script>
 (() => {
 	const COPY = "M5.503 4.627 5.5 6.75v10.504a3.25 3.25 0 0 0 3.25 3.25h8.616a2.251 2.251 0 0 1-2.122 1.5H8.75A4.75 4.75 0 0 1 4 17.254V6.75c0-.98.627-1.815 1.503-2.123ZM17.75 2A2.25 2.25 0 0 1 20 4.25v13a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-13A2.25 2.25 0 0 1 8.75 2h9Zm0 1.5h-9a.75.75 0 0 0-.75.75v13c0 .414.336.75.75.75h9a.75.75 0 0 0 .75-.75v-13a.75.75 0 0 0-.75-.75Z";
-	const i18n = (ns, path, fb) => {
-		try {
-			const o = JSON.parse(localStorage.getItem("i18next_res_" + (localStorage.getItem("i18nextLng") || "en-US") + "-" + ns) || "{}");
-			const v = path.split(".").reduce((a, k) => a && a[k], o);
-			return typeof v === "string" ? v : fb;
-		} catch (e) {
-			return fb;
-		}
-	};
 	let snk = null;
 	const notify = () => {
 		const cur = cr.rootFiber();
@@ -17218,8 +17178,8 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		const T = cur.memoizedState && cur.memoizedState.element && cur.memoizedState.element.$$typeof;
 		if (!snk || !T) return;
 		const inst = snk;
-		inst.enqueueSnackbar(i18n("application", "setting.copied", "Copied to clipboard."), {
-			action: (key) => ({ $$typeof: T, type: "button", key: null, ref: null, _owner: null, props: { type: "button", className: "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeSmall MuiButton-colorInherit cr-snackbtn", onClick: () => inst.closeSnackbar(key), children: i18n("common", "dismiss", "Dismiss") } }),
+		inst.enqueueSnackbar(crT("setting.copied", "Copied to clipboard."), {
+			action: (key) => ({ $$typeof: T, type: "button", key: null, ref: null, _owner: null, props: { type: "button", className: "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeSmall MuiButton-colorInherit cr-snackbtn", onClick: () => inst.closeSnackbar(key), children: crT("common:dismiss", "Dismiss") } }),
 		});
 	};
 	const isShare = (v) => v && typeof v === "object" && typeof v.id === "string" && "visited" in v;
@@ -17246,17 +17206,17 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		}
 		return "";
 	};
-	const copy = (text) => {
-		if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+	const copyLegacy = (text) => {
 		const ta = document.createElement("textarea");
 		ta.value = text;
 		ta.style.cssText = "position:fixed;opacity:0";
 		document.body.appendChild(ta);
 		ta.select();
-		document.execCommand("copy");
+		const ok = document.execCommand("copy");
 		ta.remove();
-		return Promise.resolve();
+		return ok ? Promise.resolve() : Promise.reject(new Error("copy failed"));
 	};
+	const copy = (text) => (navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(text).catch(() => copyLegacy(text)) : copyLegacy(text));
 	const inject = () => {
 		document.querySelectorAll(".MuiDialog-root tbody > tr > :first-child .MuiIconButton-root:not(.cr-copylink)").forEach((more) => {
 			if (more.nextElementSibling && more.nextElementSibling.classList.contains("cr-copylink")) return;
@@ -17272,7 +17232,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			b.addEventListener("click", (e) => {
 				e.stopPropagation();
 				const url = shareOf(tr);
-				if (url) copy(url).then(notify);
+				if (url) copy(url).then(notify, () => {});
 			});
 			more.after(b);
 		});
@@ -17943,8 +17903,8 @@ img.cr-ficon {
 		const map = iconMap();
 		return !!ext && (map && map[ext] ? map[ext].icon === "video" : VIDEO.includes(ext));
 	};
-	window.crIsVideo = isVideo;
-	window.crFicon = (name) => ficon(name);
+	cr.isVideo = isVideo;
+	cr.ficon = (name) => ficon(name);
 	const ICONIFY = ["https://api.iconify.design", "https://api.simplesvg.com", "https://api.unisvg.com"];
 	const iconifySvg = (data, name) => {
 		const a = data.aliases && data.aliases[name];
@@ -18309,31 +18269,31 @@ img.cr-ficon {
 </script>
 <script>
 (() => {
-	const RESIZE = /cursor:\s*(col-resize|ew-resize|e-resize|w-resize)/;
+	const RESIZE = /^(col|ew|e|w)-resize$/;
 	const ONLY = /^\.css-[\w-]+(?::{1,2}[\w-]+(?:\([^)]*\))?)*$/;
 	const found = new Set();
 	let style = null;
 	let seen = 0;
 	const scan = () => {
+		const sheets = [];
 		let n = 0;
 		for (const sh of document.styleSheets) {
-			let rules;
 			try {
-				rules = sh.cssRules;
-			} catch (e) {
-				continue;
-			}
-			n += rules.length;
+				n += sh.cssRules.length;
+				sheets.push(sh.cssRules);
+			} catch (e) {}
+		}
+		if (n === seen) return;
+		seen = n;
+		for (const rules of sheets) {
 			for (const r of rules) {
-				if (!r.selectorText || !RESIZE.test(r.cssText)) continue;
+				if (!r.selectorText || !r.style || !RESIZE.test(r.style.cursor)) continue;
 				r.selectorText.split(",").forEach((sel) => {
 					sel = sel.trim();
 					if (ONLY.test(sel)) found.add(sel.replace(/:.*$/, ""));
 				});
 			}
 		}
-		if (n === seen) return;
-		seen = n;
 		if (!found.size) return;
 		if (!style) {
 			style = document.createElement("style");
@@ -18660,10 +18620,10 @@ html.cr-dock :is(.cr-explorer, main div.cr-h29)::-webkit-scrollbar-track {
 <script>
 (() => {
 	const tag = () => {
-		if (!window.crIsVideo) return;
+		if (!cr.isVideo) return;
 		document.querySelectorAll(".MuiGrid-container [data-rect-id]").forEach((t) => {
 			const f = cr.fileOf(t, 30);
-			const v = !!f && f.type === 0 && window.crIsVideo(f.name || "");
+			const v = !!f && f.type === 0 && cr.isVideo(f.name || "");
 			if (t.classList.contains("cr-vid") !== v) t.classList.toggle("cr-vid", v);
 		});
 	};
@@ -18920,7 +18880,7 @@ html.cr-dock body main {
 	};
 	const folders = new Map();
 	const typeIcon = (host, file) => {
-		if (file.type === 0) return window.crFicon ? window.crFicon(file.name || "") : null;
+		if (file.type === 0) return cr.ficon ? cr.ficon(file.name || "") : null;
 		const src = [...host.querySelectorAll("svg")].find((x) => !isCheck(x));
 		if (src) {
 			const c = src.cloneNode(true);
@@ -19631,10 +19591,10 @@ html:not(.cr-dock) .cr-path * {
 <script>
 (() => {
 	const mark = () => {
-		if (!window.crIsVideo) return;
+		if (!cr.isVideo) return;
 		document.querySelectorAll(".MuiDialog-root:not(.cr-vdark)").forEach((d) => {
 			const title = d.querySelector(".MuiDialog-paper > .MuiBox-root:first-child > .MuiDialogTitle-root + .MuiDivider-root") && d.querySelector(".MuiDialogTitle-root");
-			if (title && [...title.querySelectorAll(".MuiTypography-root")].some((t) => window.crIsVideo(t.textContent.trim()))) d.classList.add("cr-vdark");
+			if (title && [...title.querySelectorAll(".MuiTypography-root")].some((t) => cr.isVideo(t.textContent.trim()))) d.classList.add("cr-vdark");
 		});
 	};
 	new MutationObserver(mark).observe(document.body, { childList: true, subtree: true });

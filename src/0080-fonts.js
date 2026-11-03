@@ -11,6 +11,5 @@
 	add("https://fonts.gstatic.com", "preconnect");
 	add("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 	add("https://fonts.googleapis.com/css2?family=Boldonse&display=swap");
-	add("https://cdn.jsdelivr.net/npm/@fontsource/boldonse@5/index.css");
 	if (document.fonts && document.fonts.load) document.fonts.load('400 24px "Boldonse"').catch(() => {});
 })();

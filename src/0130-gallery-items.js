@@ -80,6 +80,7 @@
 		});
 	};
 	let menuTimer = null;
+	let menuGiveUp = null;
 	let pointer = { x: -1, y: -1 };
 	document.addEventListener("mousemove", (e) => {
 		pointer = { x: e.clientX, y: e.clientY };
@@ -96,6 +97,7 @@
 		document.querySelectorAll(".cr-menu-open").forEach((x) => x !== li && x.classList.remove("cr-menu-open"));
 		li.classList.add("cr-menu-open");
 		clearInterval(menuTimer);
+		clearTimeout(menuGiveUp);
 		let seen = false;
 		menuTimer = setInterval(() => {
 			const open = [...document.querySelectorAll(".MuiMenu-root")].some((m) => getComputedStyle(m).visibility !== "hidden" && m.getAttribute("aria-hidden") !== "true");
@@ -105,7 +107,7 @@
 				clearInterval(menuTimer);
 			}
 		}, 150);
-		setTimeout(() => {
+		menuGiveUp = setTimeout(() => {
 			if (!seen) {
 				li.classList.remove("cr-menu-open");
 				clearInterval(menuTimer);

@@ -3,6 +3,9 @@
 	const tag = (el, c) => {
 		if (el && !el.classList.contains(c)) el.classList.add(c);
 	};
+	const untag = (el, c) => {
+		if (el && el.classList.contains(c)) el.classList.remove(c);
+	};
 	const fadeBc = (sc) => {
 		const max = sc.scrollWidth - sc.clientWidth;
 		sc.style.setProperty("--cr-bcl", (sc.scrollLeft > 1 ? 24 : 0) + "px");
@@ -49,9 +52,9 @@
 			const rs = tb.lastElementChild;
 			if (rs && rs.classList.contains("MuiStack-root")) {
 				[...rs.querySelectorAll(".MuiIconButton-root")].forEach((b) => {
-					if (b.querySelector(".MuiAvatar-root, .MuiSkeleton-root")) b.classList.remove("cr-tbp-mc");
+					if (b.querySelector(".MuiAvatar-root, .MuiSkeleton-root")) untag(b, "cr-tbp-mc");
 					else if (b.querySelector(':scope > svg > path[d^="M11.883 3.007"]')) {
-						b.classList.remove("cr-tbp-mc");
+						untag(b, "cr-tbp-mc");
 						tag(b, "cr-lp");
 						tag(b, "cr-new");
 					} else tag(b, "cr-tbp-mc");

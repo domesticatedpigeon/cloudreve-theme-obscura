@@ -78,15 +78,6 @@
 		size();
 		if (document.documentElement.classList.contains("cr-vopen")) unclip();
 	};
-	let q = false;
-	const queue = () => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			lift();
-		});
-	};
 	cr.onDom(lift);
 	new MutationObserver(lift).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 	window.addEventListener("scroll", () => {

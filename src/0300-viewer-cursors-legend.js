@@ -161,11 +161,13 @@
 		down = true;
 		glyph();
 	}, true);
-	window.addEventListener("pointerup", () => {
+	const release = () => {
 		if (!down) return;
 		down = false;
 		glyph();
-	}, true);
+	};
+	window.addEventListener("pointerup", release, true);
+	window.addEventListener("pointercancel", release, true);
 	const reeval = () => {
 		const portal = portalEl();
 		if (!on || !portal || !lastPt) return;
@@ -180,9 +182,9 @@
 		clearTimeout(reT);
 		reT = setTimeout(reeval, 200);
 	}, { capture: true, passive: true });
-	document.addEventListener("mouseleave", hide);
+	document.documentElement.addEventListener("mouseleave", hide);
 	window.addEventListener("blur", hide);
-	new MutationObserver(() => {
+	cr.onDom(() => {
 		if (on && !portalEl()) hide();
-	}).observe(document.body, { childList: true, subtree: true });
+	});
 })();
