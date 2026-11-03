@@ -24,17 +24,19 @@ html.cr-booted #root {
 	let t0 = performance.now();
 	const rows = new Map();
 	const SRC = /cr\/(\d{4}-[\w-]+)\.js/g;
-	const origin = () => {
+	const origin = (skip) => {
 		const lim = Error.stackTraceLimit;
 		Error.stackTraceLimit = 8;
 		const stack = new Error().stack || "";
 		Error.stackTraceLimit = lim;
-		for (const m of stack.matchAll(SRC)) if (m[1] !== "0005-perf") return m[1];
+		for (const m of stack.matchAll(SRC)) if (m[1] !== "0005-perf" && m[1] !== skip) return m[1];
 		return "(cloudreve)";
 	};
-	const timed = (kind, cb) => {
+	const timed = (kind, cb, skip) => {
 		if (typeof cb !== "function") return cb;
-		const key = origin() + " · " + kind;
+		const src = origin(skip);
+		if (src === "0015-core") return cb;
+		const key = src + " · " + kind;
 		return function (...args) {
 			const s = performance.now();
 			try {
@@ -69,6 +71,7 @@ html.cr-booted #root {
 			return orig.call(window, timed(kind, cb), ...args);
 		};
 	});
+	window.crTimed = (kind, cb) => timed(kind, cb, "0015-core");
 	window.crPerf = (reset) => {
 		const secs = (performance.now() - t0) / 1000;
 		const list = [...rows].map(([source, r]) => ({ source, calls: r.calls, "ms total": +r.ms.toFixed(1), "ms/s": +(r.ms / secs).toFixed(2), "max ms": +r.max.toFixed(1) })).sort((a, b) => b["ms total"] - a["ms total"]);
@@ -226,7 +229,28 @@ html.cr-booted #root {
 		}
 		return null;
 	};
-	window.cr = { fiberOf, propsOf, rootFiber, up, upFiber, fileOf, slider, store: getStore, router: getRouter };
+	const domSubs = new Set();
+	let domQueued = false;
+	const flushDom = () => {
+		domQueued = false;
+		domSubs.forEach((fn) => {
+			try {
+				fn();
+			} catch (e) {
+				reportError(e);
+			}
+		});
+	};
+	const domMo = new MutationObserver(() => {
+		if (domQueued) return;
+		domQueued = true;
+		requestAnimationFrame(flushDom);
+	});
+	const onDom = (fn) => {
+		if (!domSubs.size) domMo.observe(document.body, { childList: true, subtree: true });
+		domSubs.add(window.crTimed ? window.crTimed("dom", fn) : fn);
+	};
+	window.cr = { fiberOf, propsOf, rootFiber, up, upFiber, fileOf, slider, store: getStore, router: getRouter, onDom };
 })();
 //# sourceURL=cr/0015-core.js
 </script>
@@ -382,13 +406,9 @@ html.cr-booted #root {
 		["html body main .MuiContainer-root.cr-h51 .MuiList-root .MuiListItem-root", ":has(> .MuiListItemAvatar-root)", "cr-h52", 2, ".MuiListItemAvatar-root"],
 		["html:not(.cr-vlight) body[data-cr-h~=\"h30\"] .MuiDialog-root", ":has(.MuiDialog-paperWidthSm .MuiFilledInput-root)", "cr-h53", 1, ".MuiFilledInput-root"],
 		["html:not(.cr-vlight) body[data-cr-h~=\"h30\"] .MuiDialog-root", ":has([role=\"tree\"])", "cr-h54", 1, "[role=\"tree\"]"],
-		["html:not(.cr-vlight) body[data-cr-h~=\"h30\"] .MuiDialog-root", ":has(.MuiDialog-paperWidthSm .MuiFilledInput-root)", "cr-h55", 1, ".MuiFilledInput-root"],
-		["html:not(.cr-vlight) body[data-cr-h~=\"h30\"] .MuiDialog-root", ":has([role=\"tree\"])", "cr-h56", 1, "[role=\"tree\"]"],
 		["html.cr-vlight", ":has(.PhotoView-Portal)", "cr-h57", 4, ""],
 		["html.cr-vlight body[data-cr-h~=\"h57\"] .MuiDialog-root", ":has(.MuiDialog-paperWidthSm .MuiFilledInput-root)", "cr-h58", 1, ".MuiFilledInput-root"],
 		["html.cr-vlight body[data-cr-h~=\"h57\"] .MuiDialog-root", ":has([role=\"tree\"])", "cr-h59", 1, "[role=\"tree\"]"],
-		["html.cr-vlight body[data-cr-h~=\"h57\"] .MuiDialog-root", ":has(.MuiDialog-paperWidthSm .MuiFilledInput-root)", "cr-h60", 1, ".MuiFilledInput-root"],
-		["html.cr-vlight body[data-cr-h~=\"h57\"] .MuiDialog-root", ":has([role=\"tree\"])", "cr-h61", 1, "[role=\"tree\"]"],
 		["html body .MuiDialog-root .MuiDialog-paper.MuiDialog-paperWidthSm", ":has(.MuiFilledInput-root)", "cr-h62", 1, ".MuiFilledInput-root"],
 		["html body .MuiDialog-root .MuiDialog-paper.MuiDialog-paperWidthSm", ":has([role=\"tree\"])", "cr-h63", 1, "[role=\"tree\"]"],
 		["html body .MuiDialog-root .MuiDialog-paper", ":has(> .MuiBox-root:first-child > .MuiTextField-root + .MuiIconButton-root)", "cr-h64", 1, ".MuiIconButton-root"],
@@ -1263,7 +1283,6 @@ html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) .MuiStack-root > * {
 	margin: 0 !important;
 }
 
-.cr-sep::before,
 html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) > .MuiToolbar-root::before,
 html.cr-dock .cr-nav > .MuiBox-root:not(.cr-path)::before,
 html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) [data-cr-selbar] .MuiButtonGroup-root + .MuiButtonGroup-root::before {
@@ -1810,15 +1829,11 @@ html:not(.cr-dock) .cr-nav > .MuiBox-root:not(.cr-path) {
 
 :root {
 	--cr-icon: #ffffff;
-	--cr-active-bg: #ffffff;
-	--cr-active-fg: #000000;
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
 		--cr-icon: #000000;
-		--cr-active-bg: #141414;
-		--cr-active-fg: #ffffff;
 	}
 }
 
@@ -2187,13 +2202,11 @@ html.cr-dock .cr-nav {
 }
 :root {
 	--cr-frost: rgba(5, 5, 5, 0.8);
-	--cr-frost-0: rgba(5, 5, 5, 0);
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
 		--cr-frost: rgba(255, 255, 255, 0.82);
-		--cr-frost-0: rgba(255, 255, 255, 0);
 	}
 }
 
@@ -4182,13 +4195,11 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapper {
 }
 :root {
 	--cr-chip: rgba(20, 20, 20, 0.45);
-	--cr-chip-h: rgba(40, 40, 40, 0.6);
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
 		--cr-chip: rgba(255, 255, 255, 0.6);
-		--cr-chip-h: rgba(255, 255, 255, 0.82);
 	}
 }
 
@@ -4660,13 +4671,9 @@ html:is(.cr-shares, .cr-profile) main .MuiContainer-root > .MuiGrid-container > 
 .MuiBackdrop-root .MuiCollapse-horizontal {
 	color-scheme: dark;
 	color: rgba(255, 255, 255, 0.92);
-	--cr-active-bg: #ffffff;
-	--cr-active-fg: #000000;
 	--cr-bg: #050505;
-	--cr-chip-h: rgba(40, 40, 40, 0.6);
 	--cr-chip: rgba(20, 20, 20, 0.45);
 	--cr-contrast: #ffffff;
-	--cr-frost-0: rgba(5, 5, 5, 0);
 	--cr-frost-rgb: 5, 5, 5;
 	--cr-frost: rgba(5, 5, 5, 0.8);
 	--cr-hover: rgba(255, 255, 255, 0.08);
@@ -6072,7 +6079,6 @@ html.cr-vsil .PhotoView__PhotoBox > div:has(> .PhotoView__Photo) {
 	border: 1px solid rgba(255, 255, 255, 0.4);
 }
 html {
-	--cr-pill-solid: rgba(24, 24, 24, 0.86);
 	--cr-pill-bg: rgba(22, 22, 22, 0.62);
 	--cr-pill-bg-h: rgba(40, 40, 40, 0.78);
 	--cr-pill-br: rgba(255, 255, 255, 0.1);
@@ -6083,7 +6089,6 @@ html {
 }
 
 html.cr-vlight {
-	--cr-pill-solid: rgba(255, 255, 255, 0.9);
 	--cr-pill-bg: rgba(240, 240, 240, 0.72);
 	--cr-pill-bg-h: rgba(228, 228, 228, 0.86);
 	--cr-pill-br: rgba(0, 0, 0, 0.08);
@@ -6223,11 +6228,6 @@ html .PhotoView-Slider__BannerRight > .cr-dl {
 
 html .PhotoView-Slider__BannerRight > .cr-dl > .cr-dl-t {
 	color: inherit;
-}
-
-html.cr-vswitch :is(.PhotoView-Slider__Counter, .PhotoView-Slider__BannerRight, .cr-legend, .cr-vdock-g, .cr-wrap-toast),
-html.cr-vswitch :is(.PhotoView-Slider__Counter, .PhotoView-Slider__BannerRight, .cr-legend, .cr-vdock-g, .cr-wrap-toast) * {
-	transition: none !important;
 }
 
 .PhotoView-Slider__BannerRight > .MuiIconButton-root > .MuiSvgIcon-root,
@@ -6961,15 +6961,6 @@ html.cr-vlight {
 
 .cr-vdock:not(.cr-m) .cr-vsilwrap:empty {
 	display: none;
-}
-
-.cr-vbgdot {
-	display: block;
-	width: 22px;
-	height: 22px;
-	box-sizing: border-box;
-	border-radius: 999px;
-	border: 1px solid var(--cr-pill-ring);
 }
 
 .cr-vbgpop {
@@ -8574,7 +8565,7 @@ html body main .MuiContainer-root:where(.cr-h51):not(.cr-x) .MuiListItem-contain
 		color: rgba(255, 255, 255, 0.6) !important;
 	}
 
-	html:not(.cr-vlight) body:where([data-cr-h~="h30"]):not(.cr-x) .MuiDialog-root:where(.cr-h55):not(.cr-x):not(.cr-x):not(:where(.cr-h56)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
+	html:not(.cr-vlight) body:where([data-cr-h~="h30"]):not(.cr-x) .MuiDialog-root:where(.cr-h53):not(.cr-x):not(.cr-x):not(:where(.cr-h54)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
 		color: #ffffff !important;
 		-webkit-text-fill-color: #ffffff !important;
 		caret-color: #ffffff !important;
@@ -8618,7 +8609,7 @@ html body main .MuiContainer-root:where(.cr-h51):not(.cr-x) .MuiListItem-contain
 		color: rgba(0, 0, 0, 0.55) !important;
 	}
 
-	html.cr-vlight body:where([data-cr-h~="h57"]):not(.cr-x) .MuiDialog-root:where(.cr-h60):not(.cr-x):not(.cr-x):not(:where(.cr-h61)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
+	html.cr-vlight body:where([data-cr-h~="h57"]):not(.cr-x) .MuiDialog-root:where(.cr-h58):not(.cr-x):not(.cr-x):not(:where(.cr-h59)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
 		color: #000000 !important;
 		-webkit-text-fill-color: #000000 !important;
 		caret-color: #000000 !important;
@@ -10030,21 +10021,14 @@ html.cr-pin-dragging * {
 		const li = e.target instanceof Element ? e.target.closest(".MuiImageListItem-root, .MuiGrid-container [data-rect-id]") : null;
 		if (li) markMenu(li);
 	}, true);
-	let queued = false;
 	const run = () => {
-		queued = false;
 		document.querySelectorAll(".MuiImageListItem-root").forEach(label);
 		document.querySelectorAll(".MuiGrid-container [data-rect-id]:not(.MuiDialog-root *)").forEach(gridMore);
 		document.querySelectorAll(".MuiDialog-root .cr-grid-more").forEach((x) => x.remove());
 		squareChecks();
 		hideFinance();
 	};
-	new MutationObserver(() => {
-		if (!queued) {
-			queued = true;
-			requestAnimationFrame(run);
-		}
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 })();
 //# sourceURL=cr/0130-gallery-items.js
 </script>
@@ -11351,15 +11335,7 @@ html.cr-pin-dragging * {
 		if (html.style.getPropertyValue("--cr-pb-top") !== top) html.style.setProperty("--cr-pb-top", top);
 		if (html.style.getPropertyValue("--cr-pb-h") !== h) html.style.setProperty("--cr-pb-h", h);
 	};
-	let mq = false;
-	new MutationObserver(() => {
-		if (mq) return;
-		mq = true;
-		requestAnimationFrame(() => {
-			mq = false;
-			measure();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(measure);
 	const update = () => {
 		const html = document.documentElement;
 		if (html.classList.contains("cr-slock")) return;
@@ -11443,7 +11419,6 @@ html.cr-pin-dragging * {
 	let explorer = null;
 	let ro = null;
 	let lastW = 0;
-	let queued = false;
 	const reduce = matchMedia("(prefers-reduced-motion: reduce)");
 	const tiles = () => (explorer ? [...explorer.querySelectorAll(TILE)] : []);
 	let flipT = 0;
@@ -11516,21 +11491,16 @@ html.cr-pin-dragging * {
 		ro.observe(ex);
 		measure();
 	};
-	new MutationObserver(() => {
-		if (queued) return;
-		queued = true;
-		requestAnimationFrame(() => {
-			queued = false;
-			if (document.documentElement.classList.contains("cr-dragfiles")) return;
-			const path = location.pathname + location.search;
-			if (path !== navPath) {
-				navPath = path;
-				navAt = Date.now();
-			}
-			attach();
-			measure();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(() => {
+		if (document.documentElement.classList.contains("cr-dragfiles")) return;
+		const path = location.pathname + location.search;
+		if (path !== navPath) {
+			navPath = path;
+			navAt = Date.now();
+		}
+		attach();
+		measure();
+	});
 	setInterval(attach, 1000);
 })();
 //# sourceURL=cr/0240-explorer-flip.js
@@ -11619,7 +11589,7 @@ html.cr-pin-dragging * {
 	document.addEventListener("scroll", () => {
 		lastScroll = Date.now();
 	}, { capture: true, passive: true });
-	new MutationObserver(queue).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 	queue();
 })();
 //# sourceURL=cr/0260-explorer-entrance.js
@@ -12391,15 +12361,7 @@ html.cr-pin-dragging * {
 		});
 		if (changed) rerender(f);
 	};
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			apply();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(apply);
 	window.addEventListener("pointerdown", (e) => {
 		if (e.target instanceof Element && e.target.closest(".PhotoView-Portal")) apply();
 	}, true);
@@ -12671,8 +12633,8 @@ html.cr-pin-dragging * {
 	const darkQ = matchMedia("(prefers-color-scheme: dark)");
 	const effBg = () => (st.bg === "auto" ? (darkQ.matches ? "black" : "white") : st.bg);
 	const PAL = {
-		dark: { "--cr-pill-solid": "rgba(24, 24, 24, 0.86)", "--cr-pill-bg": "rgba(22, 22, 22, 0.62)", "--cr-pill-bg-h": "rgba(40, 40, 40, 0.78)", "--cr-pill-br": "rgba(255, 255, 255, 0.1)", "--cr-pill-fg": "#ffffff", "--cr-pill-dim": "rgba(255, 255, 255, 0.6)", "--cr-pill-on": "rgba(255, 255, 255, 0.16)", "--cr-pill-ring": "rgba(255, 255, 255, 0.35)", "--cr-pill-inv": "#000000" },
-		light: { "--cr-pill-solid": "rgba(255, 255, 255, 0.9)", "--cr-pill-bg": "rgba(240, 240, 240, 0.72)", "--cr-pill-bg-h": "rgba(228, 228, 228, 0.86)", "--cr-pill-br": "rgba(0, 0, 0, 0.08)", "--cr-pill-fg": "#000000", "--cr-pill-dim": "rgba(0, 0, 0, 0.55)", "--cr-pill-on": "rgba(0, 0, 0, 0.08)", "--cr-pill-ring": "rgba(0, 0, 0, 0.25)", "--cr-pill-inv": "#ffffff" }
+		dark: { "--cr-pill-bg": "rgba(22, 22, 22, 0.62)", "--cr-pill-bg-h": "rgba(40, 40, 40, 0.78)", "--cr-pill-br": "rgba(255, 255, 255, 0.1)", "--cr-pill-fg": "#ffffff", "--cr-pill-dim": "rgba(255, 255, 255, 0.6)", "--cr-pill-on": "rgba(255, 255, 255, 0.16)", "--cr-pill-ring": "rgba(255, 255, 255, 0.35)", "--cr-pill-inv": "#000000" },
+		light: { "--cr-pill-bg": "rgba(240, 240, 240, 0.72)", "--cr-pill-bg-h": "rgba(228, 228, 228, 0.86)", "--cr-pill-br": "rgba(0, 0, 0, 0.08)", "--cr-pill-fg": "#000000", "--cr-pill-dim": "rgba(0, 0, 0, 0.55)", "--cr-pill-on": "rgba(0, 0, 0, 0.08)", "--cr-pill-ring": "rgba(0, 0, 0, 0.25)", "--cr-pill-inv": "#ffffff" }
 	};
 	const PILLS = ".PhotoView-Slider__BannerWrap, .PhotoView-Slider__Counter, .PhotoView-Slider__BannerRight, .PhotoView-Slider__BannerRight > *, .PhotoView-Slider__BannerRight > * > svg, .cr-legend, .cr-vdock-g, .cr-vdock-g > *, .cr-wrap-toast";
 	const paint = (force) => {
@@ -14534,7 +14496,7 @@ html.cr-pin-dragging * {
 			scan();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(scan);
 	window.addEventListener("resize", schedule);
 	window.addEventListener("popstate", schedule);
 	if (document.fonts) {
@@ -14654,15 +14616,7 @@ html.cr-pin-dragging * {
 		}, true);
 	};
 	const scan = () => CFG.forEach(([G, B]) => document.querySelectorAll(G).forEach((g) => setup(g, B)));
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			scan();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(scan);
 	scan();
 })();
 //# sourceURL=cr/0440-segmented-controls.js
@@ -16132,9 +16086,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 (() => {
 	const FADE = ".fade-enter, .fade-enter-active, .fade-enter-done, .fade-exit, .fade-exit-active";
 	const guard = (e) => e.stopPropagation();
-	let q = false;
 	const tag = () => {
-		q = false;
 		document.querySelectorAll(FADE).forEach((f) => {
 			for (const c of f.children) {
 				if (c.dataset.crFadeGuard) continue;
@@ -16144,11 +16096,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			}
 		});
 	};
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(tag);
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(tag);
 	tag();
 })();
 //# sourceURL=cr/0520-fade-transition-guard.js
@@ -16278,15 +16226,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		prefetch();
 		apply();
 	}, 1500);
-	let aq = false;
-	new MutationObserver(() => {
-		if (aq) return;
-		aq = true;
-		requestAnimationFrame(() => {
-			aq = false;
-			apply();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(apply);
 	apply();
 })();
 //# sourceURL=cr/0540-pin-emoji-badges.js
@@ -16409,15 +16349,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		});
 	};
 	setInterval(inject, 700);
-	let iq = false;
-	new MutationObserver(() => {
-		if (iq) return;
-		iq = true;
-		requestAnimationFrame(() => {
-			iq = false;
-			inject();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(inject);
 })();
 //# sourceURL=cr/0560-nav-pin-buttons.js
 </script>
@@ -16457,22 +16389,22 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 </script>
 <script>
 (() => {
+	const is = (key, fallback) => (t) => crT.is(t, key, fallback);
+	const re = (r) => (t) => r.test(t);
 	const RULES = [
-		[/^new folder$/i, 0, false],
-		[/^upload files?$/i, 1, true],
-		[/^upload folder$/i, 2, false],
-		[/markdown/i, 3, true],
-		[/draw\.?io/i, 4, false],
-		[/^refresh$/i, 9, true]
+		[is("fileManager.newFolder", "New folder"), 0, false],
+		[is("fileManager.uploadFiles", "Upload files"), 1, true],
+		[is("fileManager.uploadFolder", "Upload folder"), 2, false],
+		[re(/markdown/i), 3, true],
+		[re(/draw\.?io/i), 4, false],
+		[is("fileManager.refresh", "Refresh"), 9, true]
 	];
-	const HIDE = [/^new file$/i, /clipboard/i, /remote download/i];
-	let q = false;
+	const HIDE = [is("fileManager.newFile", "New file"), is("uploader.uploadFromClipboard", "Upload from clipboard"), is("fileManager.newRemoteDownloads", "New remote download")];
 	const sort = () => {
-		q = false;
 		document.querySelectorAll(".MuiPopover-paper [role='menu']").forEach((ul) => {
 			const items = [...ul.children];
 			const texts = items.map((li) => (li.textContent || "").trim());
-			if (!texts.some((t) => /^new folder$/i.test(t))) {
+			if (!texts.some(RULES[0][0])) {
 				if (ul.classList.contains("cr-ctxsort")) {
 					ul.classList.remove("cr-ctxsort");
 					items.forEach((li) => {
@@ -16485,19 +16417,15 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			ul.classList.add("cr-ctxsort");
 			items.forEach((li, i) => {
 				const t = texts[i];
-				li.classList.toggle("cr-ctx-hide", HIDE.some((r) => r.test(t)));
-				const r = RULES.find((x) => x[0].test(t));
+				li.classList.toggle("cr-ctx-hide", HIDE.some((h) => h(t)));
+				const r = RULES.find((x) => x[0](t));
 				const ord = r ? r[1] : 5;
 				if (li.style.order !== String(ord)) li.style.order = String(ord);
 				li.classList.toggle("cr-ctx-sep", !!r && r[2]);
 			});
 		});
 	};
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(sort);
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(sort);
 })();
 //# sourceURL=cr/0580-new-menu-sort.js
 </script>
@@ -16719,7 +16647,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			lift();
 		});
 	};
-	new MutationObserver(queue).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(lift);
 	new MutationObserver(lift).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 	window.addEventListener("scroll", () => {
 		if (st && st.saved) size();
@@ -17349,15 +17277,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			more.after(b);
 		});
 	};
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			inject();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(inject);
 	inject();
 })();
 //# sourceURL=cr/0650-copy-share-link.js
@@ -18621,15 +18541,8 @@ html:not(.cr-bnav-on) body .cr-bnav.cr-tbp-m.cr-tbp-m.cr-tbp-m.cr-tbp-m {
 			b.setAttribute("aria-current", sel ? "page" : "false");
 		});
 	};
+	cr.onDom(sync);
 	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			sync();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
 	new MutationObserver(() => {
 		if (q) return;
 		q = true;
@@ -18723,7 +18636,7 @@ html.cr-dock :is(.cr-explorer, main div.cr-h29)::-webkit-scrollbar-track {
 			sync();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(sync);
 	new MutationObserver(schedule).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 	window.addEventListener("resize", schedule);
 	sync();
@@ -18754,15 +18667,7 @@ html.cr-dock :is(.cr-explorer, main div.cr-h29)::-webkit-scrollbar-track {
 			if (t.classList.contains("cr-vid") !== v) t.classList.toggle("cr-vid", v);
 		});
 	};
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			tag();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(tag);
 	tag();
 })();
 //# sourceURL=cr/0770-video-thumbs.js
@@ -19106,7 +19011,7 @@ html.cr-dock body main {
 			run();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 	const t = setInterval(() => {
 		const s = cr.store();
 		if (!s) return;

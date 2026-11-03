@@ -88,14 +88,6 @@
 			more.after(b);
 		});
 	};
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			inject();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(inject);
 	inject();
 })();

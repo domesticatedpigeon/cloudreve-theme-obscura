@@ -106,14 +106,6 @@
 		}, true);
 	};
 	const scan = () => CFG.forEach(([G, B]) => document.querySelectorAll(G).forEach((g) => setup(g, B)));
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			scan();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(scan);
 	scan();
 })();

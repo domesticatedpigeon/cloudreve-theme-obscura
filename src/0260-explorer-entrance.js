@@ -51,6 +51,6 @@
 	document.addEventListener("scroll", () => {
 		lastScroll = Date.now();
 	}, { capture: true, passive: true });
-	new MutationObserver(queue).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 	queue();
 })();

@@ -96,14 +96,6 @@
 		prefetch();
 		apply();
 	}, 1500);
-	let aq = false;
-	new MutationObserver(() => {
-		if (aq) return;
-		aq = true;
-		requestAnimationFrame(() => {
-			aq = false;
-			apply();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(apply);
 	apply();
 })();

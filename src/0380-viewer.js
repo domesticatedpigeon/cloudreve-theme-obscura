@@ -12,8 +12,8 @@
 	const darkQ = matchMedia("(prefers-color-scheme: dark)");
 	const effBg = () => (st.bg === "auto" ? (darkQ.matches ? "black" : "white") : st.bg);
 	const PAL = {
-		dark: { "--cr-pill-solid": "rgba(24, 24, 24, 0.86)", "--cr-pill-bg": "rgba(22, 22, 22, 0.62)", "--cr-pill-bg-h": "rgba(40, 40, 40, 0.78)", "--cr-pill-br": "rgba(255, 255, 255, 0.1)", "--cr-pill-fg": "#ffffff", "--cr-pill-dim": "rgba(255, 255, 255, 0.6)", "--cr-pill-on": "rgba(255, 255, 255, 0.16)", "--cr-pill-ring": "rgba(255, 255, 255, 0.35)", "--cr-pill-inv": "#000000" },
-		light: { "--cr-pill-solid": "rgba(255, 255, 255, 0.9)", "--cr-pill-bg": "rgba(240, 240, 240, 0.72)", "--cr-pill-bg-h": "rgba(228, 228, 228, 0.86)", "--cr-pill-br": "rgba(0, 0, 0, 0.08)", "--cr-pill-fg": "#000000", "--cr-pill-dim": "rgba(0, 0, 0, 0.55)", "--cr-pill-on": "rgba(0, 0, 0, 0.08)", "--cr-pill-ring": "rgba(0, 0, 0, 0.25)", "--cr-pill-inv": "#ffffff" }
+		dark: { "--cr-pill-bg": "rgba(22, 22, 22, 0.62)", "--cr-pill-bg-h": "rgba(40, 40, 40, 0.78)", "--cr-pill-br": "rgba(255, 255, 255, 0.1)", "--cr-pill-fg": "#ffffff", "--cr-pill-dim": "rgba(255, 255, 255, 0.6)", "--cr-pill-on": "rgba(255, 255, 255, 0.16)", "--cr-pill-ring": "rgba(255, 255, 255, 0.35)", "--cr-pill-inv": "#000000" },
+		light: { "--cr-pill-bg": "rgba(240, 240, 240, 0.72)", "--cr-pill-bg-h": "rgba(228, 228, 228, 0.86)", "--cr-pill-br": "rgba(0, 0, 0, 0.08)", "--cr-pill-fg": "#000000", "--cr-pill-dim": "rgba(0, 0, 0, 0.55)", "--cr-pill-on": "rgba(0, 0, 0, 0.08)", "--cr-pill-ring": "rgba(0, 0, 0, 0.25)", "--cr-pill-inv": "#ffffff" }
 	};
 	const PILLS = ".PhotoView-Slider__BannerWrap, .PhotoView-Slider__Counter, .PhotoView-Slider__BannerRight, .PhotoView-Slider__BannerRight > *, .PhotoView-Slider__BannerRight > * > svg, .cr-legend, .cr-vdock-g, .cr-vdock-g > *, .cr-wrap-toast";
 	const paint = (force) => {

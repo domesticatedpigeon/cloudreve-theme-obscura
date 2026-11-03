@@ -7,17 +7,19 @@
 	let t0 = performance.now();
 	const rows = new Map();
 	const SRC = /cr\/(\d{4}-[\w-]+)\.js/g;
-	const origin = () => {
+	const origin = (skip) => {
 		const lim = Error.stackTraceLimit;
 		Error.stackTraceLimit = 8;
 		const stack = new Error().stack || "";
 		Error.stackTraceLimit = lim;
-		for (const m of stack.matchAll(SRC)) if (m[1] !== "0005-perf") return m[1];
+		for (const m of stack.matchAll(SRC)) if (m[1] !== "0005-perf" && m[1] !== skip) return m[1];
 		return "(cloudreve)";
 	};
-	const timed = (kind, cb) => {
+	const timed = (kind, cb, skip) => {
 		if (typeof cb !== "function") return cb;
-		const key = origin() + " · " + kind;
+		const src = origin(skip);
+		if (src === "0015-core") return cb;
+		const key = src + " · " + kind;
 		return function (...args) {
 			const s = performance.now();
 			try {
@@ -52,6 +54,7 @@
 			return orig.call(window, timed(kind, cb), ...args);
 		};
 	});
+	window.crTimed = (kind, cb) => timed(kind, cb, "0015-core");
 	window.crPerf = (reset) => {
 		const secs = (performance.now() - t0) / 1000;
 		const list = [...rows].map(([source, r]) => ({ source, calls: r.calls, "ms total": +r.ms.toFixed(1), "ms/s": +(r.ms / secs).toFixed(2), "max ms": +r.max.toFixed(1) })).sort((a, b) => b["ms total"] - a["ms total"]);

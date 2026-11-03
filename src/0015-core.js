@@ -53,5 +53,26 @@
 		}
 		return null;
 	};
-	window.cr = { fiberOf, propsOf, rootFiber, up, upFiber, fileOf, slider, store: getStore, router: getRouter };
+	const domSubs = new Set();
+	let domQueued = false;
+	const flushDom = () => {
+		domQueued = false;
+		domSubs.forEach((fn) => {
+			try {
+				fn();
+			} catch (e) {
+				reportError(e);
+			}
+		});
+	};
+	const domMo = new MutationObserver(() => {
+		if (domQueued) return;
+		domQueued = true;
+		requestAnimationFrame(flushDom);
+	});
+	const onDom = (fn) => {
+		if (!domSubs.size) domMo.observe(document.body, { childList: true, subtree: true });
+		domSubs.add(window.crTimed ? window.crTimed("dom", fn) : fn);
+	};
+	window.cr = { fiberOf, propsOf, rootFiber, up, upFiber, fileOf, slider, store: getStore, router: getRouter, onDom };
 })();

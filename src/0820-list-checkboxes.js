@@ -100,7 +100,7 @@
 			run();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 	const t = setInterval(() => {
 		const s = cr.store();
 		if (!s) return;

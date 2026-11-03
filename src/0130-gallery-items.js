@@ -116,19 +116,12 @@
 		const li = e.target instanceof Element ? e.target.closest(".MuiImageListItem-root, .MuiGrid-container [data-rect-id]") : null;
 		if (li) markMenu(li);
 	}, true);
-	let queued = false;
 	const run = () => {
-		queued = false;
 		document.querySelectorAll(".MuiImageListItem-root").forEach(label);
 		document.querySelectorAll(".MuiGrid-container [data-rect-id]:not(.MuiDialog-root *)").forEach(gridMore);
 		document.querySelectorAll(".MuiDialog-root .cr-grid-more").forEach((x) => x.remove());
 		squareChecks();
 		hideFinance();
 	};
-	new MutationObserver(() => {
-		if (!queued) {
-			queued = true;
-			requestAnimationFrame(run);
-		}
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 })();

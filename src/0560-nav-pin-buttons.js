@@ -60,13 +60,5 @@
 		});
 	};
 	setInterval(inject, 700);
-	let iq = false;
-	new MutationObserver(() => {
-		if (iq) return;
-		iq = true;
-		requestAnimationFrame(() => {
-			iq = false;
-			inject();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(inject);
 })();

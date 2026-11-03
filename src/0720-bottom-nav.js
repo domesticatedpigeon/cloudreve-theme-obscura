@@ -58,15 +58,8 @@
 			b.setAttribute("aria-current", sel ? "page" : "false");
 		});
 	};
+	cr.onDom(sync);
 	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			sync();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
 	new MutationObserver(() => {
 		if (q) return;
 		q = true;

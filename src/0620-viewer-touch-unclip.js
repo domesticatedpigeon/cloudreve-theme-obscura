@@ -87,7 +87,7 @@
 			lift();
 		});
 	};
-	new MutationObserver(queue).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(lift);
 	new MutationObserver(lift).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 	window.addEventListener("scroll", () => {
 		if (st && st.saved) size();
