@@ -20,6 +20,10 @@
 	["mousemove", "mouseup"].forEach((type) => {
 		window.addEventListener(type, (e) => {
 			if (!drag || !e.isTrusted) return;
+			if (type === "mousemove" && !(e.buttons & 1)) {
+				drag = null;
+				return;
+			}
 			const sl = drag;
 			if (type === "mouseup") drag = null;
 			e.stopImmediatePropagation();

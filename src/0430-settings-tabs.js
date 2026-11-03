@@ -131,7 +131,7 @@
 			scan();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(scan);
 	window.addEventListener("resize", schedule);
 	window.addEventListener("popstate", schedule);
 	if (document.fonts) {

@@ -8,15 +8,7 @@
 		if (html.style.getPropertyValue("--cr-pb-top") !== top) html.style.setProperty("--cr-pb-top", top);
 		if (html.style.getPropertyValue("--cr-pb-h") !== h) html.style.setProperty("--cr-pb-h", h);
 	};
-	let mq = false;
-	new MutationObserver(() => {
-		if (mq) return;
-		mq = true;
-		requestAnimationFrame(() => {
-			mq = false;
-			measure();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(measure);
 	const update = () => {
 		const html = document.documentElement;
 		if (html.classList.contains("cr-slock")) return;

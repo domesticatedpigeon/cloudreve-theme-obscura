@@ -1,4 +1,5 @@
 (() => {
+	const coarse = matchMedia("(pointer: coarse)");
 	const iconFiber = (el) => cr.upFiber(el, (p) => p.file && p.file.path && ("selected" in p || ("isSelected" in p && "noThumb" in p)));
 	const hostOf = (f) => {
 		let h = f.child;
@@ -22,7 +23,7 @@
 			setHovered(cur.path, false);
 			cur = null;
 		}
-		if (!t || matchMedia("(pointer: coarse)").matches) return;
+		if (!t || coarse.matches) return;
 		const f = iconFiber(t);
 		if (!f) return;
 		const host = hostOf(f);

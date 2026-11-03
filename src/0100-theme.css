@@ -623,7 +623,6 @@ html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) .MuiStack-root > * {
 	margin: 0 !important;
 }
 
-.cr-sep::before,
 html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) > .MuiToolbar-root::before,
 html.cr-dock .cr-nav > .MuiBox-root:not(.cr-path)::before,
 html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) [data-cr-selbar] .MuiButtonGroup-root + .MuiButtonGroup-root::before {
@@ -1170,15 +1169,11 @@ html:not(.cr-dock) .cr-nav > .MuiBox-root:not(.cr-path) {
 
 :root {
 	--cr-icon: #ffffff;
-	--cr-active-bg: #ffffff;
-	--cr-active-fg: #000000;
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
 		--cr-icon: #000000;
-		--cr-active-bg: #141414;
-		--cr-active-fg: #ffffff;
 	}
 }
 
@@ -1547,13 +1542,11 @@ html.cr-dock .cr-nav {
 }
 :root {
 	--cr-frost: rgba(5, 5, 5, 0.8);
-	--cr-frost-0: rgba(5, 5, 5, 0);
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
 		--cr-frost: rgba(255, 255, 255, 0.82);
-		--cr-frost-0: rgba(255, 255, 255, 0);
 	}
 }
 
@@ -3542,13 +3535,11 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapper {
 }
 :root {
 	--cr-chip: rgba(20, 20, 20, 0.45);
-	--cr-chip-h: rgba(40, 40, 40, 0.6);
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
 		--cr-chip: rgba(255, 255, 255, 0.6);
-		--cr-chip-h: rgba(255, 255, 255, 0.82);
 	}
 }
 
@@ -4020,13 +4011,9 @@ html:is(.cr-shares, .cr-profile) main .MuiContainer-root > .MuiGrid-container > 
 .MuiBackdrop-root .MuiCollapse-horizontal {
 	color-scheme: dark;
 	color: rgba(255, 255, 255, 0.92);
-	--cr-active-bg: #ffffff;
-	--cr-active-fg: #000000;
 	--cr-bg: #050505;
-	--cr-chip-h: rgba(40, 40, 40, 0.6);
 	--cr-chip: rgba(20, 20, 20, 0.45);
 	--cr-contrast: #ffffff;
-	--cr-frost-0: rgba(5, 5, 5, 0);
 	--cr-frost-rgb: 5, 5, 5;
 	--cr-frost: rgba(5, 5, 5, 0.8);
 	--cr-hover: rgba(255, 255, 255, 0.08);
@@ -5432,7 +5419,6 @@ html.cr-vsil .PhotoView__PhotoBox > div:has(> .PhotoView__Photo) {
 	border: 1px solid rgba(255, 255, 255, 0.4);
 }
 html {
-	--cr-pill-solid: rgba(24, 24, 24, 0.86);
 	--cr-pill-bg: rgba(22, 22, 22, 0.62);
 	--cr-pill-bg-h: rgba(40, 40, 40, 0.78);
 	--cr-pill-br: rgba(255, 255, 255, 0.1);
@@ -5443,7 +5429,6 @@ html {
 }
 
 html.cr-vlight {
-	--cr-pill-solid: rgba(255, 255, 255, 0.9);
 	--cr-pill-bg: rgba(240, 240, 240, 0.72);
 	--cr-pill-bg-h: rgba(228, 228, 228, 0.86);
 	--cr-pill-br: rgba(0, 0, 0, 0.08);
@@ -5583,11 +5568,6 @@ html .PhotoView-Slider__BannerRight > .cr-dl {
 
 html .PhotoView-Slider__BannerRight > .cr-dl > .cr-dl-t {
 	color: inherit;
-}
-
-html.cr-vswitch :is(.PhotoView-Slider__Counter, .PhotoView-Slider__BannerRight, .cr-legend, .cr-vdock-g, .cr-wrap-toast),
-html.cr-vswitch :is(.PhotoView-Slider__Counter, .PhotoView-Slider__BannerRight, .cr-legend, .cr-vdock-g, .cr-wrap-toast) * {
-	transition: none !important;
 }
 
 .PhotoView-Slider__BannerRight > .MuiIconButton-root > .MuiSvgIcon-root,
@@ -6321,15 +6301,6 @@ html.cr-vlight {
 
 .cr-vdock:not(.cr-m) .cr-vsilwrap:empty {
 	display: none;
-}
-
-.cr-vbgdot {
-	display: block;
-	width: 22px;
-	height: 22px;
-	box-sizing: border-box;
-	border-radius: 999px;
-	border: 1px solid var(--cr-pill-ring);
 }
 
 .cr-vbgpop {
@@ -7934,7 +7905,7 @@ html body main .MuiContainer-root:where(.cr-h51):not(.cr-x) .MuiListItem-contain
 		color: rgba(255, 255, 255, 0.6) !important;
 	}
 
-	html:not(.cr-vlight) body:where([data-cr-h~="h30"]):not(.cr-x) .MuiDialog-root:where(.cr-h55):not(.cr-x):not(.cr-x):not(:where(.cr-h56)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
+	html:not(.cr-vlight) body:where([data-cr-h~="h30"]):not(.cr-x) .MuiDialog-root:where(.cr-h53):not(.cr-x):not(.cr-x):not(:where(.cr-h54)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
 		color: #ffffff !important;
 		-webkit-text-fill-color: #ffffff !important;
 		caret-color: #ffffff !important;
@@ -7978,7 +7949,7 @@ html body main .MuiContainer-root:where(.cr-h51):not(.cr-x) .MuiListItem-contain
 		color: rgba(0, 0, 0, 0.55) !important;
 	}
 
-	html.cr-vlight body:where([data-cr-h~="h57"]):not(.cr-x) .MuiDialog-root:where(.cr-h60):not(.cr-x):not(.cr-x):not(:where(.cr-h61)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
+	html.cr-vlight body:where([data-cr-h~="h57"]):not(.cr-x) .MuiDialog-root:where(.cr-h58):not(.cr-x):not(.cr-x):not(:where(.cr-h59)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
 		color: #000000 !important;
 		-webkit-text-fill-color: #000000 !important;
 		caret-color: #000000 !important;

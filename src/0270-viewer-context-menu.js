@@ -138,7 +138,7 @@
 	}, { capture: true, passive: false });
 	window.addEventListener("resize", close);
 	window.addEventListener("blur", close);
-	new MutationObserver(() => {
+	cr.onDom(() => {
 		if (menu && !document.querySelector(".PhotoView-Portal")) close();
-	}).observe(document.body, { childList: true, subtree: true });
+	});
 })();

@@ -12,7 +12,7 @@
 			const path = document.createElementNS(NS, "path");
 			svg.appendChild(path);
 			p.appendChild(svg);
-			items.set(p, { svg, path, w: 0, k: 0, v: 0, ph: 0, lt: 0 });
+			items.set(p, { svg, path, d: "", w: 0, k: 0, v: 0, ph: 0, lt: 0 });
 		});
 		for (const [p, it] of items) if (!p.isConnected) items.delete(p);
 	};
@@ -59,7 +59,10 @@
 				const y = mid + amp * breathe * e * Math.sin((2 * Math.PI * x) / lambda - phase);
 				d += "L" + x.toFixed(1) + " " + y.toFixed(2);
 			}
-			it.path.setAttribute("d", d);
+			if (it.d !== d) {
+				it.d = d;
+				it.path.setAttribute("d", d);
+			}
 			p.style.setProperty("--cr-wave-w", W.toFixed(1) + "px");
 		}
 		requestAnimationFrame(draw);

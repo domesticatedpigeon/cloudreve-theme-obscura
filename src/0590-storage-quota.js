@@ -15,7 +15,7 @@
 		return Math.round(b) + " " + U[i];
 	};
 	const run = () => {
-		document.querySelectorAll(":is(.MuiDrawer-paper, .MuiPopover-paper) div:has(> .MuiLinearProgress-root)").forEach((box) => {
+		document.querySelectorAll(".cr-h47").forEach((box) => {
 			const cap = box.querySelector(":scope > .MuiTypography-caption");
 			if (!cap) return;
 			const raw = cap.textContent || "";
@@ -24,7 +24,7 @@
 			const used0 = parts[0].trim();
 			const used = toBytes(used0) != null ? fmt(toBytes(used0)) : used0;
 			const total = parts.slice(1).join("/").trim();
-			const ub = toBytes(used);
+			const ub = toBytes(used0);
 			const tb = toBytes(total);
 			const free = ub != null && tb != null ? fmt(Math.max(0, tb - ub)) : "";
 			const key = raw;

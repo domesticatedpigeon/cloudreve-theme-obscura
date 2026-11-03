@@ -16,7 +16,7 @@
 			sync();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(sync);
 	new MutationObserver(schedule).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 	window.addEventListener("resize", schedule);
 	sync();

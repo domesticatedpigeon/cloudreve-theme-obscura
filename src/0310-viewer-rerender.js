@@ -33,15 +33,7 @@
 		});
 		if (changed) rerender(f);
 	};
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			apply();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(apply);
 	window.addEventListener("pointerdown", (e) => {
 		if (e.target instanceof Element && e.target.closest(".PhotoView-Portal")) apply();
 	}, true);

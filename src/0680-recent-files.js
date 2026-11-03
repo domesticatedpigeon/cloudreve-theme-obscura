@@ -271,8 +271,8 @@
 		const map = iconMap();
 		return !!ext && (map && map[ext] ? map[ext].icon === "video" : VIDEO.includes(ext));
 	};
-	window.crIsVideo = isVideo;
-	window.crFicon = (name) => ficon(name);
+	cr.isVideo = isVideo;
+	cr.ficon = (name) => ficon(name);
 	const ICONIFY = ["https://api.iconify.design", "https://api.simplesvg.com", "https://api.unisvg.com"];
 	const iconifySvg = (data, name) => {
 		const a = data.aliases && data.aliases[name];

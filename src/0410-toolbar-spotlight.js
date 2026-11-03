@@ -21,7 +21,7 @@
 			const r = g.getBoundingClientRect();
 			g.style.setProperty("--cr-px", e.clientX - r.left + "px");
 			g.style.setProperty("--cr-py", e.clientY - r.top + "px");
-			g.classList.add("cr-spot-on");
+			if (!g.classList.contains("cr-spot-on")) g.classList.add("cr-spot-on");
 		});
 	}, { passive: true });
 	document.addEventListener("pointerleave", off);

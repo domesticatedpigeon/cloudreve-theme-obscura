@@ -24,17 +24,19 @@ html.cr-booted #root {
 	let t0 = performance.now();
 	const rows = new Map();
 	const SRC = /cr\/(\d{4}-[\w-]+)\.js/g;
-	const origin = () => {
+	const origin = (skip) => {
 		const lim = Error.stackTraceLimit;
 		Error.stackTraceLimit = 8;
 		const stack = new Error().stack || "";
 		Error.stackTraceLimit = lim;
-		for (const m of stack.matchAll(SRC)) if (m[1] !== "0005-perf") return m[1];
+		for (const m of stack.matchAll(SRC)) if (m[1] !== "0005-perf" && m[1] !== skip) return m[1];
 		return "(cloudreve)";
 	};
-	const timed = (kind, cb) => {
+	const timed = (kind, cb, skip) => {
 		if (typeof cb !== "function") return cb;
-		const key = origin() + " · " + kind;
+		const src = origin(skip);
+		if (src === "0015-core") return cb;
+		const key = src + " · " + kind;
 		return function (...args) {
 			const s = performance.now();
 			try {
@@ -69,6 +71,7 @@ html.cr-booted #root {
 			return orig.call(window, timed(kind, cb), ...args);
 		};
 	});
+	window.crTimed = (kind, cb) => timed(kind, cb, "0015-core");
 	window.crPerf = (reset) => {
 		const secs = (performance.now() - t0) / 1000;
 		const list = [...rows].map(([source, r]) => ({ source, calls: r.calls, "ms total": +r.ms.toFixed(1), "ms/s": +(r.ms / secs).toFixed(2), "max ms": +r.max.toFixed(1) })).sort((a, b) => b["ms total"] - a["ms total"]);
@@ -226,7 +229,28 @@ html.cr-booted #root {
 		}
 		return null;
 	};
-	window.cr = { fiberOf, propsOf, rootFiber, up, upFiber, fileOf, slider, store: getStore, router: getRouter };
+	const domSubs = new Set();
+	let domQueued = false;
+	const flushDom = () => {
+		domQueued = false;
+		domSubs.forEach((fn) => {
+			try {
+				fn();
+			} catch (e) {
+				reportError(e);
+			}
+		});
+	};
+	const domMo = new MutationObserver(() => {
+		if (domQueued) return;
+		domQueued = true;
+		requestAnimationFrame(flushDom);
+	});
+	const onDom = (fn) => {
+		if (!domSubs.size) domMo.observe(document.body, { childList: true, subtree: true });
+		domSubs.add(window.crTimed ? window.crTimed("dom", fn) : fn);
+	};
+	window.cr = { fiberOf, propsOf, rootFiber, up, upFiber, fileOf, slider, store: getStore, router: getRouter, onDom };
 })();
 //# sourceURL=cr/0015-core.js
 </script>
@@ -382,13 +406,9 @@ html.cr-booted #root {
 		["html body main .MuiContainer-root.cr-h51 .MuiList-root .MuiListItem-root", ":has(> .MuiListItemAvatar-root)", "cr-h52", 2, ".MuiListItemAvatar-root"],
 		["html:not(.cr-vlight) body[data-cr-h~=\"h30\"] .MuiDialog-root", ":has(.MuiDialog-paperWidthSm .MuiFilledInput-root)", "cr-h53", 1, ".MuiFilledInput-root"],
 		["html:not(.cr-vlight) body[data-cr-h~=\"h30\"] .MuiDialog-root", ":has([role=\"tree\"])", "cr-h54", 1, "[role=\"tree\"]"],
-		["html:not(.cr-vlight) body[data-cr-h~=\"h30\"] .MuiDialog-root", ":has(.MuiDialog-paperWidthSm .MuiFilledInput-root)", "cr-h55", 1, ".MuiFilledInput-root"],
-		["html:not(.cr-vlight) body[data-cr-h~=\"h30\"] .MuiDialog-root", ":has([role=\"tree\"])", "cr-h56", 1, "[role=\"tree\"]"],
 		["html.cr-vlight", ":has(.PhotoView-Portal)", "cr-h57", 4, ""],
 		["html.cr-vlight body[data-cr-h~=\"h57\"] .MuiDialog-root", ":has(.MuiDialog-paperWidthSm .MuiFilledInput-root)", "cr-h58", 1, ".MuiFilledInput-root"],
 		["html.cr-vlight body[data-cr-h~=\"h57\"] .MuiDialog-root", ":has([role=\"tree\"])", "cr-h59", 1, "[role=\"tree\"]"],
-		["html.cr-vlight body[data-cr-h~=\"h57\"] .MuiDialog-root", ":has(.MuiDialog-paperWidthSm .MuiFilledInput-root)", "cr-h60", 1, ".MuiFilledInput-root"],
-		["html.cr-vlight body[data-cr-h~=\"h57\"] .MuiDialog-root", ":has([role=\"tree\"])", "cr-h61", 1, "[role=\"tree\"]"],
 		["html body .MuiDialog-root .MuiDialog-paper.MuiDialog-paperWidthSm", ":has(.MuiFilledInput-root)", "cr-h62", 1, ".MuiFilledInput-root"],
 		["html body .MuiDialog-root .MuiDialog-paper.MuiDialog-paperWidthSm", ":has([role=\"tree\"])", "cr-h63", 1, "[role=\"tree\"]"],
 		["html body .MuiDialog-root .MuiDialog-paper", ":has(> .MuiBox-root:first-child > .MuiTextField-root + .MuiIconButton-root)", "cr-h64", 1, ".MuiIconButton-root"],
@@ -593,7 +613,6 @@ body,
 	add("https://fonts.gstatic.com", "preconnect");
 	add("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 	add("https://fonts.googleapis.com/css2?family=Boldonse&display=swap");
-	add("https://cdn.jsdelivr.net/npm/@fontsource/boldonse@5/index.css");
 	if (document.fonts && document.fonts.load) document.fonts.load('400 24px "Boldonse"').catch(() => {});
 })();
 //# sourceURL=cr/0080-fonts.js
@@ -1263,7 +1282,6 @@ html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) .MuiStack-root > * {
 	margin: 0 !important;
 }
 
-.cr-sep::before,
 html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) > .MuiToolbar-root::before,
 html.cr-dock .cr-nav > .MuiBox-root:not(.cr-path)::before,
 html.cr-dock header.MuiAppBar-root:not(.MuiDialog-root *) [data-cr-selbar] .MuiButtonGroup-root + .MuiButtonGroup-root::before {
@@ -1810,15 +1828,11 @@ html:not(.cr-dock) .cr-nav > .MuiBox-root:not(.cr-path) {
 
 :root {
 	--cr-icon: #ffffff;
-	--cr-active-bg: #ffffff;
-	--cr-active-fg: #000000;
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
 		--cr-icon: #000000;
-		--cr-active-bg: #141414;
-		--cr-active-fg: #ffffff;
 	}
 }
 
@@ -2187,13 +2201,11 @@ html.cr-dock .cr-nav {
 }
 :root {
 	--cr-frost: rgba(5, 5, 5, 0.8);
-	--cr-frost-0: rgba(5, 5, 5, 0);
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
 		--cr-frost: rgba(255, 255, 255, 0.82);
-		--cr-frost-0: rgba(255, 255, 255, 0);
 	}
 }
 
@@ -4182,13 +4194,11 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapper {
 }
 :root {
 	--cr-chip: rgba(20, 20, 20, 0.45);
-	--cr-chip-h: rgba(40, 40, 40, 0.6);
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
 		--cr-chip: rgba(255, 255, 255, 0.6);
-		--cr-chip-h: rgba(255, 255, 255, 0.82);
 	}
 }
 
@@ -4660,13 +4670,9 @@ html:is(.cr-shares, .cr-profile) main .MuiContainer-root > .MuiGrid-container > 
 .MuiBackdrop-root .MuiCollapse-horizontal {
 	color-scheme: dark;
 	color: rgba(255, 255, 255, 0.92);
-	--cr-active-bg: #ffffff;
-	--cr-active-fg: #000000;
 	--cr-bg: #050505;
-	--cr-chip-h: rgba(40, 40, 40, 0.6);
 	--cr-chip: rgba(20, 20, 20, 0.45);
 	--cr-contrast: #ffffff;
-	--cr-frost-0: rgba(5, 5, 5, 0);
 	--cr-frost-rgb: 5, 5, 5;
 	--cr-frost: rgba(5, 5, 5, 0.8);
 	--cr-hover: rgba(255, 255, 255, 0.08);
@@ -6072,7 +6078,6 @@ html.cr-vsil .PhotoView__PhotoBox > div:has(> .PhotoView__Photo) {
 	border: 1px solid rgba(255, 255, 255, 0.4);
 }
 html {
-	--cr-pill-solid: rgba(24, 24, 24, 0.86);
 	--cr-pill-bg: rgba(22, 22, 22, 0.62);
 	--cr-pill-bg-h: rgba(40, 40, 40, 0.78);
 	--cr-pill-br: rgba(255, 255, 255, 0.1);
@@ -6083,7 +6088,6 @@ html {
 }
 
 html.cr-vlight {
-	--cr-pill-solid: rgba(255, 255, 255, 0.9);
 	--cr-pill-bg: rgba(240, 240, 240, 0.72);
 	--cr-pill-bg-h: rgba(228, 228, 228, 0.86);
 	--cr-pill-br: rgba(0, 0, 0, 0.08);
@@ -6223,11 +6227,6 @@ html .PhotoView-Slider__BannerRight > .cr-dl {
 
 html .PhotoView-Slider__BannerRight > .cr-dl > .cr-dl-t {
 	color: inherit;
-}
-
-html.cr-vswitch :is(.PhotoView-Slider__Counter, .PhotoView-Slider__BannerRight, .cr-legend, .cr-vdock-g, .cr-wrap-toast),
-html.cr-vswitch :is(.PhotoView-Slider__Counter, .PhotoView-Slider__BannerRight, .cr-legend, .cr-vdock-g, .cr-wrap-toast) * {
-	transition: none !important;
 }
 
 .PhotoView-Slider__BannerRight > .MuiIconButton-root > .MuiSvgIcon-root,
@@ -6961,15 +6960,6 @@ html.cr-vlight {
 
 .cr-vdock:not(.cr-m) .cr-vsilwrap:empty {
 	display: none;
-}
-
-.cr-vbgdot {
-	display: block;
-	width: 22px;
-	height: 22px;
-	box-sizing: border-box;
-	border-radius: 999px;
-	border: 1px solid var(--cr-pill-ring);
 }
 
 .cr-vbgpop {
@@ -8574,7 +8564,7 @@ html body main .MuiContainer-root:where(.cr-h51):not(.cr-x) .MuiListItem-contain
 		color: rgba(255, 255, 255, 0.6) !important;
 	}
 
-	html:not(.cr-vlight) body:where([data-cr-h~="h30"]):not(.cr-x) .MuiDialog-root:where(.cr-h55):not(.cr-x):not(.cr-x):not(:where(.cr-h56)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
+	html:not(.cr-vlight) body:where([data-cr-h~="h30"]):not(.cr-x) .MuiDialog-root:where(.cr-h53):not(.cr-x):not(.cr-x):not(:where(.cr-h54)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
 		color: #ffffff !important;
 		-webkit-text-fill-color: #ffffff !important;
 		caret-color: #ffffff !important;
@@ -8618,7 +8608,7 @@ html body main .MuiContainer-root:where(.cr-h51):not(.cr-x) .MuiListItem-contain
 		color: rgba(0, 0, 0, 0.55) !important;
 	}
 
-	html.cr-vlight body:where([data-cr-h~="h57"]):not(.cr-x) .MuiDialog-root:where(.cr-h60):not(.cr-x):not(.cr-x):not(:where(.cr-h61)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
+	html.cr-vlight body:where([data-cr-h~="h57"]):not(.cr-x) .MuiDialog-root:where(.cr-h58):not(.cr-x):not(.cr-x):not(:where(.cr-h59)):not(.cr-x) .MuiFilledInput-root .MuiInputBase-input.MuiInputBase-input {
 		color: #000000 !important;
 		-webkit-text-fill-color: #000000 !important;
 		caret-color: #000000 !important;
@@ -9865,54 +9855,6 @@ html.cr-pin-dragging * {
 </script>
 <script>
 (() => {
-	const FACTOR = 1;
-	const PILL = 999;
-	const px = (v) => v.replace(/(\d*\.?\d+)px/g, (m, n) => {
-		const value = parseFloat(n);
-		return (value >= 999 ? PILL : Math.round(value * FACTOR * 2) / 2) + "px";
-	});
-	const scaleText = (text) => text.replace(/(border(?:-(?:top|bottom)-(?:left|right))?-radius\s*:\s*)([^;}]+)/gi, (m, prop, value) => prop + px(value));
-	const done = new WeakSet();
-	const scaleRules = (rules) => {
-		for (const rule of rules) {
-			if (done.has(rule)) continue;
-			done.add(rule);
-			if (rule.selectorText && /\.cr-(v|legend|wrap-toast|tip|tbp)|cr-selbar/.test(rule.selectorText)) continue;
-			if (rule.style) {
-				for (let i = 0; i < rule.style.length; i++) {
-					const name = rule.style[i];
-					if (name.includes("radius")) {
-						rule.style.setProperty(name, px(rule.style.getPropertyValue(name)), rule.style.getPropertyPriority(name));
-					}
-				}
-			}
-			if (rule.cssRules) scaleRules(rule.cssRules);
-		}
-	};
-	const scaleSheet = (sheet) => {
-		try {
-			scaleRules(sheet.cssRules);
-		} catch (e) {}
-	};
-	const insertRule = CSSStyleSheet.prototype.insertRule;
-	CSSStyleSheet.prototype.insertRule = function (rule, index) {
-		const i = insertRule.call(this, typeof rule === "string" ? scaleText(rule) : rule, index);
-		try {
-			done.add(this.cssRules[i]);
-		} catch (e) {}
-		return i;
-	};
-	const scaleAll = () => {
-		for (const sheet of document.styleSheets) scaleSheet(sheet);
-	};
-	scaleAll();
-	new MutationObserver(scaleAll).observe(document.head, { childList: true, subtree: true, characterData: true });
-	document.addEventListener("DOMContentLoaded", scaleAll);
-})();
-//# sourceURL=cr/0120-corner-radius-scale.js
-</script>
-<script>
-(() => {
 	const label = (li) => {
 		const file = cr.fileOf(li);
 		let el = li.querySelector(":scope > .cr-gallery-name");
@@ -9994,6 +9936,7 @@ html.cr-pin-dragging * {
 		});
 	};
 	let menuTimer = null;
+	let menuGiveUp = null;
 	let pointer = { x: -1, y: -1 };
 	document.addEventListener("mousemove", (e) => {
 		pointer = { x: e.clientX, y: e.clientY };
@@ -10010,6 +9953,7 @@ html.cr-pin-dragging * {
 		document.querySelectorAll(".cr-menu-open").forEach((x) => x !== li && x.classList.remove("cr-menu-open"));
 		li.classList.add("cr-menu-open");
 		clearInterval(menuTimer);
+		clearTimeout(menuGiveUp);
 		let seen = false;
 		menuTimer = setInterval(() => {
 			const open = [...document.querySelectorAll(".MuiMenu-root")].some((m) => getComputedStyle(m).visibility !== "hidden" && m.getAttribute("aria-hidden") !== "true");
@@ -10019,7 +9963,7 @@ html.cr-pin-dragging * {
 				clearInterval(menuTimer);
 			}
 		}, 150);
-		setTimeout(() => {
+		menuGiveUp = setTimeout(() => {
 			if (!seen) {
 				li.classList.remove("cr-menu-open");
 				clearInterval(menuTimer);
@@ -10030,26 +9974,20 @@ html.cr-pin-dragging * {
 		const li = e.target instanceof Element ? e.target.closest(".MuiImageListItem-root, .MuiGrid-container [data-rect-id]") : null;
 		if (li) markMenu(li);
 	}, true);
-	let queued = false;
 	const run = () => {
-		queued = false;
 		document.querySelectorAll(".MuiImageListItem-root").forEach(label);
 		document.querySelectorAll(".MuiGrid-container [data-rect-id]:not(.MuiDialog-root *)").forEach(gridMore);
 		document.querySelectorAll(".MuiDialog-root .cr-grid-more").forEach((x) => x.remove());
 		squareChecks();
 		hideFinance();
 	};
-	new MutationObserver(() => {
-		if (!queued) {
-			queued = true;
-			requestAnimationFrame(run);
-		}
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 })();
 //# sourceURL=cr/0130-gallery-items.js
 </script>
 <script>
 (() => {
+	const coarse = matchMedia("(pointer: coarse)");
 	const iconFiber = (el) => cr.upFiber(el, (p) => p.file && p.file.path && ("selected" in p || ("isSelected" in p && "noThumb" in p)));
 	const hostOf = (f) => {
 		let h = f.child;
@@ -10073,7 +10011,7 @@ html.cr-pin-dragging * {
 			setHovered(cur.path, false);
 			cur = null;
 		}
-		if (!t || matchMedia("(pointer: coarse)").matches) return;
+		if (!t || coarse.matches) return;
 		const f = iconFiber(t);
 		if (!f) return;
 		const host = hostOf(f);
@@ -10877,11 +10815,12 @@ html.cr-pin-dragging * {
 		}
 		const mainBox = document.querySelector("main");
 		if (!nav) {
-			html.classList.remove("cr-sel");
+			html.classList.toggle("cr-sel", false);
 			if (lead && lead.parentElement) lead.remove();
 			const page = header && mainBox && window.innerWidth >= 600 ? mainBox.querySelector("div:has(> .MuiContainer-root)") || (/^\/(shares|profile)/.test(location.pathname) ? mainBox : null) : null;
 			if (!page) {
-				html.classList.remove("cr-dock", "cr-dock-page");
+				html.classList.toggle("cr-dock", false);
+				html.classList.toggle("cr-dock-page", false);
 				return;
 			}
 			const mr = mainBox.getBoundingClientRect();
@@ -10895,11 +10834,12 @@ html.cr-pin-dragging * {
 			html.style.setProperty("--cr-dock-h", dockGeo.h + "px");
 			html.style.setProperty("--cr-dock-right", window.innerWidth - mr.right + dockGeo.inset + 20 + "px");
 			html.style.setProperty("--cr-page-top", Math.round(2 * dockGeo.top + dockGeo.h) + "px");
-			html.classList.add("cr-dock", "cr-dock-page");
+			html.classList.toggle("cr-dock", true);
+			html.classList.toggle("cr-dock-page", true);
 			return;
 		}
-		html.classList.remove("cr-dock-page");
-		html.classList.add("cr-dock");
+		html.classList.toggle("cr-dock-page", false);
+		html.classList.toggle("cr-dock", true);
 		const selOn = !!(selBox && selBox.querySelector(".MuiButtonGroup-root"));
 		if (selBox) {
 			if (selOn) selBox.setAttribute("data-cr-selbar", "");
@@ -11285,6 +11225,10 @@ html.cr-pin-dragging * {
 	["mousemove", "mouseup"].forEach((type) => {
 		window.addEventListener(type, (e) => {
 			if (!drag || !e.isTrusted) return;
+			if (type === "mousemove" && !(e.buttons & 1)) {
+				drag = null;
+				return;
+			}
 			const sl = drag;
 			if (type === "mouseup") drag = null;
 			e.stopImmediatePropagation();
@@ -11351,15 +11295,7 @@ html.cr-pin-dragging * {
 		if (html.style.getPropertyValue("--cr-pb-top") !== top) html.style.setProperty("--cr-pb-top", top);
 		if (html.style.getPropertyValue("--cr-pb-h") !== h) html.style.setProperty("--cr-pb-h", h);
 	};
-	let mq = false;
-	new MutationObserver(() => {
-		if (mq) return;
-		mq = true;
-		requestAnimationFrame(() => {
-			mq = false;
-			measure();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(measure);
 	const update = () => {
 		const html = document.documentElement;
 		if (html.classList.contains("cr-slock")) return;
@@ -11443,7 +11379,6 @@ html.cr-pin-dragging * {
 	let explorer = null;
 	let ro = null;
 	let lastW = 0;
-	let queued = false;
 	const reduce = matchMedia("(prefers-reduced-motion: reduce)");
 	const tiles = () => (explorer ? [...explorer.querySelectorAll(TILE)] : []);
 	let flipT = 0;
@@ -11516,21 +11451,16 @@ html.cr-pin-dragging * {
 		ro.observe(ex);
 		measure();
 	};
-	new MutationObserver(() => {
-		if (queued) return;
-		queued = true;
-		requestAnimationFrame(() => {
-			queued = false;
-			if (document.documentElement.classList.contains("cr-dragfiles")) return;
-			const path = location.pathname + location.search;
-			if (path !== navPath) {
-				navPath = path;
-				navAt = Date.now();
-			}
-			attach();
-			measure();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(() => {
+		if (document.documentElement.classList.contains("cr-dragfiles")) return;
+		const path = location.pathname + location.search;
+		if (path !== navPath) {
+			navPath = path;
+			navAt = Date.now();
+		}
+		attach();
+		measure();
+	});
 	setInterval(attach, 1000);
 })();
 //# sourceURL=cr/0240-explorer-flip.js
@@ -11619,7 +11549,7 @@ html.cr-pin-dragging * {
 	document.addEventListener("scroll", () => {
 		lastScroll = Date.now();
 	}, { capture: true, passive: true });
-	new MutationObserver(queue).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 	queue();
 })();
 //# sourceURL=cr/0260-explorer-entrance.js
@@ -11765,9 +11695,9 @@ html.cr-pin-dragging * {
 	}, { capture: true, passive: false });
 	window.addEventListener("resize", close);
 	window.addEventListener("blur", close);
-	new MutationObserver(() => {
+	cr.onDom(() => {
 		if (menu && !document.querySelector(".PhotoView-Portal")) close();
-	}).observe(document.body, { childList: true, subtree: true });
+	});
 })();
 //# sourceURL=cr/0270-viewer-context-menu.js
 </script>
@@ -12114,7 +12044,7 @@ html.cr-pin-dragging * {
 		P.timer = setTimeout(settle, 120);
 	};
 	window.addEventListener("wheel", (e) => {
-		if (synth.has(e) || e.crSynth) return;
+		if (synth.has(e) || e.crSynth || !document.querySelector(".PhotoView-Portal")) return;
 		const under = document.elementFromPoint(e.clientX, e.clientY);
 		const t = under || (e.target instanceof Element && e.target.isConnected ? e.target : null);
 		const portal = (t && t.closest(".PhotoView-Portal")) || (e.target instanceof Element && !e.target.isConnected ? document.querySelector(".PhotoView-Portal") : null);
@@ -12328,11 +12258,13 @@ html.cr-pin-dragging * {
 		down = true;
 		glyph();
 	}, true);
-	window.addEventListener("pointerup", () => {
+	const release = () => {
 		if (!down) return;
 		down = false;
 		glyph();
-	}, true);
+	};
+	window.addEventListener("pointerup", release, true);
+	window.addEventListener("pointercancel", release, true);
 	const reeval = () => {
 		const portal = portalEl();
 		if (!on || !portal || !lastPt) return;
@@ -12347,11 +12279,11 @@ html.cr-pin-dragging * {
 		clearTimeout(reT);
 		reT = setTimeout(reeval, 200);
 	}, { capture: true, passive: true });
-	document.addEventListener("mouseleave", hide);
+	document.documentElement.addEventListener("mouseleave", hide);
 	window.addEventListener("blur", hide);
-	new MutationObserver(() => {
+	cr.onDom(() => {
 		if (on && !portalEl()) hide();
-	}).observe(document.body, { childList: true, subtree: true });
+	});
 })();
 //# sourceURL=cr/0300-viewer-cursors-legend.js
 </script>
@@ -12391,15 +12323,7 @@ html.cr-pin-dragging * {
 		});
 		if (changed) rerender(f);
 	};
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			apply();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(apply);
 	window.addEventListener("pointerdown", (e) => {
 		if (e.target instanceof Element && e.target.closest(".PhotoView-Portal")) apply();
 	}, true);
@@ -12576,8 +12500,9 @@ html.cr-pin-dragging * {
 </script>
 <script>
 (() => {
+	const papers = document.getElementsByClassName("cr-h41");
 	const tag = () => {
-		document.querySelectorAll('.MuiDialog-paper:has([role="tree"]) .MuiDialogContent-root .MuiStack-root').forEach((st) => {
+		document.querySelectorAll(".MuiDialog-paper.cr-h41 .MuiDialogContent-root .MuiStack-root").forEach((st) => {
 			if (st.classList.contains("cr-subnav")) return;
 			const kids = [...st.children];
 			if (kids.length < 2 || !kids.some((k) => k.querySelector(".MuiButtonGroup-root"))) return;
@@ -12586,7 +12511,7 @@ html.cr-pin-dragging * {
 			st.classList.add("cr-subnav");
 			first.classList.add("cr-path");
 		});
-		document.querySelectorAll('.MuiDialog-paper:has([role="tree"])').forEach((paper) => {
+		[...papers].forEach((paper) => {
 			const title = paper.querySelector(".MuiDialogTitle-root");
 			const nav = paper.querySelector(".cr-subnav");
 			if (title && nav) {
@@ -12613,10 +12538,6 @@ html.cr-pin-dragging * {
 			}
 		});
 	};
-	let papers = [];
-	setInterval(() => {
-		papers = [...document.querySelectorAll('.MuiDialog-paper:has([role="tree"])')];
-	}, 300);
 	let lastX = 0;
 	let lastY = 0;
 	let queued = false;
@@ -12625,7 +12546,7 @@ html.cr-pin-dragging * {
 		const x = lastX;
 		const y = lastY;
 		const jobs = [];
-		papers.forEach((paper) => {
+		[...papers].forEach((paper) => {
 			if (!paper.isConnected) return;
 			const r = paper.getBoundingClientRect();
 			const tiles = [...paper.querySelectorAll("[data-rect-id]")];
@@ -12651,7 +12572,7 @@ html.cr-pin-dragging * {
 		requestAnimationFrame(frame);
 	}, { capture: true, passive: true });
 	setInterval(() => {
-		if (document.querySelector(".MuiDialog-root")) tag();
+		if (papers.length) tag();
 	}, 250);
 })();
 //# sourceURL=cr/0370-copy-move-dialog.js
@@ -12671,8 +12592,8 @@ html.cr-pin-dragging * {
 	const darkQ = matchMedia("(prefers-color-scheme: dark)");
 	const effBg = () => (st.bg === "auto" ? (darkQ.matches ? "black" : "white") : st.bg);
 	const PAL = {
-		dark: { "--cr-pill-solid": "rgba(24, 24, 24, 0.86)", "--cr-pill-bg": "rgba(22, 22, 22, 0.62)", "--cr-pill-bg-h": "rgba(40, 40, 40, 0.78)", "--cr-pill-br": "rgba(255, 255, 255, 0.1)", "--cr-pill-fg": "#ffffff", "--cr-pill-dim": "rgba(255, 255, 255, 0.6)", "--cr-pill-on": "rgba(255, 255, 255, 0.16)", "--cr-pill-ring": "rgba(255, 255, 255, 0.35)", "--cr-pill-inv": "#000000" },
-		light: { "--cr-pill-solid": "rgba(255, 255, 255, 0.9)", "--cr-pill-bg": "rgba(240, 240, 240, 0.72)", "--cr-pill-bg-h": "rgba(228, 228, 228, 0.86)", "--cr-pill-br": "rgba(0, 0, 0, 0.08)", "--cr-pill-fg": "#000000", "--cr-pill-dim": "rgba(0, 0, 0, 0.55)", "--cr-pill-on": "rgba(0, 0, 0, 0.08)", "--cr-pill-ring": "rgba(0, 0, 0, 0.25)", "--cr-pill-inv": "#ffffff" }
+		dark: { "--cr-pill-bg": "rgba(22, 22, 22, 0.62)", "--cr-pill-bg-h": "rgba(40, 40, 40, 0.78)", "--cr-pill-br": "rgba(255, 255, 255, 0.1)", "--cr-pill-fg": "#ffffff", "--cr-pill-dim": "rgba(255, 255, 255, 0.6)", "--cr-pill-on": "rgba(255, 255, 255, 0.16)", "--cr-pill-ring": "rgba(255, 255, 255, 0.35)", "--cr-pill-inv": "#000000" },
+		light: { "--cr-pill-bg": "rgba(240, 240, 240, 0.72)", "--cr-pill-bg-h": "rgba(228, 228, 228, 0.86)", "--cr-pill-br": "rgba(0, 0, 0, 0.08)", "--cr-pill-fg": "#000000", "--cr-pill-dim": "rgba(0, 0, 0, 0.55)", "--cr-pill-on": "rgba(0, 0, 0, 0.08)", "--cr-pill-ring": "rgba(0, 0, 0, 0.25)", "--cr-pill-inv": "#ffffff" }
 	};
 	const PILLS = ".PhotoView-Slider__BannerWrap, .PhotoView-Slider__Counter, .PhotoView-Slider__BannerRight, .PhotoView-Slider__BannerRight > *, .PhotoView-Slider__BannerRight > * > svg, .cr-legend, .cr-vdock-g, .cr-vdock-g > *, .cr-wrap-toast";
 	const paint = (force) => {
@@ -12689,6 +12610,7 @@ html.cr-pin-dragging * {
 		return hit;
 	};
 	let chromeOn = false;
+	let bgSet = "";
 	let openT = 0;
 	let metaPrev = null;
 	let metaTo = null;
@@ -12740,7 +12662,7 @@ html.cr-pin-dragging * {
 		if (!settled) {
 			clearTimeout(openT);
 			openT = 0;
-			h.classList.remove("cr-vopen");
+			h.classList.toggle("cr-vopen", false);
 		} else if (!openT && !h.classList.contains("cr-vopen")) {
 			openT = setTimeout(() => {
 				if (document.querySelector(".PhotoView-Portal:not(.PhotoView-Slider__willClose)")) h.classList.add("cr-vopen");
@@ -12752,6 +12674,7 @@ html.cr-pin-dragging * {
 			if (!chromeOn) return;
 			chromeOn = false;
 			h.classList.remove("cr-vtint");
+			bgSet = "";
 			h.style.removeProperty("background-color");
 			document.body.style.removeProperty("background-color");
 			if (meta && metaPrev !== null) setMeta(meta, metaPrev, mob);
@@ -12772,9 +12695,11 @@ html.cr-pin-dragging * {
 		h.style.setProperty("--cr-vbgc", c);
 		h.classList.add("cr-vtint");
 		if (mob) {
+			bgSet = "";
 			h.style.removeProperty("background-color");
 			document.body.style.removeProperty("background-color");
-		} else if (h.style.backgroundColor !== c) {
+		} else if (bgSet !== c) {
+			bgSet = c;
 			h.style.setProperty("background-color", c, "important");
 			document.body.style.setProperty("background-color", c, "important");
 		}
@@ -13408,12 +13333,10 @@ html.cr-pin-dragging * {
 				if (portal.isConnected) playHint(portal);
 			}, 350);
 		}
-		if (!portal) hintFor = null;
 		const showTop = !!portal && !!portal.querySelector(".PhotoView-Slider__BannerWrap") && !portal.classList.contains("PhotoView-Slider__willClose");
-		const show = showTop;
 		syncTop(portal, showTop);
 		if (!showTop && strip) strip.classList.remove("cr-on");
-		if (!show) {
+		if (!showTop) {
 			if (dock) dock.classList.remove("cr-on");
 			if (bgPop) {
 				bgPop = false;
@@ -13482,7 +13405,7 @@ html.cr-pin-dragging * {
 		more.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window, clientX: r.left, clientY: r.bottom }));
 		const t0 = performance.now();
 		const look = () => {
-			const it = [...document.querySelectorAll('.MuiPopover-root [role="menu"] [role="menuitem"]')].find((m) => /^\s*rename\s*$/i.test(m.textContent || ""));
+			const it = [...document.querySelectorAll('.MuiPopover-root [role="menu"] [role="menuitem"]')].find((m) => crT.is(m.textContent, "fileManager.rename", "Rename"));
 			if (it) {
 				it.click();
 				setTimeout(() => html.classList.remove("cr-ghostmenu"), 250);
@@ -13816,12 +13739,12 @@ html.cr-pin-dragging * {
 		syncChrome();
 		if (!document.querySelector(".PhotoView-Portal")) {
 			hideTip();
-			document.documentElement.classList.remove("cr-notip");
+			document.documentElement.classList.toggle("cr-notip", false);
 		}
 		document.querySelectorAll(".PhotoView-Slider__BannerRight > .MuiIconButton-root").forEach((b) => {
 			if (b.querySelector('path[d^="' + CLP + '"]') && !b.dataset.crTip) {
 				b.dataset.crTip = "1";
-				b.addEventListener("mouseenter", () => showTip(b, "Close"));
+				b.addEventListener("mouseenter", () => showTip(b, crT("common:close", "Close")));
 				b.addEventListener("mouseleave", hideTip);
 				b.addEventListener("click", hideTip);
 			}
@@ -13837,7 +13760,7 @@ html.cr-pin-dragging * {
 			if (!b.querySelector(":scope > .cr-dl-t")) {
 				const t = document.createElement("span");
 				t.className = "cr-dl-t";
-				t.textContent = "Download";
+				crT.set(t, "fileManager.download", "Download");
 				b.appendChild(t);
 			}
 		});
@@ -14278,7 +14201,7 @@ html.cr-pin-dragging * {
 			const r = g.getBoundingClientRect();
 			g.style.setProperty("--cr-px", e.clientX - r.left + "px");
 			g.style.setProperty("--cr-py", e.clientY - r.top + "px");
-			g.classList.add("cr-spot-on");
+			if (!g.classList.contains("cr-spot-on")) g.classList.add("cr-spot-on");
 		});
 	}, { passive: true });
 	document.addEventListener("pointerleave", off);
@@ -14291,6 +14214,9 @@ html.cr-pin-dragging * {
 	const mq = matchMedia("(max-width: 599.95px)");
 	const tag = (el, c) => {
 		if (el && !el.classList.contains(c)) el.classList.add(c);
+	};
+	const untag = (el, c) => {
+		if (el && el.classList.contains(c)) el.classList.remove(c);
 	};
 	const fadeBc = (sc) => {
 		const max = sc.scrollWidth - sc.clientWidth;
@@ -14338,9 +14264,9 @@ html.cr-pin-dragging * {
 			const rs = tb.lastElementChild;
 			if (rs && rs.classList.contains("MuiStack-root")) {
 				[...rs.querySelectorAll(".MuiIconButton-root")].forEach((b) => {
-					if (b.querySelector(".MuiAvatar-root, .MuiSkeleton-root")) b.classList.remove("cr-tbp-mc");
+					if (b.querySelector(".MuiAvatar-root, .MuiSkeleton-root")) untag(b, "cr-tbp-mc");
 					else if (b.querySelector(':scope > svg > path[d^="M11.883 3.007"]')) {
-						b.classList.remove("cr-tbp-mc");
+						untag(b, "cr-tbp-mc");
 						tag(b, "cr-lp");
 						tag(b, "cr-new");
 					} else tag(b, "cr-tbp-mc");
@@ -14534,7 +14460,7 @@ html.cr-pin-dragging * {
 			scan();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(scan);
 	window.addEventListener("resize", schedule);
 	window.addEventListener("popstate", schedule);
 	if (document.fonts) {
@@ -14654,15 +14580,7 @@ html.cr-pin-dragging * {
 		}, true);
 	};
 	const scan = () => CFG.forEach(([G, B]) => document.querySelectorAll(G).forEach((g) => setup(g, B)));
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			scan();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(scan);
 	scan();
 })();
 //# sourceURL=cr/0440-segmented-controls.js
@@ -14682,7 +14600,7 @@ html.cr-pin-dragging * {
 			const path = document.createElementNS(NS, "path");
 			svg.appendChild(path);
 			p.appendChild(svg);
-			items.set(p, { svg, path, w: 0, k: 0, v: 0, ph: 0, lt: 0 });
+			items.set(p, { svg, path, d: "", w: 0, k: 0, v: 0, ph: 0, lt: 0 });
 		});
 		for (const [p, it] of items) if (!p.isConnected) items.delete(p);
 	};
@@ -14729,7 +14647,10 @@ html.cr-pin-dragging * {
 				const y = mid + amp * breathe * e * Math.sin((2 * Math.PI * x) / lambda - phase);
 				d += "L" + x.toFixed(1) + " " + y.toFixed(2);
 			}
-			it.path.setAttribute("d", d);
+			if (it.d !== d) {
+				it.d = d;
+				it.path.setAttribute("d", d);
+			}
 			p.style.setProperty("--cr-wave-w", W.toFixed(1) + "px");
 		}
 		requestAnimationFrame(draw);
@@ -16132,9 +16053,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 (() => {
 	const FADE = ".fade-enter, .fade-enter-active, .fade-enter-done, .fade-exit, .fade-exit-active";
 	const guard = (e) => e.stopPropagation();
-	let q = false;
 	const tag = () => {
-		q = false;
 		document.querySelectorAll(FADE).forEach((f) => {
 			for (const c of f.children) {
 				if (c.dataset.crFadeGuard) continue;
@@ -16144,11 +16063,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			}
 		});
 	};
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(tag);
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(tag);
 	tag();
 })();
 //# sourceURL=cr/0520-fade-transition-guard.js
@@ -16278,15 +16193,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		prefetch();
 		apply();
 	}, 1500);
-	let aq = false;
-	new MutationObserver(() => {
-		if (aq) return;
-		aq = true;
-		requestAnimationFrame(() => {
-			aq = false;
-			apply();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(apply);
 	apply();
 })();
 //# sourceURL=cr/0540-pin-emoji-badges.js
@@ -16383,7 +16290,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 	const make = (more, cls, key, label, d, re) => {
 		const b = document.createElement("button");
 		b.type = "button";
-		b.className = more.className.replace("cr-more-hide", "") + " " + cls;
+		b.className = more.className + " " + cls;
 		crT.set(b, key, label, "title");
 		crT.set(b, key, label, "aria");
 		b.innerHTML = '<svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall" viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '"></path></svg>';
@@ -16396,7 +16303,6 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 	const inject = () => {
 		const share = onShare() && loggedIn();
 		document.querySelectorAll(".cr-nav .MuiButtonGroup-root > .MuiButtonBase-root:not(.cr-pinbtn):has(" + MORE + ")").forEach((more) => {
-			more.classList.add("cr-more-hide");
 			const box = more.parentElement;
 			let pb = box.querySelector(":scope > .cr-pinbtn:not(.cr-linkbtn)");
 			if (!pb) {
@@ -16409,15 +16315,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		});
 	};
 	setInterval(inject, 700);
-	let iq = false;
-	new MutationObserver(() => {
-		if (iq) return;
-		iq = true;
-		requestAnimationFrame(() => {
-			iq = false;
-			inject();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(inject);
 })();
 //# sourceURL=cr/0560-nav-pin-buttons.js
 </script>
@@ -16457,22 +16355,22 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 </script>
 <script>
 (() => {
+	const is = (key, fallback) => (t) => crT.is(t, key, fallback);
+	const re = (r) => (t) => r.test(t);
 	const RULES = [
-		[/^new folder$/i, 0, false],
-		[/^upload files?$/i, 1, true],
-		[/^upload folder$/i, 2, false],
-		[/markdown/i, 3, true],
-		[/draw\.?io/i, 4, false],
-		[/^refresh$/i, 9, true]
+		[is("fileManager.newFolder", "New folder"), 0, false],
+		[is("fileManager.uploadFiles", "Upload files"), 1, true],
+		[is("fileManager.uploadFolder", "Upload folder"), 2, false],
+		[re(/markdown/i), 3, true],
+		[re(/draw\.?io/i), 4, false],
+		[is("fileManager.refresh", "Refresh"), 9, true]
 	];
-	const HIDE = [/^new file$/i, /clipboard/i, /remote download/i];
-	let q = false;
+	const HIDE = [is("fileManager.newFile", "New file"), is("uploader.uploadFromClipboard", "Upload from clipboard"), is("fileManager.newRemoteDownloads", "New remote download")];
 	const sort = () => {
-		q = false;
 		document.querySelectorAll(".MuiPopover-paper [role='menu']").forEach((ul) => {
 			const items = [...ul.children];
 			const texts = items.map((li) => (li.textContent || "").trim());
-			if (!texts.some((t) => /^new folder$/i.test(t))) {
+			if (!texts.some(RULES[0][0])) {
 				if (ul.classList.contains("cr-ctxsort")) {
 					ul.classList.remove("cr-ctxsort");
 					items.forEach((li) => {
@@ -16485,19 +16383,15 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			ul.classList.add("cr-ctxsort");
 			items.forEach((li, i) => {
 				const t = texts[i];
-				li.classList.toggle("cr-ctx-hide", HIDE.some((r) => r.test(t)));
-				const r = RULES.find((x) => x[0].test(t));
+				li.classList.toggle("cr-ctx-hide", HIDE.some((h) => h(t)));
+				const r = RULES.find((x) => x[0](t));
 				const ord = r ? r[1] : 5;
 				if (li.style.order !== String(ord)) li.style.order = String(ord);
 				li.classList.toggle("cr-ctx-sep", !!r && r[2]);
 			});
 		});
 	};
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(sort);
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(sort);
 })();
 //# sourceURL=cr/0580-new-menu-sort.js
 </script>
@@ -16519,7 +16413,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		return Math.round(b) + " " + U[i];
 	};
 	const run = () => {
-		document.querySelectorAll(":is(.MuiDrawer-paper, .MuiPopover-paper) div:has(> .MuiLinearProgress-root)").forEach((box) => {
+		document.querySelectorAll(".cr-h47").forEach((box) => {
 			const cap = box.querySelector(":scope > .MuiTypography-caption");
 			if (!cap) return;
 			const raw = cap.textContent || "";
@@ -16528,7 +16422,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			const used0 = parts[0].trim();
 			const used = toBytes(used0) != null ? fmt(toBytes(used0)) : used0;
 			const total = parts.slice(1).join("/").trim();
-			const ub = toBytes(used);
+			const ub = toBytes(used0);
 			const tb = toBytes(total);
 			const free = ub != null && tb != null ? fmt(Math.max(0, tb - ub)) : "";
 			const key = raw;
@@ -16710,16 +16604,7 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		size();
 		if (document.documentElement.classList.contains("cr-vopen")) unclip();
 	};
-	let q = false;
-	const queue = () => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			lift();
-		});
-	};
-	new MutationObserver(queue).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(lift);
 	new MutationObserver(lift).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 	window.addEventListener("scroll", () => {
 		if (st && st.saved) size();
@@ -17057,6 +16942,13 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			{ passive: false }
 		);
 		sc.addEventListener(
+			"touchcancel",
+			(e) => {
+				if (z === cur && e.touches.length < 2) cur.pinch = null;
+			},
+			{ passive: true }
+		);
+		sc.addEventListener(
 			"touchend",
 			(e) => {
 				if (z !== cur || cur.mode !== "scroll") return;
@@ -17174,6 +17066,13 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		},
 		{ capture: true, passive: true }
 	);
+	window.addEventListener(
+		"touchcancel",
+		(e) => {
+			if (!e.touches.length && z && z.mode === "mirror") z.touching = false;
+		},
+		{ capture: true, passive: true }
+	);
 	const guard = () => {
 		if (!z) return;
 		if (!z.portal.isConnected || z.portal.classList.contains("PhotoView-Slider__willClose") || !z.box.isConnected || activeBox(z.portal) !== z.box) finish(true);
@@ -17261,15 +17160,6 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 <script>
 (() => {
 	const COPY = "M5.503 4.627 5.5 6.75v10.504a3.25 3.25 0 0 0 3.25 3.25h8.616a2.251 2.251 0 0 1-2.122 1.5H8.75A4.75 4.75 0 0 1 4 17.254V6.75c0-.98.627-1.815 1.503-2.123ZM17.75 2A2.25 2.25 0 0 1 20 4.25v13a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-13A2.25 2.25 0 0 1 8.75 2h9Zm0 1.5h-9a.75.75 0 0 0-.75.75v13c0 .414.336.75.75.75h9a.75.75 0 0 0 .75-.75v-13a.75.75 0 0 0-.75-.75Z";
-	const i18n = (ns, path, fb) => {
-		try {
-			const o = JSON.parse(localStorage.getItem("i18next_res_" + (localStorage.getItem("i18nextLng") || "en-US") + "-" + ns) || "{}");
-			const v = path.split(".").reduce((a, k) => a && a[k], o);
-			return typeof v === "string" ? v : fb;
-		} catch (e) {
-			return fb;
-		}
-	};
 	let snk = null;
 	const notify = () => {
 		const cur = cr.rootFiber();
@@ -17290,8 +17180,8 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		const T = cur.memoizedState && cur.memoizedState.element && cur.memoizedState.element.$$typeof;
 		if (!snk || !T) return;
 		const inst = snk;
-		inst.enqueueSnackbar(i18n("application", "setting.copied", "Copied to clipboard."), {
-			action: (key) => ({ $$typeof: T, type: "button", key: null, ref: null, _owner: null, props: { type: "button", className: "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeSmall MuiButton-colorInherit cr-snackbtn", onClick: () => inst.closeSnackbar(key), children: i18n("common", "dismiss", "Dismiss") } }),
+		inst.enqueueSnackbar(crT("setting.copied", "Copied to clipboard."), {
+			action: (key) => ({ $$typeof: T, type: "button", key: null, ref: null, _owner: null, props: { type: "button", className: "MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeSmall MuiButton-colorInherit cr-snackbtn", onClick: () => inst.closeSnackbar(key), children: crT("common:dismiss", "Dismiss") } }),
 		});
 	};
 	const isShare = (v) => v && typeof v === "object" && typeof v.id === "string" && "visited" in v;
@@ -17318,17 +17208,17 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 		}
 		return "";
 	};
-	const copy = (text) => {
-		if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+	const copyLegacy = (text) => {
 		const ta = document.createElement("textarea");
 		ta.value = text;
 		ta.style.cssText = "position:fixed;opacity:0";
 		document.body.appendChild(ta);
 		ta.select();
-		document.execCommand("copy");
+		const ok = document.execCommand("copy");
 		ta.remove();
-		return Promise.resolve();
+		return ok ? Promise.resolve() : Promise.reject(new Error("copy failed"));
 	};
+	const copy = (text) => (navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(text).catch(() => copyLegacy(text)) : copyLegacy(text));
 	const inject = () => {
 		document.querySelectorAll(".MuiDialog-root tbody > tr > :first-child .MuiIconButton-root:not(.cr-copylink)").forEach((more) => {
 			if (more.nextElementSibling && more.nextElementSibling.classList.contains("cr-copylink")) return;
@@ -17344,20 +17234,12 @@ main .MuiCollapse-horizontal .MuiCollapse-wrapperInner > .MuiBox-root a:hover {
 			b.addEventListener("click", (e) => {
 				e.stopPropagation();
 				const url = shareOf(tr);
-				if (url) copy(url).then(notify);
+				if (url) copy(url).then(notify, () => {});
 			});
 			more.after(b);
 		});
 	};
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			inject();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(inject);
 	inject();
 })();
 //# sourceURL=cr/0650-copy-share-link.js
@@ -18023,8 +17905,8 @@ img.cr-ficon {
 		const map = iconMap();
 		return !!ext && (map && map[ext] ? map[ext].icon === "video" : VIDEO.includes(ext));
 	};
-	window.crIsVideo = isVideo;
-	window.crFicon = (name) => ficon(name);
+	cr.isVideo = isVideo;
+	cr.ficon = (name) => ficon(name);
 	const ICONIFY = ["https://api.iconify.design", "https://api.simplesvg.com", "https://api.unisvg.com"];
 	const iconifySvg = (data, name) => {
 		const a = data.aliases && data.aliases[name];
@@ -18389,31 +18271,31 @@ img.cr-ficon {
 </script>
 <script>
 (() => {
-	const RESIZE = /cursor:\s*(col-resize|ew-resize|e-resize|w-resize)/;
+	const RESIZE = /^(col|ew|e|w)-resize$/;
 	const ONLY = /^\.css-[\w-]+(?::{1,2}[\w-]+(?:\([^)]*\))?)*$/;
 	const found = new Set();
 	let style = null;
 	let seen = 0;
 	const scan = () => {
+		const sheets = [];
 		let n = 0;
 		for (const sh of document.styleSheets) {
-			let rules;
 			try {
-				rules = sh.cssRules;
-			} catch (e) {
-				continue;
-			}
-			n += rules.length;
+				n += sh.cssRules.length;
+				sheets.push(sh.cssRules);
+			} catch (e) {}
+		}
+		if (n === seen) return;
+		seen = n;
+		for (const rules of sheets) {
 			for (const r of rules) {
-				if (!r.selectorText || !RESIZE.test(r.cssText)) continue;
+				if (!r.selectorText || !r.style || !RESIZE.test(r.style.cursor)) continue;
 				r.selectorText.split(",").forEach((sel) => {
 					sel = sel.trim();
 					if (ONLY.test(sel)) found.add(sel.replace(/:.*$/, ""));
 				});
 			}
 		}
-		if (n === seen) return;
-		seen = n;
 		if (!found.size) return;
 		if (!style) {
 			style = document.createElement("style");
@@ -18618,18 +18500,12 @@ html:not(.cr-bnav-on) body .cr-bnav.cr-tbp-m.cr-tbp-m.cr-tbp-m.cr-tbp-m {
 		bar.querySelectorAll(":scope > .cr-bnav-i").forEach((b, i) => {
 			const sel = location.pathname.startsWith("/home") && TABS[i].match(p);
 			if (b.classList.contains("Mui-selected") !== sel) b.classList.toggle("Mui-selected", sel);
-			b.setAttribute("aria-current", sel ? "page" : "false");
+			const cur = sel ? "page" : "false";
+			if (b.getAttribute("aria-current") !== cur) b.setAttribute("aria-current", cur);
 		});
 	};
+	cr.onDom(sync);
 	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			sync();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
 	new MutationObserver(() => {
 		if (q) return;
 		q = true;
@@ -18723,7 +18599,7 @@ html.cr-dock :is(.cr-explorer, main div.cr-h29)::-webkit-scrollbar-track {
 			sync();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(sync);
 	new MutationObserver(schedule).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 	window.addEventListener("resize", schedule);
 	sync();
@@ -18747,22 +18623,14 @@ html.cr-dock :is(.cr-explorer, main div.cr-h29)::-webkit-scrollbar-track {
 <script>
 (() => {
 	const tag = () => {
-		if (!window.crIsVideo) return;
+		if (!cr.isVideo) return;
 		document.querySelectorAll(".MuiGrid-container [data-rect-id]").forEach((t) => {
 			const f = cr.fileOf(t, 30);
-			const v = !!f && f.type === 0 && window.crIsVideo(f.name || "");
+			const v = !!f && f.type === 0 && cr.isVideo(f.name || "");
 			if (t.classList.contains("cr-vid") !== v) t.classList.toggle("cr-vid", v);
 		});
 	};
-	let q = false;
-	new MutationObserver(() => {
-		if (q) return;
-		q = true;
-		requestAnimationFrame(() => {
-			q = false;
-			tag();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(tag);
 	tag();
 })();
 //# sourceURL=cr/0770-video-thumbs.js
@@ -19015,7 +18883,7 @@ html.cr-dock body main {
 	};
 	const folders = new Map();
 	const typeIcon = (host, file) => {
-		if (file.type === 0) return window.crFicon ? window.crFicon(file.name || "") : null;
+		if (file.type === 0) return cr.ficon ? cr.ficon(file.name || "") : null;
 		const src = [...host.querySelectorAll("svg")].find((x) => !isCheck(x));
 		if (src) {
 			const c = src.cloneNode(true);
@@ -19106,7 +18974,7 @@ html.cr-dock body main {
 			run();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 	const t = setInterval(() => {
 		const s = cr.store();
 		if (!s) return;
@@ -19726,10 +19594,10 @@ html:not(.cr-dock) .cr-path * {
 <script>
 (() => {
 	const mark = () => {
-		if (!window.crIsVideo) return;
+		if (!cr.isVideo) return;
 		document.querySelectorAll(".MuiDialog-root:not(.cr-vdark)").forEach((d) => {
 			const title = d.querySelector(".MuiDialog-paper > .MuiBox-root:first-child > .MuiDialogTitle-root + .MuiDivider-root") && d.querySelector(".MuiDialogTitle-root");
-			if (title && [...title.querySelectorAll(".MuiTypography-root")].some((t) => window.crIsVideo(t.textContent.trim()))) d.classList.add("cr-vdark");
+			if (title && [...title.querySelectorAll(".MuiTypography-root")].some((t) => cr.isVideo(t.textContent.trim()))) d.classList.add("cr-vdark");
 		});
 	};
 	new MutationObserver(mark).observe(document.body, { childList: true, subtree: true });

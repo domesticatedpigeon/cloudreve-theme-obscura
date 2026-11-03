@@ -370,11 +370,12 @@
 		}
 		const mainBox = document.querySelector("main");
 		if (!nav) {
-			html.classList.remove("cr-sel");
+			html.classList.toggle("cr-sel", false);
 			if (lead && lead.parentElement) lead.remove();
 			const page = header && mainBox && window.innerWidth >= 600 ? mainBox.querySelector("div:has(> .MuiContainer-root)") || (/^\/(shares|profile)/.test(location.pathname) ? mainBox : null) : null;
 			if (!page) {
-				html.classList.remove("cr-dock", "cr-dock-page");
+				html.classList.toggle("cr-dock", false);
+				html.classList.toggle("cr-dock-page", false);
 				return;
 			}
 			const mr = mainBox.getBoundingClientRect();
@@ -388,11 +389,12 @@
 			html.style.setProperty("--cr-dock-h", dockGeo.h + "px");
 			html.style.setProperty("--cr-dock-right", window.innerWidth - mr.right + dockGeo.inset + 20 + "px");
 			html.style.setProperty("--cr-page-top", Math.round(2 * dockGeo.top + dockGeo.h) + "px");
-			html.classList.add("cr-dock", "cr-dock-page");
+			html.classList.toggle("cr-dock", true);
+			html.classList.toggle("cr-dock-page", true);
 			return;
 		}
-		html.classList.remove("cr-dock-page");
-		html.classList.add("cr-dock");
+		html.classList.toggle("cr-dock-page", false);
+		html.classList.toggle("cr-dock", true);
 		const selOn = !!(selBox && selBox.querySelector(".MuiButtonGroup-root"));
 		if (selBox) {
 			if (selOn) selBox.setAttribute("data-cr-selbar", "");

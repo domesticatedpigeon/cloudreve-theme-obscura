@@ -1,6 +1,7 @@
 (() => {
+	const papers = document.getElementsByClassName("cr-h41");
 	const tag = () => {
-		document.querySelectorAll('.MuiDialog-paper:has([role="tree"]) .MuiDialogContent-root .MuiStack-root').forEach((st) => {
+		document.querySelectorAll(".MuiDialog-paper.cr-h41 .MuiDialogContent-root .MuiStack-root").forEach((st) => {
 			if (st.classList.contains("cr-subnav")) return;
 			const kids = [...st.children];
 			if (kids.length < 2 || !kids.some((k) => k.querySelector(".MuiButtonGroup-root"))) return;
@@ -9,7 +10,7 @@
 			st.classList.add("cr-subnav");
 			first.classList.add("cr-path");
 		});
-		document.querySelectorAll('.MuiDialog-paper:has([role="tree"])').forEach((paper) => {
+		[...papers].forEach((paper) => {
 			const title = paper.querySelector(".MuiDialogTitle-root");
 			const nav = paper.querySelector(".cr-subnav");
 			if (title && nav) {
@@ -36,10 +37,6 @@
 			}
 		});
 	};
-	let papers = [];
-	setInterval(() => {
-		papers = [...document.querySelectorAll('.MuiDialog-paper:has([role="tree"])')];
-	}, 300);
 	let lastX = 0;
 	let lastY = 0;
 	let queued = false;
@@ -48,7 +45,7 @@
 		const x = lastX;
 		const y = lastY;
 		const jobs = [];
-		papers.forEach((paper) => {
+		[...papers].forEach((paper) => {
 			if (!paper.isConnected) return;
 			const r = paper.getBoundingClientRect();
 			const tiles = [...paper.querySelectorAll("[data-rect-id]")];
@@ -74,6 +71,6 @@
 		requestAnimationFrame(frame);
 	}, { capture: true, passive: true });
 	setInterval(() => {
-		if (document.querySelector(".MuiDialog-root")) tag();
+		if (papers.length) tag();
 	}, 250);
 })();

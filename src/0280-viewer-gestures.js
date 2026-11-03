@@ -340,7 +340,7 @@
 		P.timer = setTimeout(settle, 120);
 	};
 	window.addEventListener("wheel", (e) => {
-		if (synth.has(e) || e.crSynth) return;
+		if (synth.has(e) || e.crSynth || !document.querySelector(".PhotoView-Portal")) return;
 		const under = document.elementFromPoint(e.clientX, e.clientY);
 		const t = under || (e.target instanceof Element && e.target.isConnected ? e.target : null);
 		const portal = (t && t.closest(".PhotoView-Portal")) || (e.target instanceof Element && !e.target.isConnected ? document.querySelector(".PhotoView-Portal") : null);

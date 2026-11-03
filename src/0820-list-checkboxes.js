@@ -9,7 +9,7 @@
 	};
 	const folders = new Map();
 	const typeIcon = (host, file) => {
-		if (file.type === 0) return window.crFicon ? window.crFicon(file.name || "") : null;
+		if (file.type === 0) return cr.ficon ? cr.ficon(file.name || "") : null;
 		const src = [...host.querySelectorAll("svg")].find((x) => !isCheck(x));
 		if (src) {
 			const c = src.cloneNode(true);
@@ -100,7 +100,7 @@
 			run();
 		});
 	};
-	new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 	const t = setInterval(() => {
 		const s = cr.store();
 		if (!s) return;

@@ -4,7 +4,6 @@
 	let explorer = null;
 	let ro = null;
 	let lastW = 0;
-	let queued = false;
 	const reduce = matchMedia("(prefers-reduced-motion: reduce)");
 	const tiles = () => (explorer ? [...explorer.querySelectorAll(TILE)] : []);
 	let flipT = 0;
@@ -77,20 +76,15 @@
 		ro.observe(ex);
 		measure();
 	};
-	new MutationObserver(() => {
-		if (queued) return;
-		queued = true;
-		requestAnimationFrame(() => {
-			queued = false;
-			if (document.documentElement.classList.contains("cr-dragfiles")) return;
-			const path = location.pathname + location.search;
-			if (path !== navPath) {
-				navPath = path;
-				navAt = Date.now();
-			}
-			attach();
-			measure();
-		});
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(() => {
+		if (document.documentElement.classList.contains("cr-dragfiles")) return;
+		const path = location.pathname + location.search;
+		if (path !== navPath) {
+			navPath = path;
+			navAt = Date.now();
+		}
+		attach();
+		measure();
+	});
 	setInterval(attach, 1000);
 })();

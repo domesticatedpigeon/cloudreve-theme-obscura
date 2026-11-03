@@ -80,6 +80,7 @@
 		});
 	};
 	let menuTimer = null;
+	let menuGiveUp = null;
 	let pointer = { x: -1, y: -1 };
 	document.addEventListener("mousemove", (e) => {
 		pointer = { x: e.clientX, y: e.clientY };
@@ -96,6 +97,7 @@
 		document.querySelectorAll(".cr-menu-open").forEach((x) => x !== li && x.classList.remove("cr-menu-open"));
 		li.classList.add("cr-menu-open");
 		clearInterval(menuTimer);
+		clearTimeout(menuGiveUp);
 		let seen = false;
 		menuTimer = setInterval(() => {
 			const open = [...document.querySelectorAll(".MuiMenu-root")].some((m) => getComputedStyle(m).visibility !== "hidden" && m.getAttribute("aria-hidden") !== "true");
@@ -105,7 +107,7 @@
 				clearInterval(menuTimer);
 			}
 		}, 150);
-		setTimeout(() => {
+		menuGiveUp = setTimeout(() => {
 			if (!seen) {
 				li.classList.remove("cr-menu-open");
 				clearInterval(menuTimer);
@@ -116,19 +118,12 @@
 		const li = e.target instanceof Element ? e.target.closest(".MuiImageListItem-root, .MuiGrid-container [data-rect-id]") : null;
 		if (li) markMenu(li);
 	}, true);
-	let queued = false;
 	const run = () => {
-		queued = false;
 		document.querySelectorAll(".MuiImageListItem-root").forEach(label);
 		document.querySelectorAll(".MuiGrid-container [data-rect-id]:not(.MuiDialog-root *)").forEach(gridMore);
 		document.querySelectorAll(".MuiDialog-root .cr-grid-more").forEach((x) => x.remove());
 		squareChecks();
 		hideFinance();
 	};
-	new MutationObserver(() => {
-		if (!queued) {
-			queued = true;
-			requestAnimationFrame(run);
-		}
-	}).observe(document.body, { childList: true, subtree: true });
+	cr.onDom(run);
 })();
